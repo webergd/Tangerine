@@ -16,6 +16,8 @@
 		2AEBBDAA1D35E175001F7388 /* TableViewTutorialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDA91D35E175001F7388 /* TableViewTutorialUITests.swift */; };
 		2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDB91D36018E001F7388 /* MainController.swift */; };
 		2AEBBDBC1D36111F001F7388 /* DetailViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDBB1D36111F001F7388 /* DetailViewController.swift */; };
+		2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */; };
+		2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -51,6 +53,8 @@
 		2AEBBDAB1D35E175001F7388 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2AEBBDB91D36018E001F7388 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
 		2AEBBDBB1D36111F001F7388 /* DetailViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DetailViewController.swift; sourceTree = "<group>"; };
+		2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewCell.swift; sourceTree = "<group>"; };
+		2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -107,8 +111,10 @@
 				2AEBBD921D35E175001F7388 /* LaunchScreen.storyboard */,
 				2AEBBD951D35E175001F7388 /* Info.plist */,
 				2AEBBD8D1D35E175001F7388 /* Main.storyboard */,
+				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDB91D36018E001F7388 /* MainController.swift */,
 				2AEBBDBB1D36111F001F7388 /* DetailViewController.swift */,
+				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 			);
 			path = TableViewTutorial;
 			sourceTree = "<group>";
@@ -263,8 +269,10 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AEBBD8C1D35E175001F7388 /* ViewController.swift in Sources */,
+				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
+				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
 				2AEBBDBC1D36111F001F7388 /* DetailViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

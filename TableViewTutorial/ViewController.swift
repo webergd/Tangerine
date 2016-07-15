@@ -25,7 +25,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
     
     
     let swiftBlogs = ["Ray", "Hipster", "Developer Tips"]
-    let textCellIdentifier = "TextCell"
+    let textCellIdentifier = "TableViewCell"
     
     override func viewDidLoad() {
         super.viewDidLoad()
