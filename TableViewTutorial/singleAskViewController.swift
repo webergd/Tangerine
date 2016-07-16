@@ -8,18 +8,18 @@
 
 import UIKit
 
-class DetailViewController: UIViewController {
+class singleAskViewController: UIViewController {
     
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
     
     var detailText: String = ""
-    @IBOutlet weak var detailViewLabel: UILabel!
-    
 
+    @IBOutlet weak var askRatingLabel: UILabel!    
+    @IBOutlet weak var askImageView: UIImageView!
     
     func configureView() {
 
-        detailViewLabel.text = detailText
+        //detailViewLabel.text = detailText
     }
     
     override func viewDidLoad() {

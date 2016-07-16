@@ -76,7 +76,7 @@ class ViewController: UIViewController, UITableViewDataSource, UITableViewDelega
         //use the text in the selected row to set the label on the detail view:
         if segue.identifier == "displayDetailView" {
                 if let indexPath = self.tableView.indexPathForSelectedRow {
-                    let controller: DetailViewController = segue.destinationViewController as! DetailViewController
+                    let controller: singleAskViewController = segue.destinationViewController as! singleAskViewController
                     controller.detailText = swiftBlogs[indexPath.row]
 
             }
