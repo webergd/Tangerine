@@ -69,7 +69,7 @@ class AskTableViewController: UITableViewController {
         return asks.count
     }
 
-    
+    //I believe this is setting up the cell row in the table
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cellIdentifier: String = "AskTableViewCell"
         
@@ -83,6 +83,14 @@ class AskTableViewController: UITableViewController {
 
         return cell
     }
+    
+    
+    // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
+    //override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //performSegueWithIdentifier ("showSingleAsk", sender: self)
+        //presentViewController(Single Ask View Controller, animated: true, completion: nil)
+        //self.navigationController?.pushViewController(singleAskViewController as! UIViewController, animated: true)
+    //}
  
 
     /*
@@ -120,14 +128,43 @@ class AskTableViewController: UITableViewController {
     }
     */
 
-    /*
+    
     // MARK: - Navigation
 
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+        if segue.identifier == "showSingleAsk" {
+    
+            if let indexPath = self.tableView.indexPathForSelectedRow {
+                let passedAsk = asks[indexPath.row]
+                let controller = segue.destinationViewController as! singleAskViewController
+                // Pass the selected object to the new view controller:
+                controller.ask = passedAsk
+            }
+        }
+   
+   
     }
-    */
+ 
+    
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
