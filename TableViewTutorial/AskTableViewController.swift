@@ -27,13 +27,13 @@ class AskTableViewController: UITableViewController {
         //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
-        let ask1 = Ask(title: "Red Reeboks", rating: 5.5,photo: photo1)
+        let ask1 = Ask(title: "Red Reeboks", rating: 5.8,photo: photo1)
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
-        let ask2 = Ask(title: "White Converse", rating: 5.5, photo: photo2)
+        let ask2 = Ask(title: "White Converse", rating: 2.5, photo: photo2)
         
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
-        let ask3 = Ask(title: "Violet Vans", rating: 5.5, photo: photo3)
+        let ask3 = Ask(title: "Violet Vans", rating: 9.5, photo: photo3)
         
         asks += [ask1,ask2,ask3]
     }
@@ -134,15 +134,16 @@ class AskTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         // Get the new view controller using segue.destinationViewController.
-        if segue.identifier == "showSingleAsk" {
+        //if segue.identifier == "showSingleAsk" {
     
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let passedAsk = asks[indexPath.row]
+                //print("rating in AskTableVC before passing is: \(passedAsk.askRating)")
                 let controller = segue.destinationViewController as! singleAskViewController
                 // Pass the selected object to the new view controller:
                 controller.ask = passedAsk
             }
-        }
+        //}
    
    
     }
