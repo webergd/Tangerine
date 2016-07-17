@@ -33,7 +33,7 @@ class AskTableViewController: UITableViewController {
         let ask2 = Ask(title: "White Converse", rating: 2.5, photo: photo2)
         
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
-        let ask3 = Ask(title: "Violet Vans", rating: 9.5, photo: photo3)
+        let ask3 = Ask(title: "Violet Vans", rating: 5.5, photo: photo3)
         
         asks += [ask1,ask2,ask3]
     }
