@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Bucket
+   type = "1"
+   version = "2.0">
+   <Breakpoints>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TableViewTutorial/singleAskViewController.swift"
+            timestampString = "490397443.888352"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "34"
+            endingLineNumber = "34"
+            landmarkName = "singleAskViewController"
+            landmarkType = "3">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "TableViewTutorial/singleAskViewController.swift"
+            timestampString = "490397443.888352"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "27"
+            endingLineNumber = "27"
+            landmarkName = "singleAskViewController"
+            landmarkType = "3">
+            <Locations>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TableViewTutorial.singleAskViewController.askRatingLabel.setter : weak Swift.ImplicitlyUnwrappedOptional&lt;__ObjC.UILabel&gt;"
+                  moduleName = "TableViewTutorial"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/MacBookAir2011/Desktop/Xcode%20Projects/TableViewTutorial/TableViewTutorial/singleAskViewController.swift"
+                  timestampString = "490394432.869533"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "42">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TableViewTutorial.singleAskViewController.init (nibName : Swift.Optional&lt;Swift.String&gt;, bundle : Swift.Optional&lt;__ObjC.NSBundle&gt;) -&gt; TableViewTutorial.singleAskViewController"
+                  moduleName = "TableViewTutorial"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/MacBookAir2011/Desktop/Xcode%20Projects/TableViewTutorial/TableViewTutorial/singleAskViewController.swift"
+                  timestampString = "490394432.869801"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "453">
+               </Location>
+               <Location
+                  shouldBeEnabled = "No"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "TableViewTutorial.singleAskViewController.init (coder : __ObjC.NSCoder) -&gt; Swift.Optional&lt;TableViewTutorial.singleAskViewController&gt;"
+                  moduleName = "TableViewTutorial"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/MacBookAir2011/Desktop/Xcode%20Projects/TableViewTutorial/TableViewTutorial/singleAskViewController.swift"
+                  timestampString = "490394432.87005"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "27"
+                  endingLineNumber = "27"
+                  offsetFromSymbolStart = "341">
+               </Location>
+            </Locations>
+         </BreakpointContent>
+      </BreakpointProxy>
+   </Breakpoints>
+</Bucket>
