@@ -78,12 +78,12 @@ class AskTableViewController: UITableViewController {
         let ask = asks[indexPath.row]
         
         cell.titleLabel.text = ask.askTitle
+        cell.titleLabel.sizeToFit()
         cell.ratingLabel.text = "\(ask.askRating)"
         cell.photoImageView.image = ask.askPhoto
 
         return cell
     }
-    
     
     // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
     //override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
