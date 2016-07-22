@@ -18,6 +18,7 @@
 		2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */; };
 		2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */; };
 		2AEBBDC61D3A04D2001F7388 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC51D3A04D2001F7388 /* Main.storyboard */; };
+		2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -55,6 +56,7 @@
 		2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewCell.swift; sourceTree = "<group>"; };
 		2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewController.swift; sourceTree = "<group>"; };
 		2AEBBDC51D3A04D2001F7388 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
+		2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareTableViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,6 +115,7 @@
 				2AEBBDB91D36018E001F7388 /* MainController.swift */,
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
+				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* singleAskViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
 			);
@@ -273,6 +276,7 @@
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
 				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
 				2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */,
+				2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */,
 				2AEBBDBC1D36111F001F7388 /* singleAskViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
