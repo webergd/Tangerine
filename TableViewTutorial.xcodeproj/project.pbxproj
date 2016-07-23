@@ -14,11 +14,13 @@
 		2AEBBD9F1D35E175001F7388 /* TableViewTutorialTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBD9E1D35E175001F7388 /* TableViewTutorialTests.swift */; };
 		2AEBBDAA1D35E175001F7388 /* TableViewTutorialUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDA91D35E175001F7388 /* TableViewTutorialUITests.swift */; };
 		2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDB91D36018E001F7388 /* MainController.swift */; };
-		2AEBBDBC1D36111F001F7388 /* singleAskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDBB1D36111F001F7388 /* singleAskViewController.swift */; };
+		2AEBBDBC1D36111F001F7388 /* AskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDBB1D36111F001F7388 /* AskViewController.swift */; };
 		2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */; };
 		2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */; };
 		2AEBBDC61D3A04D2001F7388 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC51D3A04D2001F7388 /* Main.storyboard */; };
 		2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
+		2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */; };
+		2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -52,11 +54,13 @@
 		2AEBBDA91D35E175001F7388 /* TableViewTutorialUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewTutorialUITests.swift; sourceTree = "<group>"; };
 		2AEBBDAB1D35E175001F7388 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		2AEBBDB91D36018E001F7388 /* MainController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MainController.swift; sourceTree = "<group>"; };
-		2AEBBDBB1D36111F001F7388 /* singleAskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = singleAskViewController.swift; sourceTree = "<group>"; };
+		2AEBBDBB1D36111F001F7388 /* AskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskViewController.swift; sourceTree = "<group>"; };
 		2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewCell.swift; sourceTree = "<group>"; };
 		2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskTableViewController.swift; sourceTree = "<group>"; };
 		2AEBBDC51D3A04D2001F7388 /* Main.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; path = Main.storyboard; sourceTree = "<group>"; };
 		2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareTableViewCell.swift; sourceTree = "<group>"; };
+		2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareViewController.swift; sourceTree = "<group>"; };
+		2AECD6CD1D42938A00AAB743 /* DataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -113,10 +117,12 @@
 				2AEBBD901D35E175001F7388 /* Assets.xcassets */,
 				2AEBBD951D35E175001F7388 /* Info.plist */,
 				2AEBBDB91D36018E001F7388 /* MainController.swift */,
+				2AECD6CD1D42938A00AAB743 /* DataModels.swift */,
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
-				2AEBBDBB1D36111F001F7388 /* singleAskViewController.swift */,
+				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
+				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
 			);
 			path = TableViewTutorial;
@@ -271,13 +277,15 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */,
 				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
 				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
+				2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */,
 				2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */,
 				2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */,
-				2AEBBDBC1D36111F001F7388 /* singleAskViewController.swift in Sources */,
+				2AEBBDBC1D36111F001F7388 /* AskViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

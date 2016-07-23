@@ -1,45 +1,29 @@
 //
-//  DetailViewController.swift
+//  CompareViewController.swift
 //  TableViewTutorial
 //
-//  Created by Wyatt Weber on 7/12/16.
+//  Created by Wyatt Weber on 7/22/16.
 //  Copyright © 2016 Freedom Electric. All rights reserved.
 //
 
 import UIKit
 
-
-
-class singleAskViewController: UIViewController {
+class CompareViewController: UIViewController {
+    
+    //Need UI outlets for images and Label
     
     
-    @IBOutlet weak var askRatingLabel: UILabel!
-    @IBOutlet weak var askImageView: UIImageView!
-    
-    //@IBOutlet weak var detailDescriptionLabel: UILabel!
-    
-    //var detailText: String = ""
-    //var ask: Ask = Ask(title: "blank", rating: 11, photo: UIImage(named: "defaultPhoto")! )
-    
-    var ask: Ask? {
+    var compare: Compare? {
         didSet {
             // Update the view.
-            self.configureView()
+            //self.configureView()
         }
     }
-     
-
-
     
-    //askRatingLabel.text
-    
-    
-    //OK, why the fuck is my ask object nil
-    func configureView() {
+   /* func configureView() {
         print("configuring view")
-        //print("\(self.ask?.askRating)")
         // unwraps the ask that the tableView sent over:
-        if let thisAsk = self.ask {
+        if let thisCompare = self.compare {
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
                 print("passed rating is: \(thisAsk.askRating)")
@@ -53,23 +37,29 @@ class singleAskViewController: UIViewController {
         } else {
             print("Looks like ask is nil")
         }
-            
-    }
-    
         
-
+    } */
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
-        self.configureView()
+
+        // Do any additional setup after loading the view.
     }
-    
+
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
-    
-}
 
+    /*
+    // MARK: - Navigation
+
+    // In a storyboard-based application, you will often want to do a little preparation before navigation
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+    }
+    */
+
+}

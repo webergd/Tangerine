@@ -14,14 +14,7 @@ class MainController: UIViewController {
 
 }
 
-class Ask {
-    let askPhoto: UIImage
-    var askTitle: String
-    var askRating: Double
-    
-    init(title: String, rating: Double, photo: UIImage) {
-        askTitle = title
-        askRating = rating
-        askPhoto = photo
-    }
-}
+ 
+ 
+
+
