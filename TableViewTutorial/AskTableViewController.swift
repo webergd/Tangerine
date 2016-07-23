@@ -71,8 +71,8 @@ class AskTableViewController: UITableViewController {
         let time1 = 1200
         
         let compare1 = Compare(title1: title1, photo1: photo1, title2: title2, photo2: photo2, timePosted: time1)
-        compare1.compareVotes1 = 23
-        compare1.compareVotes2 = 24
+        compare1.compareVotes1 = 10000
+        compare1.compareVotes2 = 48000
         
         //create another sample Shoes compare object
         let photo1a = UIImage(named: "\(Shoes.brownShiny)")!
@@ -101,6 +101,13 @@ class AskTableViewController: UITableViewController {
         loadSampleAsks()
         loadSampleCompares()
         sortedQueries = queries.sort { $0.timePosted < $1.timePosted } //this line is going to have to appear somewhere later than ViewDidLoad
+        
+        //allows the row height to resize to fit the autolayout constraints
+        tableView.rowHeight = UITableViewAutomaticDimension
+        //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
+        tableView.estimatedRowHeight = 150
+        
+        
         //print("Queries: \(queries)")
         //print("SortedQueries: \(sortedQueries)")
         
@@ -140,7 +147,8 @@ class AskTableViewController: UITableViewController {
             let ask = sortedQueries[indexPath.row] as! Ask
         
             cell.titleLabel.text = ask.askTitle
-            cell.titleLabel.sizeToFit()
+            //cell.titleLabel.sizeToFit()
+            cell.timeRemainingLabel.text = "\(ask.timePosted)" //will need to be updated to reflect time remaining
             cell.ratingLabel.text = "\(ask.askRating)"
             cell.photoImageView.image = ask.askPhoto
 
@@ -157,6 +165,8 @@ class AskTableViewController: UITableViewController {
             cell.image2.image = compare.comparePhoto2
             cell.title1Label.text = compare.compareTitle1
             cell.title2Label.text = compare.compareTitle2
+            
+            
             cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
             //calculations need to be done to get time REMAINING vice time posted:
             cell.timeRemainingLabel.text = "Time Posted: \(compare.timePosted)"

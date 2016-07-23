@@ -16,6 +16,8 @@ class AskTableViewCell: UITableViewCell {
 
     @IBOutlet weak var photoImageView: UIImageView!
     
+    @IBOutlet weak var timeRemainingLabel: UILabel!
+    
     @IBOutlet weak var ratingLabel: UILabel!
     
     override func awakeFromNib() {
