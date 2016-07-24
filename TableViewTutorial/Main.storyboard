@@ -231,7 +231,7 @@
                                     <outlet property="ratingLabel" destination="kNl-FB-rvD" id="4Xy-MQ-G6n"/>
                                     <outlet property="timeRemainingLabel" destination="Jyp-85-UrU" id="qwJ-6p-kJG"/>
                                     <outlet property="titleLabel" destination="O7h-Oo-Isu" id="ufc-WC-Tmf"/>
-                                    <segue destination="Uo7-IC-beQ" kind="show" id="Cp6-Vc-RKg"/>
+                                    <segue destination="Uo7-IC-beQ" kind="show" id="rJ2-tF-DKB"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CompareTableViewCell" rowHeight="150" id="Bwm-rb-oas" customClass="CompareTableViewCell" customModule="TableViewTutorial" customModuleProvider="target">
@@ -321,6 +321,7 @@
                                     <outlet property="timeRemainingLabel" destination="4v2-b2-NfY" id="cdi-Xr-tYp"/>
                                     <outlet property="title1Label" destination="E1i-DC-4eV" id="WGs-ZT-Z48"/>
                                     <outlet property="title2Label" destination="heT-Hj-udc" id="ahn-Li-6k2"/>
+                                    <segue destination="ycp-pp-npb" kind="show" id="uI3-5X-YnU"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -420,12 +421,12 @@
                     <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                 </view>
             </objects>
-            <point key="canvasLocation" x="2076" y="403"/>
+            <point key="canvasLocation" x="2007" y="373"/>
         </scene>
         <!--Compare View Controller-->
         <scene sceneID="QLE-2h-kaV">
             <objects>
-                <viewController id="ycp-pp-npb" userLabel="Compare View Controller" sceneMemberID="viewController">
+                <viewController id="ycp-pp-npb" userLabel="Compare View Controller" customClass="CompareViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="zLW-6q-H5i"/>
                         <viewControllerLayoutGuide type="bottom" id="Gue-Mj-Yee"/>
@@ -434,41 +435,41 @@
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="sKR-I4-V3G">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sKR-I4-V3G">
                                 <rect key="frame" x="155" y="310" width="290" height="290"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="sKR-I4-V3G" secondAttribute="height" multiplier="1:1" id="PqU-1K-Kc0"/>
                                 </constraints>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="votes1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTM-U0-gbD">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="votes1" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="lTM-U0-gbD">
                                 <rect key="frame" x="381" y="279" width="49" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="votes2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fMu-qN-tpV">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text="votes2" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fMu-qN-tpV">
                                 <rect key="frame" x="378" y="569" width="52" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pSy-UK-a3o">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="pSy-UK-a3o">
                                 <rect key="frame" x="353" y="325" width="77" height="30"/>
                                 <state key="normal" title="Breakdown"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZoB-iR-wVM">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZoB-iR-wVM">
                                 <rect key="frame" x="170" y="325" width="30" height="30"/>
                                 <state key="normal" title="Edit"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LhP-Bh-Y2E">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LhP-Bh-Y2E">
                                 <rect key="frame" x="353" y="35" width="77" height="30"/>
                                 <state key="normal" title="Breakdown"/>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UCp-r6-T1B">
+                            <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="UCp-r6-T1B">
                                 <rect key="frame" x="170" y="35" width="30" height="30"/>
                                 <state key="normal" title="Edit"/>
                             </button>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="JxS-rt-ame">
+                            <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="JxS-rt-ame">
                                 <rect key="frame" x="155" y="20" width="290" height="290"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="JxS-rt-ame" secondAttribute="height" multiplier="1:1" id="1Kb-kA-0JE"/>
@@ -517,7 +518,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Fr-BM-aF2" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="2076" y="1136"/>
+            <point key="canvasLocation" x="1316" y="1084"/>
         </scene>
         <!--Ask Breakdown View Controller-->
         <scene sceneID="Q5M-pL-1k3">

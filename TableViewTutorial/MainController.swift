@@ -10,7 +10,9 @@ import UIKit
 
 class MainController: UIViewController {
     
-
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        print("prepareForSegue in MAIN controller called")
+    }
 
 }
 

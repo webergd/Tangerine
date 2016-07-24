@@ -27,19 +27,14 @@ class AskViewController: UIViewController {
             self.configureView()
         }
     }
-     
-
-
-    
-    //askRatingLabel.text
     
     
-    //OK, why the fuck is my ask object nil
     func configureView() {
         print("configuring view")
-        //print("\(self.ask?.askRating)")
+
         // unwraps the ask that the tableView sent over:
         if let thisAsk = self.ask {
+            
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
                 print("passed rating is: \(thisAsk.askRating)")
@@ -47,6 +42,7 @@ class AskViewController: UIViewController {
             }
             // unwraps the imageView from the IBOutlet
             if let thisImageView = self.askImageView {
+                print("passed image is: ")
                 thisImageView.image = thisAsk.askPhoto
             }
             

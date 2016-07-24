@@ -166,7 +166,8 @@ class AskTableViewController: UITableViewController {
             cell.title1Label.text = compare.compareTitle1
             cell.title2Label.text = compare.compareTitle2
             
-            
+            //need a method to change score label to thousands if too big (eg 45,700 to 45.7K)
+            //this method can also be used on the number of reviews the user has given
             cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
             //calculations need to be done to get time REMAINING vice time posted:
             cell.timeRemainingLabel.text = "Time Posted: \(compare.timePosted)"
@@ -185,10 +186,13 @@ class AskTableViewController: UITableViewController {
         //should there be error handling in here? This could be much prettier I think..
             let cell: UITableViewCell? = nil
             return cell!
+        }
     }
     
     // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
-    //override func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+    //func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
+        //print("didSelectRowAtIndexPath")
+        
         //performSegueWithIdentifier ("showSingleAsk", sender: self)
         //presentViewController(Single Ask View Controller, animated: true, completion: nil)
         //self.navigationController?.pushViewController(singleAskViewController as! UIViewController, animated: true)
@@ -236,12 +240,14 @@ class AskTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     
     // MARK: NEEDS TO BE UNCOMMENTED AND WORKED ON:
-    
+
    
-    func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
         // Get the new view controller using segue.destinationViewController.
-        //if segue.identifier == "showSingleAsk" {
+        //if segue.identifier == "showAsk" {
+        
+        print("prepareForSegue")
     
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let passedQuery = sortedQueries[indexPath.row]
@@ -255,9 +261,13 @@ class AskTableViewController: UITableViewController {
                 controller.compare = passedQuery as! Compare
             }
 
-        }
+            }
         
-        /*
+        //}
+        
+ 
+ 
+            /*
             if let indexPath = self.tableView.indexPathForSelectedRow {
                 let passedAsk = asks[indexPath.row]
                 //print("rating in AskTableVC before passing is: \(passedAsk.askRating)")
@@ -265,14 +275,12 @@ class AskTableViewController: UITableViewController {
                 // Pass the selected object to the new view controller:
                 controller.ask = passedAsk
             }
-        //} */  //extranous bs
+        //} */   //extranous bs
    
    
-        }
+}
+}
  
-    
-
-}
 
 
 
@@ -281,7 +289,10 @@ class AskTableViewController: UITableViewController {
 
 
 
-}
+
+
+
+
 
 
 
