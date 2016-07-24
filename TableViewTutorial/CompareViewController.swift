@@ -10,39 +10,54 @@ import UIKit
 
 class CompareViewController: UIViewController {
     
-    //Need UI outlets for images and Label
-    
-    
+    @IBOutlet weak var topImageView: UIImageView!
+    @IBOutlet weak var bottomImageView: UIImageView!
+    @IBOutlet weak var votes1Label: UILabel!
+    @IBOutlet weak var votes2Label: UILabel!
+    @IBOutlet weak var timeRemainingLabel: UILabel!
+    @IBOutlet weak var breakdown1Button: UIButton!
+    @IBOutlet weak var edit1Button: UIButton!
+    @IBOutlet weak var breakdown2Button: UIButton!
+    @IBOutlet weak var edit2Button: UIButton!
+
     var compare: Compare? {
         didSet {
             // Update the view.
-            //self.configureView()
+            self.configureView()
         }
     }
-    
-   /* func configureView() {
-        print("configuring view")
-        // unwraps the ask that the tableView sent over:
+
+   func configureView() {
+        print("configuring compare view")
+        // unwraps the compare that the tableView sent over:
         if let thisCompare = self.compare {
-            // unwraps the ratingLabel from the IBOutlet
-            if let thisLabel = self.askRatingLabel {
-                print("passed rating is: \(thisAsk.askRating)")
-                thisLabel.text = "\(thisAsk.askRating)"
+            // unwraps images from the compare and sends to IBOutlets
+            if let thisImageView = self.topImageView {
+                thisImageView.image = thisCompare.comparePhoto1
             }
-            // unwraps the imageView from the IBOutlet
-            if let thisImageView = self.askImageView {
-                thisImageView.image = thisAsk.askPhoto
+            if let thisImageView = self.bottomImageView {
+                thisImageView.image = thisCompare.comparePhoto2
+            }
+            // unwraps labels from the compare and sends to IBOutlets
+            if let thisLabel = self.votes1Label {
+                thisLabel.text = "\(thisCompare.compareVotes1)"
+            }
+            if let thisLabel = self.votes2Label {
+                thisLabel.text = "\(thisCompare.compareVotes2)"
+            }
+            if let thisLabel = self.timeRemainingLabel {
+                thisLabel.text = "\(thisCompare.timePosted)"
             }
             
         } else {
             print("Looks like ask is nil")
         }
         
-    } */
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
+        self.configureView()
         // Do any additional setup after loading the view.
     }
 

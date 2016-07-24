@@ -15,7 +15,7 @@ class AskViewController: UIViewController {
     
     @IBOutlet weak var askRatingLabel: UILabel!
     @IBOutlet weak var askImageView: UIImageView!
-    
+    @IBOutlet weak var askTimeRemainingLabel: UILabel!
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
     
     //var detailText: String = ""
@@ -30,20 +30,22 @@ class AskViewController: UIViewController {
     
     
     func configureView() {
-        print("configuring view")
+        print("configuring ask view")
 
         // unwraps the ask that the tableView sent over:
         if let thisAsk = self.ask {
             
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
-                print("passed rating is: \(thisAsk.askRating)")
                 thisLabel.text = "\(thisAsk.askRating)"
             }
             // unwraps the imageView from the IBOutlet
             if let thisImageView = self.askImageView {
-                print("passed image is: ")
                 thisImageView.image = thisAsk.askPhoto
+            }
+            // unwraps the timeRemaining from the IBOutlet
+            if let thisTimeRemaining = self.askTimeRemainingLabel {
+                thisTimeRemaining.text = "\(thisAsk.timePosted)"
             }
             
         } else {
