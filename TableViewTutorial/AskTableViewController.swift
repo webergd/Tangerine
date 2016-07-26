@@ -35,21 +35,31 @@ class AskTableViewController: UITableViewController {
     func loadSampleAsks() {
         
         //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
+        //except it is most definitely temporary code
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
         let time1 = 0800
         let ask1 = Ask(title: "Red Reeboks", photo: photo1, timePosted: time1)
-        ask1.askRating = 5.8
+        let ask1SW = ask1.breakdown.straightWomen as! AskDemo
+        let ask1GM = ask1.breakdown.gayMen as! AskDemo
+        ask1SW.rating = 5
+        ask1SW.numVotes = 1
+        ask1GM.rating = 6
+        ask1GM.numVotes = 10
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
         let time2 = 0900
         let ask2 = Ask(title: "White Converse", photo: photo2, timePosted: time2)
-        ask2.askRating = 2.5
-        
+        let ask2GW = ask2.breakdown.gayWomen as! AskDemo
+        ask2GW.rating = 6
+        ask2GW.numVotes = 5
+ 
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
-        let time3 = 1730
+        let time3 = 0730
         let ask3 = Ask(title: "Violet Vans", photo: photo3, timePosted: time3)
-        ask3.askRating = 8.9
+        let ask3SM = ask3.breakdown.straightMen as! AskDemo
+        ask3SM.rating = 9.8
+        ask3SM.numVotes = 90
         
         asks += [ask1,ask2,ask3]  //+= just appends them, I believe
         print("Asks: \(asks)")
@@ -71,8 +81,19 @@ class AskTableViewController: UITableViewController {
         let time1 = 1200
         
         let compare1 = Compare(title1: title1, photo1: photo1, title2: title2, photo2: photo2, timePosted: time1)
-        compare1.compareVotes1 = 10000
-        compare1.compareVotes2 = 48000
+        let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
+        let compare1SM = compare1.breakdown.straightMen as! CompareDemo
+        let compare1GW = compare1.breakdown.gayWomen as! CompareDemo
+        let compare1GM = compare1.breakdown.gayMen as! CompareDemo
+        
+        compare1SW.votesForOne = 10
+        compare1SW.votesForTwo = 12
+        compare1SM.votesForOne = 6
+        compare1SM.votesForTwo = 33
+        compare1GW.votesForOne = 3
+        compare1GW.votesForTwo = 16
+        compare1GM.votesForOne = 60
+        compare1GM.votesForTwo = 77
         
         //create another sample Shoes compare object
         let photo1a = UIImage(named: "\(Shoes.brownShiny)")!
@@ -84,8 +105,14 @@ class AskTableViewController: UITableViewController {
         let time2 = 1405
         
         let compare2 = Compare(title1: title1a, photo1: photo1a, title2: title2a, photo2: photo2a, timePosted: time2)
-        compare2.compareVotes1 = 6
-        compare2.compareVotes2 = 6
+        let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
+        let compare2SM = compare2.breakdown.straightMen as! CompareDemo
+        
+        compare2SW.votesForOne = 333
+        compare2SW.votesForTwo = 222
+        compare2SM.votesForOne = 550
+        compare2SM.votesForTwo = 550
+        
         
         //compares = [compare1, compare2]
         queries.append(compare1)
@@ -147,9 +174,10 @@ class AskTableViewController: UITableViewController {
             let ask = sortedQueries[indexPath.row] as! Ask
         
             cell.titleLabel.text = ask.askTitle
-            //cell.titleLabel.sizeToFit()
+            // need to send value to the numVotesLabel
+            cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
             cell.timeRemainingLabel.text = "\(ask.timePosted)" //will need to be updated to reflect time remaining
-            cell.ratingLabel.text = "\(ask.askRating)"
+            cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
             cell.photoImageView.image = ask.askPhoto
 
             return cell
@@ -174,10 +202,10 @@ class AskTableViewController: UITableViewController {
             
             //set up the arrow image to point the right way:
             switch compare.winner {
-            case CompareWinner.photo1Won.rawValue: cell.arrowImage.image = UIImage(named: "leftArrow")
-            case CompareWinner.photo2Won.rawValue: cell.arrowImage.image = UIImage(named: "rightArrow")
-            case CompareWinner.itsATie.rawValue: cell.arrowImage.image = UIImage(named: "shrug")
-            default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
+                case CompareWinner.photo1Won.rawValue: cell.arrowImage.image = UIImage(named: "leftArrow")
+                case CompareWinner.photo2Won.rawValue: cell.arrowImage.image = UIImage(named: "rightArrow")
+                case CompareWinner.itsATie.rawValue: cell.arrowImage.image = UIImage(named: "shrug")
+                default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
                 
             }
             

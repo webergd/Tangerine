@@ -37,7 +37,7 @@ class AskViewController: UIViewController {
             
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
-                thisLabel.text = "\(thisAsk.askRating)"
+                thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
             }
             // unwraps the imageView from the IBOutlet
             if let thisImageView = self.askImageView {

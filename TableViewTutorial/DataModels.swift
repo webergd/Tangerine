@@ -16,10 +16,19 @@ enum RowType: String {
     case isDual
 }
 
+public extension Double {
+    /// Rounds the double to decimal places value
+    func roundToPlaces(places:Int) -> Double {
+        let divisor = pow(10.0, Double(places))
+        return round(self * divisor) / divisor
+    }
+}
+
 
 protocol Query {
     var rowType: String {get set}
     var timePosted: Int {get set}
+    var numVotes: Int {get}
     
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
 }
@@ -33,15 +42,46 @@ protocol Query {
 class Ask: Query {
     
     var askTitle: String
-    var askRating: Double
+    //var askRating: Double
     let askPhoto: UIImage
     var rowType: String = "\(RowType.isSingle)"
     var timePosted: Int
-
     
+    // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
+    let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
+    
+    
+    var askRating: Double {
+        
+        let numSW = breakdown.straightWomen as! AskDemo
+        let numSM = breakdown.straightMen as! AskDemo
+        let numGW = breakdown.gayWomen as! AskDemo
+        let numGM = breakdown.gayMen as! AskDemo
+        
+        // Please ensure when they get ratings they also get votes
+        print("numSW: \(numSW.rating)")
+        print("numSM: \(numSM.rating)")
+        print("numGW: \(numGW.rating)")
+        print("numGM: \(numGM.rating)")
+        
+        
+        let numerator: Double = numSW.rating * Double(numSW.numVotes) + numSM.rating * Double(numSM.numVotes) + numGW.rating * Double(numGW.numVotes) + numGM.rating * Double(numGM.numVotes)
+        let denominator: Double = (Double(numSW.numVotes) + Double(numSM.numVotes) + Double(numGW.numVotes) + Double(numGM.numVotes))
+        return numerator/denominator //need some error handling in case the denominator is 0
+    }
+    
+    var numVotes: Int {
+        let numSW = breakdown.straightWomen as! AskDemo
+        let numSM = breakdown.straightMen as! AskDemo
+        let numGW = breakdown.gayWomen as! AskDemo
+        let numGM = breakdown.gayMen as! AskDemo
+        
+        return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
+    }
+    
+
     init(title: String, photo: UIImage, timePosted time: Int) {
         askTitle = title
-        askRating = 0.0
         askPhoto = photo
         timePosted = time
     }
@@ -59,17 +99,31 @@ enum CompareWinner: String {
 class Compare: Query {
     //first image (displayed on top or left)
     var compareTitle1: String
-    var compareVotes1: Int
     let comparePhoto1: UIImage
 
     
     //second image (displayed on bottom or right)
     var compareTitle2: String
-    var compareVotes2: Int
     let comparePhoto2: UIImage
     
     var timePosted: Int
-
+    let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
+    
+    var compareVotes1: Int {
+        let sW = breakdown.straightWomen as! CompareDemo
+        let sM = breakdown.straightMen as! CompareDemo
+        let gW = breakdown.gayWomen as! CompareDemo
+        let gM = breakdown.gayMen as! CompareDemo
+        return sW.votesForOne + sM.votesForOne + gW.votesForOne + gM.votesForOne
+    }
+    
+    var compareVotes2: Int {
+        let sW = breakdown.straightWomen as! CompareDemo
+        let sM = breakdown.straightMen as! CompareDemo
+        let gW = breakdown.gayWomen as! CompareDemo
+        let gM = breakdown.gayMen as! CompareDemo
+        return sW.votesForTwo + sM.votesForTwo + gW.votesForTwo + gM.votesForTwo
+    }
     
     // winner is a computed property returning a string characterizing the
     // number of the image that has more votes
@@ -91,6 +145,15 @@ class Compare: Query {
         }
     }
     
+    var numVotes: Int {
+        let numSW = breakdown.straightWomen as! CompareDemo
+        let numSM = breakdown.straightMen as! CompareDemo
+        let numGW = breakdown.gayWomen as! CompareDemo
+        let numGM = breakdown.gayMen as! CompareDemo
+        
+        return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
+    }
+    
     var rowType: String = "\(RowType.isDual)"
     
     // MARK: Also need to implement a timePosted value *********************
@@ -99,13 +162,9 @@ class Compare: Query {
     init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: Int) {
         
         compareTitle1 = title1
-        compareVotes1 = 0 //initialize this object with zero votes
         comparePhoto1 = photo1
-        
         compareTitle2 = title2
-        compareVotes2 = 0 //initialize this obejct with zero votes also
         comparePhoto2 = photo2
-        
         timePosted = time
     }
 }
@@ -120,13 +179,16 @@ protocol hasOrientation {
     var numVotes: Int {get}
 }
 
-class AskSex: hasOrientation {
+// an AskDemo object represents a specifc demographic's numbers within an Ask's Breakdown
+class AskDemo: hasOrientation {
     var avgAge: Double? = nil
     var rating: Double = 0.0
     var numVotes: Int = 0
+    
 }
 
-class CompareSex: hasOrientation {
+// a CompareDemo object represents a specifc demographic's numbers within an Ask's Breakdown
+class CompareDemo: hasOrientation {
     var avgAge: Double? = nil
     var votesForOne: Int = 0
     var votesForTwo: Int = 0
@@ -136,6 +198,9 @@ class CompareSex: hasOrientation {
 }
 
 struct Breakdown {
+    
+    // All breakdown really does for us is give us the average age and number of votes
+    
     let straightWomen: hasOrientation
     let straightMen: hasOrientation
     let gayWomen: hasOrientation
@@ -143,7 +208,7 @@ struct Breakdown {
     
     // The total number of ratings or votes that this compare or ask has received
     var numVotes: Int {
-        return straightMen.numVotes + straightWomen.numVotes + gayWomen.numVotes + gayMen.numVotes
+        return straightMen.numVotes + straightWomen.numVotes +  gayWomen.numVotes + gayMen.numVotes
     }
     
     var avgAge: Double {
@@ -191,9 +256,8 @@ struct Breakdown {
 
         return straightWomenAverageAgeWeighted + straightMenAverageAgeWeighted + gayWomenAverageAgeWeighted + gayMenAverageAgeWeighted
     }
+    
 }
-
-
 
 
 
