@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */; };
 		2AE338C11D44502C00B32C03 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C01D44502C00B32C03 /* TestViewController.swift */; };
+		2AE338C31D48858D00B32C03 /* CompareBreakdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */; };
 		2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBD891D35E175001F7388 /* AppDelegate.swift */; };
 		2AEBBD911D35E175001F7388 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBD901D35E175001F7388 /* Assets.xcassets */; };
 		2AEBBD941D35E175001F7388 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBD921D35E175001F7388 /* LaunchScreen.storyboard */; };
@@ -44,6 +45,7 @@
 /* Begin PBXFileReference section */
 		2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskBreakDownViewController.swift; sourceTree = "<group>"; };
 		2AE338C01D44502C00B32C03 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
+		2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareBreakdownViewController.swift; sourceTree = "<group>"; };
 		2AEBBD861D35E175001F7388 /* TableViewTutorial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TableViewTutorial.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AEBBD891D35E175001F7388 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2AEBBD901D35E175001F7388 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -123,10 +125,11 @@
 				2AECD6CD1D42938A00AAB743 /* DataModels.swift */,
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
-				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
-				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
+				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
+				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
+				2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */,
 			);
 			path = TableViewTutorial;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				2AE338C11D44502C00B32C03 /* TestViewController.swift in Sources */,
+				2AE338C31D48858D00B32C03 /* CompareBreakdownViewController.swift in Sources */,
 				2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */,
 				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,

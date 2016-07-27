@@ -68,6 +68,15 @@ class AskViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        let controller = segue.destinationViewController as! AskBreakDownViewController
+        // Pass the selected object to the new view controller:
+        controller.ask = self.ask
+    }
+    
+    
+    
+    
     
 }
 
