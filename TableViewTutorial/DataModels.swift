@@ -11,10 +11,13 @@ import Foundation; import UIKit
 //  an "Ask" is an object holding one image and its
 //  associated values
 
-enum RowType: String {
+public enum RowType: String {
     case isSingle
     case isDual
 }
+
+
+public var currentImage: UIImage = UIImage(named: "defaultPhoto")!
 
 public extension Double {
     /// Rounds the double to decimal places value

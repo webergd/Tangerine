@@ -27,14 +27,16 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqT-a8-dwT">
                                 <rect key="frame" x="0.0" y="556" width="600" height="44"/>
                                 <items>
-                                    <barButtonItem title="Camera" id="hgd-7q-uIf" userLabel="useCamera">
-                                        <connections>
-                                            <action selector="useCamera:" destination="sJJ-as-S31" id="D6h-TG-jHW"/>
-                                        </connections>
-                                    </barButtonItem>
+                                    <barButtonItem title="Camera" id="hgd-7q-uIf" userLabel="useCamera"/>
                                     <barButtonItem title="Camera Roll" id="VRh-l9-Ypx" userLabel="useCameraRoll">
                                         <connections>
-                                            <action selector="useCameraRoll:" destination="sJJ-as-S31" id="Fdt-Hs-TV3"/>
+                                            <action selector="useCameraRoll:" destination="sJJ-as-S31" id="0Vn-Ju-c9d"/>
+                                        </connections>
+                                    </barButtonItem>
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="HoZ-mp-qAw"/>
+                                    <barButtonItem title="Publish" id="wR4-ak-zQm" userLabel="publishButton">
+                                        <connections>
+                                            <action selector="publishButtonTapped:" destination="sJJ-as-S31" id="7YT-bN-ndI"/>
                                         </connections>
                                     </barButtonItem>
                                 </items>
@@ -581,8 +583,6 @@
                                 <rect key="frame" x="0.0" y="562" width="600" height="44"/>
                                 <items>
                                     <barButtonItem title="Flag" id="fxf-nA-cYs" userLabel="Flag"/>
-                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="Pld-e6-Idt"/>
-                                    <barButtonItem title="Submit" id="3ug-Lb-hEv"/>
                                 </items>
                             </toolbar>
                         </subviews>
