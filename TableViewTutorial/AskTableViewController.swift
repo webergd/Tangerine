@@ -1,5 +1,5 @@
 //
-//  AskTableViewController.swift
+//  AskTableViewController.swift   //This file needs a better name
 //  TableViewTutorial
 //
 //  Created by Wyatt Weber on 7/14/16.
@@ -202,9 +202,18 @@ class AskTableViewController: UITableViewController {
             
             //set up the arrow image to point the right way:
             switch compare.winner {
-                case CompareWinner.photo1Won.rawValue: cell.arrowImage.image = UIImage(named: "leftArrow")
-                case CompareWinner.photo2Won.rawValue: cell.arrowImage.image = UIImage(named: "rightArrow")
-                case CompareWinner.itsATie.rawValue: cell.arrowImage.image = UIImage(named: "shrug")
+                case CompareWinner.photo1Won.rawValue:
+                    cell.arrowImage.image = UIImage(named: "leftArrow")
+                    cell.winnerOutline1.hidden = false
+                    cell.winnerOutline2.hidden = true
+                case CompareWinner.photo2Won.rawValue:
+                    cell.arrowImage.image = UIImage(named: "rightArrow")
+                    cell.winnerOutline1.hidden = true
+                    cell.winnerOutline2.hidden = false
+                case CompareWinner.itsATie.rawValue:
+                    cell.arrowImage.image = UIImage(named: "shrug")
+                    cell.winnerOutline1.hidden = true // should I make them both false?
+                    cell.winnerOutline2.hidden = true // this might be too much orange shit everywhere
                 default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
                 
             }

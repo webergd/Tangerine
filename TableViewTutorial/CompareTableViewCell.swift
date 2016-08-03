@@ -22,6 +22,12 @@ class CompareTableViewCell: UITableViewCell {
     @IBOutlet weak var timeRemainingLabel: UILabel!
     @IBOutlet weak var arrowImage: UIImageView!
     
+    // these are the squares that show up behind the winning pic. 1 for left, 2 for right.
+    @IBOutlet weak var winnerOutline1: UIView!
+    @IBOutlet weak var winnerOutline2: UIView!
+    
+    
+    
     override func awakeFromNib() {
         super.awakeFromNib()
         // Initialization code
