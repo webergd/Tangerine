@@ -11,7 +11,10 @@ import UIKit
 class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     @IBOutlet weak var imageView: UIImageView!
         
-        let imagePicker = UIImagePickerController()
+    @IBOutlet weak var titleTextField: UITextField!
+    
+    let imagePicker = UIImagePickerController()
+    var titleHasBeenTapped: Bool = false
         
     //need to create and implement a camera option
     
@@ -34,6 +37,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         override func viewDidLoad() {
             super.viewDidLoad()
             imageView.image = currentImage
+            titleHasBeenTapped = false
             
             imagePicker.delegate = self
         }
@@ -53,6 +57,25 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         func imagePickerControllerDidCancel(picker: UIImagePickerController) {
             dismissViewControllerAnimated(true, completion: nil)
         }
+    
+    @IBAction func userTappedDownTextField(sender: AnyObject) {
+        print("tapped down")
+
+
+    }
+
+    
+    @IBAction func titleTextFieldBeginEditing(sender: AnyObject) {
+        if titleHasBeenTapped == false {
+            print("first time in tapped down and bool is false")
+            titleTextField.text = ""
+            titleTextField.textColor = UIColor.blackColor()
+            titleHasBeenTapped = true
+        }
+    }
+    
+    
+    
     
     
     @IBAction func publishButtonTapped(sender: AnyObject) {
