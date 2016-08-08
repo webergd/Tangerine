@@ -10,13 +10,15 @@ import UIKit
 
 class CameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     @IBOutlet weak var imageView: UIImageView!
-        
     @IBOutlet weak var titleTextField: UITextField!
-    
     let imagePicker = UIImagePickerController()
     var titleHasBeenTapped: Bool = false
-        
-    //need to create and implement a camera option
+    
+    enum Error: ErrorType {
+        case NoName
+    }
+    
+    // MARK: Camera Needed    - > need to create and implement a camera option
     
     
     
@@ -40,6 +42,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             titleHasBeenTapped = false
             
             imagePicker.delegate = self
+            print("date: \(NSDate())")
         }
         
         // MARK: - UIImagePickerControllerDelegate Methods
@@ -67,7 +70,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     @IBAction func titleTextFieldBeginEditing(sender: AnyObject) {
         if titleHasBeenTapped == false {
-            print("first time in tapped down and bool is false")
             titleTextField.text = ""
             titleTextField.textColor = UIColor.blackColor()
             titleHasBeenTapped = true
@@ -80,13 +82,49 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     @IBAction func publishButtonTapped(sender: AnyObject) {
         print("publish button tapped")
-        self.navigationController?.popViewControllerAnimated(true)
+
+        
+        // check to see if the text box is empty
+
+        do {
+            if let title = titleTextField.text {
+                if title == "" || titleHasBeenTapped == false {
+                    throw Error.NoName
+                } else {
+                
+                    // should I create the ask object here? It might be nice to send all the info to another swift file that does that shit for me. Maybe create the methods in a different file and reference them here. Is that what my DataModels file is? Perhaps...
+                    currentTitle = title
+                    self.navigationController?.popViewControllerAnimated(true)
+                }
+            
+            }
+        } catch Error.NoName {
+            let alertController = UIAlertController(title: "Title Not Provided", message: "Publish your photo without a title?", preferredStyle: .Alert)
+            let actionYes = UIAlertAction(title: "Proceed With No Title", style: .Default) {
+                UIAlertAction in
+                print("Proceed with no title clicked")
+                
+                self.navigationController?.popViewControllerAnimated(true)
+                
+            }
+            alertController.addAction(actionYes)
+            let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .Default, handler: nil)
+            alertController.addAction(actionNo)
+            
+            // I need a function for each alert action or at least for the NO action
+            
+            presentViewController(alertController, animated: true, completion: nil)
+        } catch let error {
+            fatalError("\(error)")
+        }
+        
+        
         
     }
     
     
     
-    }
+}
     
     
     

@@ -18,6 +18,7 @@ public enum RowType: String {
 
 
 public var currentImage: UIImage = UIImage(named: "defaultPhoto")!
+public var currentTitle: String = "" //realistically this should probably be an optional
 
 public extension Double {
     /// Rounds the double to decimal places value
