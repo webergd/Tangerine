@@ -12,9 +12,9 @@ class AskTableViewController: UITableViewController {
     
     // MARK: Properties
     
-    var asks = [Ask]()
-    var compares = [Compare]()
-    var queries = [Query]() // this is an array that will hold Asks and Compares
+    //var asks = [Ask]()
+    //var compares = [Compare]()
+    var queries: [Query] = mainArray // this is an array that will hold Asks and Compares
     var sortedQueries = [Query]()
     
     enum Shoes: String {
@@ -61,8 +61,9 @@ class AskTableViewController: UITableViewController {
         ask3SM.rating = 9.8
         ask3SM.numVotes = 90
         
-        asks += [ask1,ask2,ask3]  //+= just appends them, I believe
-        print("Asks: \(asks)")
+        //I think this is a pointless line of code:
+        //asks += [ask1,ask2,ask3]  //+= just appends them, I believe
+        //print("Asks: \(asks)")
         queries.append(ask1)
         queries.append(ask2)
         queries.append(ask3)
@@ -130,6 +131,7 @@ class AskTableViewController: UITableViewController {
         sortedQueries = queries.sort { $0.timePosted < $1.timePosted } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
+        //actually I'm not sure if this line of code does anything at all for me
         tableView.rowHeight = UITableViewAutomaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150

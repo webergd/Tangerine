@@ -16,9 +16,10 @@ public enum RowType: String {
     case isDual
 }
 
-
+// MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "defaultPhoto")!
 public var currentTitle: String = "" //realistically this should probably be an optional
+public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks and compares
 
 public extension Double {
     /// Rounds the double to decimal places value
@@ -29,7 +30,7 @@ public extension Double {
 }
 
 
-protocol Query {
+public protocol Query {
     var rowType: String {get set}
     var timePosted: Int {get set}
     var numVotes: Int {get}
@@ -43,13 +44,13 @@ protocol Query {
 // an "Ask" is an object containing a single image to be rated
 // (and its associated values)
 
-class Ask: Query {
+public class Ask: Query {
     
     var askTitle: String
     //var askRating: Double
     let askPhoto: UIImage
-    var rowType: String = "\(RowType.isSingle)"
-    var timePosted: Int
+    public var rowType: String = "\(RowType.isSingle)"
+    public var timePosted: Int
     
     // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
     let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
@@ -74,7 +75,7 @@ class Ask: Query {
         return numerator/denominator //need some error handling in case the denominator is 0
     }
     
-    var numVotes: Int {
+    public var numVotes: Int {
         let numSW = breakdown.straightWomen as! AskDemo
         let numSM = breakdown.straightMen as! AskDemo
         let numGW = breakdown.gayWomen as! AskDemo
@@ -100,7 +101,7 @@ enum CompareWinner: String {
     case itsATie
 }
 
-class Compare: Query {
+public class Compare: Query {
     //first image (displayed on top or left)
     var compareTitle1: String
     let comparePhoto1: UIImage
@@ -110,7 +111,7 @@ class Compare: Query {
     var compareTitle2: String
     let comparePhoto2: UIImage
     
-    var timePosted: Int
+    public var timePosted: Int
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
     
     var compareVotes1: Int {
@@ -149,7 +150,7 @@ class Compare: Query {
         }
     }
     
-    var numVotes: Int {
+    public var numVotes: Int {
         let numSW = breakdown.straightWomen as! CompareDemo
         let numSM = breakdown.straightMen as! CompareDemo
         let numGW = breakdown.gayWomen as! CompareDemo
@@ -158,7 +159,7 @@ class Compare: Query {
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
     
-    var rowType: String = "\(RowType.isDual)"
+    public var rowType: String = "\(RowType.isDual)"
     
     // MARK: Also need to implement a timePosted value *********************
     // Maybe even a computed value that returns the time remaining using the timePosted

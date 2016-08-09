@@ -40,9 +40,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             super.viewDidLoad()
             imageView.image = currentImage
             titleHasBeenTapped = false
-            
             imagePicker.delegate = self
-            print("date: \(NSDate())")
+            
         }
         
         // MARK: - UIImagePickerControllerDelegate Methods
@@ -76,6 +75,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
     
+    func createAsk (){
+        // create a new Ask using the photo, title, and timestamp
+        // will also need to implement a caption string (using the editor)
+        let newAsk = Ask(title: titleTextField.text, photo: imageView.image, timePosted: <#T##Int#>)
+        // Once the Ask is created it is appended to the main array
+        
+        
+        
+        
+        // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
+    }
     
     
     
