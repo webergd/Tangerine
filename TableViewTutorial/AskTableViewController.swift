@@ -34,11 +34,14 @@ class AskTableViewController: UITableViewController {
     
     func loadSampleAsks() {
         
+        formatter.dateFormat = "yyyy/MM/dd HH:mm"
+        
+        
         //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
         //except it is most definitely temporary code
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
-        let time1 = 0800
+        let time1 = formatter.dateFromString("2016/08/09 00:01")! //force unwrap bc it's temp anyway
         let ask1 = Ask(title: "Red Reeboks", photo: photo1, timePosted: time1)
         let ask1SW = ask1.breakdown.straightWomen as! AskDemo
         let ask1GM = ask1.breakdown.gayMen as! AskDemo
@@ -48,14 +51,14 @@ class AskTableViewController: UITableViewController {
         ask1GM.numVotes = 10
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
-        let time2 = 0900
+        let time2 = formatter.dateFromString("2016/08/09 00:11")!
         let ask2 = Ask(title: "White Converse", photo: photo2, timePosted: time2)
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
  
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
-        let time3 = 0730
+        let time3 = formatter.dateFromString("2016/08/09 00:06")!
         let ask3 = Ask(title: "Violet Vans", photo: photo3, timePosted: time3)
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
@@ -79,7 +82,7 @@ class AskTableViewController: UITableViewController {
         let photo2 = UIImage(named: "\(Jeans.carmenJeansDark)")!
         let title2 = "Dark Carmens"
         
-        let time1 = 1200
+        let time1 = formatter.dateFromString("2016/08/09 00:04")!
         
         let compare1 = Compare(title1: title1, photo1: photo1, title2: title2, photo2: photo2, timePosted: time1)
         let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
@@ -103,7 +106,7 @@ class AskTableViewController: UITableViewController {
         let photo2a = UIImage(named: "\(Shoes.brownTooled)")!
         let title2a = "Brown Tooled"
         
-        let time2 = 1405
+        let time2 = formatter.dateFromString("2016/08/09 00:08")!
         
         let compare2 = Compare(title1: title1a, photo1: photo1a, title2: title2a, photo2: photo2a, timePosted: time2)
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
@@ -122,19 +125,22 @@ class AskTableViewController: UITableViewController {
         
     }
     
+
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //load the sample data
         loadSampleAsks()
         loadSampleCompares()
-        sortedQueries = queries.sort { $0.timePosted < $1.timePosted } //this line is going to have to appear somewhere later than ViewDidLoad
+        sortedQueries = queries.sort { $0.timePosted.timeIntervalSince1970 < $1.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
-        //actually I'm not sure if this line of code does anything at all for me
         tableView.rowHeight = UITableViewAutomaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
+        
+        
         
         
         //print("Queries: \(queries)")
@@ -147,6 +153,37 @@ class AskTableViewController: UITableViewController {
         // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
         // self.navigationItem.rightBarButtonItem = self.editButtonItem()
     }
+    
+    
+    // This happens when the main tableView is displayed again when navigating back to it from asks and compares
+    override func viewDidAppear(animated: Bool) {
+        
+        // This refreshes the time remaining labels in the cells every time we come back to the main tableView
+        var index = 0
+        for query in sortedQueries {
+            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            if query.rowType == RowType.isSingle.rawValue {
+                let cell = tableView.cellForRowAtIndexPath(indexPath) as! AskTableViewCell
+                let ask = sortedQueries[indexPath.row] as! Ask
+                let timeRemaining = calcTimeRemaining(ask.timePosted)
+                cell.timeRemainingLabel.text = "\(timeRemaining)"
+            } else if query.rowType == RowType.isDual.rawValue {
+                let cell = tableView.cellForRowAtIndexPath(indexPath) as! CompareTableViewCell
+                let compare = sortedQueries[indexPath.row] as! Compare
+                let timeRemaining = calcTimeRemaining(compare.timePosted)
+                cell.timeRemainingLabel.text = "\(timeRemaining)"
+            }
+            index += 1
+        }
+
+        
+        
+        
+        
+    }
+    
+
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -165,6 +202,7 @@ class AskTableViewController: UITableViewController {
         return sortedQueries.count
     }
 
+
     //I believe this is setting up the cell row in the table
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         
@@ -174,11 +212,12 @@ class AskTableViewController: UITableViewController {
             let cellIdentifier: String = "AskTableViewCell"
             let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! AskTableViewCell
             let ask = sortedQueries[indexPath.row] as! Ask
-        
+            print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
-            // need to send value to the numVotesLabel
+            // MARK: need to send value to the numVotesLabel
             cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
-            cell.timeRemainingLabel.text = "\(ask.timePosted)" //will need to be updated to reflect time remaining
+            let timeRemaining = calcTimeRemaining(ask.timePosted)
+            cell.timeRemainingLabel.text = "\(timeRemaining)"
             cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
             cell.photoImageView.image = ask.askPhoto
 
@@ -200,7 +239,8 @@ class AskTableViewController: UITableViewController {
             //this method can also be used on the number of reviews the user has given
             cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
             //calculations need to be done to get time REMAINING vice time posted:
-            cell.timeRemainingLabel.text = "Time Posted: \(compare.timePosted)"
+            let timeRemaining = calcTimeRemaining(compare.timePosted)
+            cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
             
             //set up the arrow image to point the right way:
             switch compare.winner {

@@ -20,6 +20,17 @@ public enum RowType: String {
 public var currentImage: UIImage = UIImage(named: "defaultPhoto")!
 public var currentTitle: String = "" //realistically this should probably be an optional
 public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks and compares
+// when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
+public var isCompare: Bool = false
+
+//this allows for hard dates to be created for test examples
+public let formatter = NSDateFormatter()
+
+// This determines how long the compares and asks will be displayed before they expire.
+// It's a var so that we can change it at runtime in the future if we need to.
+// 5 hours is 5 * 3600 => 18,000 seconds
+public var displayTime: NSTimeInterval = 18000.0
+
 
 public extension Double {
     /// Rounds the double to decimal places value
@@ -29,10 +40,27 @@ public extension Double {
     }
 }
 
+// MARK: TIME REMAINING
+
+public func calcTimeRemaining(timePosted: NSDate) -> String {
+    let elapsedTime = NSDate().timeIntervalSinceDate(timePosted) //returns a double representing seconds
+    let secondsRemaining: NSTimeInterval = displayTime - elapsedTime
+    return secondsRemaining.time //applies the below extention to the NSTimeInterval (aka elapsed time, aka seconds converted to an actual time)
+}
+
+extension NSTimeInterval { //got this off the internet to convert an NSTimeInterval into a readable time String. NSTI is just a Double.
+    var time:String {
+        return String(format:"%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60))
+        //use this way if I want seconds to display also:
+        //return String(format:"%02d:%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60), Int((self)%60))
+    }
+}
+
+
 
 public protocol Query {
     var rowType: String {get set}
-    var timePosted: Int {get set}
+    var timePosted: NSDate {get set}
     var numVotes: Int {get}
     
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
@@ -50,7 +78,7 @@ public class Ask: Query {
     //var askRating: Double
     let askPhoto: UIImage
     public var rowType: String = "\(RowType.isSingle)"
-    public var timePosted: Int
+    public var timePosted: NSDate
     
     // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
     let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
@@ -85,7 +113,7 @@ public class Ask: Query {
     }
     
 
-    init(title: String, photo: UIImage, timePosted time: Int) {
+    init(title: String, photo: UIImage, timePosted time: NSDate) {
         askTitle = title
         askPhoto = photo
         timePosted = time
@@ -101,6 +129,22 @@ enum CompareWinner: String {
     case itsATie
 }
 
+public func createAsk (){
+    // create a new Ask using the photo, title, and timestamp
+    // will also need to implement a caption string (using the editor)
+    let newAsk = Ask(title: currentTitle, photo: currentImage, timePosted: NSDate())
+    
+    
+    print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
+    // Once the Ask is created it is appended to the main array
+    
+    
+    
+    
+    // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
+}
+
+
 public class Compare: Query {
     //first image (displayed on top or left)
     var compareTitle1: String
@@ -111,7 +155,7 @@ public class Compare: Query {
     var compareTitle2: String
     let comparePhoto2: UIImage
     
-    public var timePosted: Int
+    public var timePosted: NSDate
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
     
     var compareVotes1: Int {
@@ -164,7 +208,7 @@ public class Compare: Query {
     // MARK: Also need to implement a timePosted value *********************
     // Maybe even a computed value that returns the time remaining using the timePosted
     
-    init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: Int) {
+    init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: NSDate) {
         
         compareTitle1 = title1
         comparePhoto1 = photo1

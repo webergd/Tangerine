@@ -61,6 +61,7 @@ class AskViewController: UIViewController {
         super.viewDidLoad()
         // Do any additional setup after loading the view, typically from a nib.
         self.configureView()
+        
     }
     
     override func didReceiveMemoryWarning() {

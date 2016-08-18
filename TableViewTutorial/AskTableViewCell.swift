@@ -19,7 +19,6 @@ class AskTableViewCell: UITableViewCell {
     @IBOutlet weak var numVotesLabel: UILabel!
 
 
-    
     /*
     func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
@@ -65,5 +64,29 @@ class AskTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
+    
 
+    
+    
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

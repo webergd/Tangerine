@@ -60,10 +60,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             dismissViewControllerAnimated(true, completion: nil)
         }
     
+    
+    //Not using this right now
     @IBAction func userTappedDownTextField(sender: AnyObject) {
-        print("tapped down")
-
-
     }
 
     
@@ -77,13 +76,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func createAsk (){
         // create a new Ask using the photo, title, and timestamp
-        // will also need to implement a caption string (using the editor)
-        let newAsk = Ask(title: titleTextField.text, photo: imageView.image, timePosted: <#T##Int#>)
-        // Once the Ask is created it is appended to the main array
         
+        let newAsk = Ask(title: currentTitle, photo: currentImage, timePosted: NSDate())
+        // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
+        print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
         
-        
+        // Once the Ask is created it is appended to the main array:
+        mainArray.append(newAsk)
+     
         // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
     }
     
@@ -101,10 +102,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 if title == "" || titleHasBeenTapped == false {
                     throw Error.NoName
                 } else {
-                
-                    // should I create the ask object here? It might be nice to send all the info to another swift file that does that shit for me. Maybe create the methods in a different file and reference them here. Is that what my DataModels file is? Perhaps...
                     currentTitle = title
-                    self.navigationController?.popViewControllerAnimated(true)
+                    createAsk()
+                    self.navigationController?.popViewControllerAnimated(true) //rtn to main page
                 }
             
             }
@@ -113,21 +113,18 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             let actionYes = UIAlertAction(title: "Proceed With No Title", style: .Default) {
                 UIAlertAction in
                 print("Proceed with no title clicked")
-                
+                currentTitle = "(no title)"
+                self.createAsk()
                 self.navigationController?.popViewControllerAnimated(true)
-                
-            }
+                }
             alertController.addAction(actionYes)
-            let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .Default, handler: nil)
+            let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .Default, handler: nil) //no handler closure req'd bc we just go right back to the original view
             alertController.addAction(actionNo)
-            
-            // I need a function for each alert action or at least for the NO action
             
             presentViewController(alertController, animated: true, completion: nil)
         } catch let error {
             fatalError("\(error)")
         }
-        
         
         
     }
