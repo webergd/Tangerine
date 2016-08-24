@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */; };
+		2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */; };
 		2AE338C11D44502C00B32C03 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C01D44502C00B32C03 /* TestViewController.swift */; };
 		2AE338C31D48858D00B32C03 /* CompareBreakdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */; };
 		2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBD891D35E175001F7388 /* AppDelegate.swift */; };
@@ -23,7 +24,6 @@
 		2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
 		2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */; };
 		2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
-		2AF979321D529DA6004C8CF7 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF979311D529DA6004C8CF7 /* CameraViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -45,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskBreakDownViewController.swift; sourceTree = "<group>"; };
+		2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2AE338C01D44502C00B32C03 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
 		2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareBreakdownViewController.swift; sourceTree = "<group>"; };
 		2AEBBD861D35E175001F7388 /* TableViewTutorial.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TableViewTutorial.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,7 +67,6 @@
 		2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareTableViewCell.swift; sourceTree = "<group>"; };
 		2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareViewController.swift; sourceTree = "<group>"; };
 		2AECD6CD1D42938A00AAB743 /* DataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
-		2AF979311D529DA6004C8CF7 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CameraViewController.swift; path = ../CameraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -118,7 +118,6 @@
 			isa = PBXGroup;
 			children = (
 				2AEBBDC51D3A04D2001F7388 /* Main.storyboard */,
-				2AF979311D529DA6004C8CF7 /* CameraViewController.swift */,
 				2AE338C01D44502C00B32C03 /* TestViewController.swift */,
 				2AEBBD921D35E175001F7388 /* LaunchScreen.storyboard */,
 				2AEBBD891D35E175001F7388 /* AppDelegate.swift */,
@@ -130,6 +129,7 @@
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
+				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
 				2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */,
@@ -291,7 +291,7 @@
 				2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */,
 				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,
-				2AF979321D529DA6004C8CF7 /* CameraViewController.swift in Sources */,
+				2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */,
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
 				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
 				2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */,

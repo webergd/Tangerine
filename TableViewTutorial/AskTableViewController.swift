@@ -157,33 +157,39 @@ class AskTableViewController: UITableViewController {
     
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
     override func viewDidAppear(animated: Bool) {
+        // MARK: There is an issue here with 
+        // the way that the table is reloading after we introduce
+        // a cell from an ask that was made by the CameraViewController
+        // It may have something to do with the way that we are 
+        // loading up the queries array (local) from the main array (public)
+        // ###################################################
         
         // This refreshes the time remaining labels in the cells every time we come back to the main tableView
+        
+      
+        
         var index = 0
         for query in sortedQueries {
             let indexPath = NSIndexPath(forRow: index, inSection: 0)
             if query.rowType == RowType.isSingle.rawValue {
-                let cell = tableView.cellForRowAtIndexPath(indexPath) as! AskTableViewCell
-                let ask = sortedQueries[indexPath.row] as! Ask
-                let timeRemaining = calcTimeRemaining(ask.timePosted)
-                cell.timeRemainingLabel.text = "\(timeRemaining)"
+                // cellForRowAtIndexPath returns an optional cell so we use if let and then cast it as an optional ask cell
+                // one of the times it returns nil is when the cell isn't visible
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as! AskTableViewCell? {
+                    let ask = sortedQueries[indexPath.row] as! Ask
+                    let timeRemaining = calcTimeRemaining(ask.timePosted)
+                    cell.timeRemainingLabel.text = "\(timeRemaining)"
+                }
             } else if query.rowType == RowType.isDual.rawValue {
-                let cell = tableView.cellForRowAtIndexPath(indexPath) as! CompareTableViewCell
-                let compare = sortedQueries[indexPath.row] as! Compare
-                let timeRemaining = calcTimeRemaining(compare.timePosted)
-                cell.timeRemainingLabel.text = "\(timeRemaining)"
+                if let cell = tableView.cellForRowAtIndexPath(indexPath) as! CompareTableViewCell? {
+                    let compare = sortedQueries[indexPath.row] as! Compare
+                    let timeRemaining = calcTimeRemaining(compare.timePosted)
+                    cell.timeRemainingLabel.text = "\(timeRemaining)"
+                }
             }
             index += 1
         }
 
-        
-        
-        
-        
     }
-    
-
-
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()

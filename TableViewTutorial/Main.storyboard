@@ -631,7 +631,7 @@
                         <viewControllerLayoutGuide type="top" id="zLW-6q-H5i"/>
                         <viewControllerLayoutGuide type="bottom" id="Gue-Mj-Yee"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="2mm-VF-C1x">
+                    <view key="view" contentMode="TopLeft" id="2mm-VF-C1x">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
@@ -697,17 +697,36 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tangerineImage1" translatesAutoresizingMaskIntoConstraints="NO" id="1gk-Tb-zTA">
+                                <rect key="frame" x="351" y="480" width="24" height="24"/>
+                                <accessibility key="accessibilityConfiguration" identifier="winnerImageBottom" label="winnerImageBottom"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="1gk-Tb-zTA" secondAttribute="height" multiplier="1:1" id="7GI-yN-yTf"/>
+                                </constraints>
+                            </imageView>
+                            <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="tangerineImage1" translatesAutoresizingMaskIntoConstraints="NO" id="b4l-Ro-Ror">
+                                <rect key="frame" x="353" y="234" width="24" height="24"/>
+                                <accessibility key="accessibilityConfiguration" identifier="winnerImageTop" label="winnerImageTop"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="b4l-Ro-Ror" secondAttribute="height" multiplier="1:1" id="JLa-el-le9"/>
+                                </constraints>
+                            </imageView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
+                            <constraint firstItem="b4l-Ro-Ror" firstAttribute="width" secondItem="JxS-rt-ame" secondAttribute="width" multiplier="0.1" id="0yL-rN-tYQ"/>
                             <constraint firstItem="JxS-rt-ame" firstAttribute="centerX" secondItem="2mm-VF-C1x" secondAttribute="centerX" id="141-xp-D6S"/>
                             <constraint firstItem="JxS-rt-ame" firstAttribute="top" secondItem="zLW-6q-H5i" secondAttribute="bottom" id="2H6-8g-mDQ"/>
+                            <constraint firstItem="1gk-Tb-zTA" firstAttribute="width" secondItem="sKR-I4-V3G" secondAttribute="width" multiplier="0.1" id="2sr-VS-oMP"/>
                             <constraint firstItem="gV4-Ik-PRx" firstAttribute="leading" secondItem="lTM-U0-gbD" secondAttribute="leading" id="5s1-DB-3V0"/>
                             <constraint firstItem="UCp-r6-T1B" firstAttribute="top" secondItem="JxS-rt-ame" secondAttribute="top" constant="15" id="61m-Rz-Z8o"/>
+                            <constraint firstItem="b4l-Ro-Ror" firstAttribute="width" secondItem="lTM-U0-gbD" secondAttribute="width" multiplier="0.8" id="78D-sZ-wGJ"/>
                             <constraint firstItem="lTM-U0-gbD" firstAttribute="centerY" secondItem="JxS-rt-ame" secondAttribute="centerY" priority="999" constant="100" id="8Us-rg-KpL"/>
                             <constraint firstItem="pA5-au-EGB" firstAttribute="centerX" secondItem="2mm-VF-C1x" secondAttribute="centerX" id="9Wf-Wt-XZf"/>
                             <constraint firstItem="pA5-au-EGB" firstAttribute="centerY" secondItem="2mm-VF-C1x" secondAttribute="centerY" id="Cml-DO-yEZ"/>
+                            <constraint firstItem="lTM-U0-gbD" firstAttribute="top" secondItem="b4l-Ro-Ror" secondAttribute="bottom" constant="8" id="D76-cl-6Jz"/>
                             <constraint firstItem="sKR-I4-V3G" firstAttribute="top" secondItem="JxS-rt-ame" secondAttribute="bottom" id="Ecd-Mk-zwV"/>
+                            <constraint firstItem="1gk-Tb-zTA" firstAttribute="centerX" secondItem="fMu-qN-tpV" secondAttribute="centerX" id="Etg-w1-re8"/>
                             <constraint firstItem="JxS-rt-ame" firstAttribute="top" secondItem="zLW-6q-H5i" secondAttribute="bottom" id="GFc-sQ-Hka"/>
                             <constraint firstItem="JxS-rt-ame" firstAttribute="height" secondItem="sKR-I4-V3G" secondAttribute="height" id="GTd-cd-AQm"/>
                             <constraint firstItem="UCp-r6-T1B" firstAttribute="leading" secondItem="JxS-rt-ame" secondAttribute="leading" constant="15" id="JRz-uC-q7Q"/>
@@ -718,10 +737,12 @@
                             <constraint firstItem="lTM-U0-gbD" firstAttribute="centerX" secondItem="JxS-rt-ame" secondAttribute="centerX" priority="999" constant="115" id="PDf-Ml-K75"/>
                             <constraint firstItem="fMu-qN-tpV" firstAttribute="trailing" secondItem="sKR-I4-V3G" secondAttribute="trailing" constant="-15" id="Pdc-tW-EON"/>
                             <constraint firstItem="gV4-Ik-PRx" firstAttribute="bottom" secondItem="lTM-U0-gbD" secondAttribute="bottom" id="Pje-LR-wuh"/>
+                            <constraint firstItem="fMu-qN-tpV" firstAttribute="top" secondItem="1gk-Tb-zTA" secondAttribute="bottom" constant="8" id="Pzv-hg-vDR"/>
                             <constraint firstItem="ZoB-iR-wVM" firstAttribute="top" secondItem="sKR-I4-V3G" secondAttribute="top" constant="15" id="R4o-fW-buw"/>
                             <constraint firstItem="pA5-au-EGB" firstAttribute="baseline" secondItem="JxS-rt-ame" secondAttribute="baseline" id="UHH-uM-dNm"/>
                             <constraint firstItem="sKR-I4-V3G" firstAttribute="top" secondItem="JxS-rt-ame" secondAttribute="bottom" id="UZs-g6-aR1"/>
                             <constraint firstItem="xgi-jo-3FB" firstAttribute="bottom" secondItem="fMu-qN-tpV" secondAttribute="bottom" id="V7n-qd-r7S"/>
+                            <constraint firstItem="b4l-Ro-Ror" firstAttribute="centerX" secondItem="lTM-U0-gbD" secondAttribute="centerX" id="WQv-rl-dd9"/>
                             <constraint firstItem="Fia-je-wjL" firstAttribute="leading" secondItem="pA5-au-EGB" secondAttribute="leading" id="XcD-Wk-dO6"/>
                             <constraint firstItem="LhP-Bh-Y2E" firstAttribute="trailing" secondItem="JxS-rt-ame" secondAttribute="trailing" constant="-15" id="XzP-Ut-21I"/>
                             <constraint firstItem="fMu-qN-tpV" firstAttribute="centerY" secondItem="sKR-I4-V3G" secondAttribute="centerY" priority="999" constant="100" id="ZUG-Cd-LK4"/>
@@ -733,6 +754,7 @@
                             <constraint firstItem="xgi-jo-3FB" firstAttribute="leading" secondItem="fMu-qN-tpV" secondAttribute="leading" id="hmO-C9-Uvn"/>
                             <constraint firstItem="JxS-rt-ame" firstAttribute="height" secondItem="2mm-VF-C1x" secondAttribute="height" multiplier="0.4" id="kzz-dt-fF2"/>
                             <constraint firstItem="fMu-qN-tpV" firstAttribute="centerX" secondItem="sKR-I4-V3G" secondAttribute="centerX" priority="999" constant="100" id="nV9-fv-UzE"/>
+                            <constraint firstItem="1gk-Tb-zTA" firstAttribute="width" secondItem="fMu-qN-tpV" secondAttribute="width" multiplier="0.8" id="pDR-Z2-Fzk"/>
                             <constraint firstItem="LhP-Bh-Y2E" firstAttribute="top" secondItem="JxS-rt-ame" secondAttribute="top" constant="15" id="sTh-Tf-p7s"/>
                             <constraint firstItem="lTM-U0-gbD" firstAttribute="baseline" secondItem="JxS-rt-ame" secondAttribute="baseline" constant="-15" id="uHy-Kz-VkG"/>
                             <constraint firstItem="Gue-Mj-Yee" firstAttribute="top" secondItem="sKR-I4-V3G" secondAttribute="bottom" id="uS8-CU-5r0"/>
@@ -748,6 +770,8 @@
                                 <exclude reference="Cml-DO-yEZ"/>
                                 <exclude reference="8Us-rg-KpL"/>
                                 <exclude reference="PDf-Ml-K75"/>
+                                <exclude reference="78D-sZ-wGJ"/>
+                                <exclude reference="pDR-Z2-Fzk"/>
                                 <exclude reference="ZUG-Cd-LK4"/>
                                 <exclude reference="nV9-fv-UzE"/>
                             </mask>
@@ -762,6 +786,8 @@
                         <outlet property="topImageView" destination="JxS-rt-ame" id="SaF-Ll-vQk"/>
                         <outlet property="votes1Label" destination="lTM-U0-gbD" id="WZe-pw-Vl7"/>
                         <outlet property="votes2Label" destination="fMu-qN-tpV" id="uzm-SG-LwL"/>
+                        <outlet property="winnerImageBottom" destination="1gk-Tb-zTA" id="j79-KC-lQc"/>
+                        <outlet property="winnerImageTop" destination="b4l-Ro-Ror" id="zeS-EN-6r7"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="0Fr-BM-aF2" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -1239,5 +1265,6 @@
     <resources>
         <image name="defaultPhoto" width="138" height="91"/>
         <image name="shrug" width="250" height="174"/>
+        <image name="tangerineImage1" width="224" height="216"/>
     </resources>
 </document>

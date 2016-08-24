@@ -19,7 +19,10 @@ class CompareViewController: UIViewController {
     @IBOutlet weak var edit1Button: UIButton!
     @IBOutlet weak var breakdown2Button: UIButton!
     @IBOutlet weak var edit2Button: UIButton!
-
+    @IBOutlet weak var winnerImageTop: UIImageView!
+    @IBOutlet weak var winnerImageBottom: UIImageView!
+    
+    
     var compare: Compare? {
         didSet {
             // Update the view.
@@ -48,6 +51,23 @@ class CompareViewController: UIViewController {
             if let thisLabel = self.timeRemainingLabel {
                 thisLabel.text = "\(thisCompare.timePosted)"
             }
+            switch thisCompare.winner {
+                case CompareWinner.photo1Won.rawValue:
+                    winnerImageTop.hidden = false
+                    winnerImageBottom.hidden = true
+                case CompareWinner.photo2Won.rawValue:
+                    print("inside switch")
+                
+                    // as of now, any instruction I put in here (except for print) seems to throw a optional nil error
+                    //unHideTopImage()
+                    //winnerImageTop.hidden = true
+                    //winnerImageBottom.hidden = false
+                case CompareWinner.itsATie.rawValue:
+                    winnerImageTop.hidden = true
+                    winnerImageBottom.hidden = true
+                default:
+                    print("issue with compare switch statement in CompareViewController - selected default")
+            }
             
         } else {
             print("Looks like ask is nil")
@@ -55,7 +75,12 @@ class CompareViewController: UIViewController {
         
     }
 
+    func unHideTopImage(){
+        winnerImageTop.hidden = false
+    }
+    
     override func viewDidLoad() {
+        //unHideTopImage()
         super.viewDidLoad()
         self.configureView()
         // Do any additional setup after loading the view.
