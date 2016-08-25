@@ -48,26 +48,28 @@
                                     <action selector="userTappedTextField:" destination="sJJ-as-S31" eventType="touchUpInside" id="PDK-Mq-Wp3"/>
                                 </connections>
                             </textField>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
                                 <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
+                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                                         <accessibility key="accessibilityConfiguration" identifier="imageView" label="imageView"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" secondItem="nvC-VA-hLO" secondAttribute="height" multiplier="1:1" id="8sl-Si-6PN"/>
+                                            <constraint firstAttribute="width" secondItem="nvC-VA-hLO" secondAttribute="height" multiplier="1:1" id="LoL-Eh-wHd"/>
                                         </constraints>
-                                        <variation key="default">
-                                            <mask key="constraints">
-                                                <exclude reference="8sl-Si-6PN"/>
-                                            </mask>
-                                        </variation>
                                     </imageView>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="leading" secondItem="ZdZ-14-emU" secondAttribute="leading" id="65b-pE-bNK"/>
+                                    <constraint firstAttribute="trailing" secondItem="nvC-VA-hLO" secondAttribute="trailing" id="Ele-NN-SAw"/>
                                     <constraint firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="height" multiplier="1:1" id="Ha6-LV-vSE"/>
+                                    <constraint firstAttribute="bottom" secondItem="nvC-VA-hLO" secondAttribute="bottom" id="K0l-ZO-aat"/>
                                     <constraint firstAttribute="bottom" secondItem="nvC-VA-hLO" secondAttribute="bottom" id="SLx-xl-TfE"/>
+                                    <constraint firstItem="nvC-VA-hLO" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="top" id="UeY-oa-IE5"/>
+                                    <constraint firstItem="nvC-VA-hLO" firstAttribute="leading" secondItem="ZdZ-14-emU" secondAttribute="leading" id="Wt8-r5-xM3"/>
+                                    <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="width" id="ZKH-Il-aUy"/>
                                     <constraint firstAttribute="trailing" secondItem="nvC-VA-hLO" secondAttribute="trailing" id="cLd-WI-0wP"/>
+                                    <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="height" multiplier="1:1" id="gXe-so-nv3"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="top" id="lCJ-5u-oYS"/>
                                     <constraint firstAttribute="width" constant="560" id="lWb-oz-iBE"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="width" id="pea-AX-9UP"/>
@@ -75,15 +77,25 @@
                                 <variation key="default">
                                     <mask key="constraints">
                                         <exclude reference="lWb-oz-iBE"/>
+                                        <exclude reference="65b-pE-bNK"/>
+                                        <exclude reference="SLx-xl-TfE"/>
+                                        <exclude reference="ZKH-Il-aUy"/>
+                                        <exclude reference="cLd-WI-0wP"/>
+                                        <exclude reference="gXe-so-nv3"/>
+                                        <exclude reference="lCJ-5u-oYS"/>
                                         <exclude reference="pea-AX-9UP"/>
                                     </mask>
                                 </variation>
+                                <connections>
+                                    <outlet property="delegate" destination="sJJ-as-S31" id="eOQ-Qx-mvZ"/>
+                                </connections>
                             </scrollView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" id="1VK-Io-CMX"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="2IU-TT-2e9"/>
+                            <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="6zg-hf-fSR"/>
                             <constraint firstAttribute="bottom" secondItem="ZqT-a8-dwT" secondAttribute="bottom" id="ChL-t9-g3f"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" id="DCd-kq-QbP"/>
                             <constraint firstAttribute="trailing" secondItem="ZqT-a8-dwT" secondAttribute="trailing" id="FPe-xJ-IbS"/>
@@ -91,10 +103,12 @@
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="Hl1-Ya-O0V"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leading" id="I2D-R1-6oH"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="MHc-yf-CFZ"/>
+                            <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Pv3-gH-Z1J"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Qd8-M0-ir0"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ZdZ-14-emU" secondAttribute="leading" id="ndE-kG-Uqd"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="trailing" secondItem="s4g-4i-nXH" secondAttribute="trailingMargin" id="qIa-wR-6vV"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="sEf-7E-PvI"/>
+                            <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="sxd-6d-2YD"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" id="uVD-tD-4Sq"/>
                         </constraints>
                         <variation key="default">
@@ -103,12 +117,15 @@
                                 <exclude reference="HcL-aM-RP9"/>
                                 <exclude reference="MHc-yf-CFZ"/>
                                 <exclude reference="ndE-kG-Uqd"/>
+                                <exclude reference="6zg-hf-fSR"/>
+                                <exclude reference="sxd-6d-2YD"/>
                                 <exclude reference="1VK-Io-CMX"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
                         <outlet property="imageView" destination="nvC-VA-hLO" id="UhN-cg-7YC"/>
+                        <outlet property="scrollView" destination="ZdZ-14-emU" id="1jy-F1-YA1"/>
                         <outlet property="titleTextField" destination="GNG-qD-FV9" id="Zwt-6d-QdE"/>
                     </connections>
                 </viewController>
