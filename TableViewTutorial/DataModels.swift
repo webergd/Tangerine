@@ -17,7 +17,7 @@ public enum RowType: String {
 }
 
 // MARK: MAIN VARIABLES
-public var currentImage: UIImage = UIImage(named: "defaultPhoto")!
+public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
 public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks and compares
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
