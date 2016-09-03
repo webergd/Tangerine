@@ -112,8 +112,8 @@ class AskTableViewController: UITableViewController {
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
         let compare2SM = compare2.breakdown.straightMen as! CompareDemo
         
-        compare2SW.votesForOne = 333
-        compare2SW.votesForTwo = 222
+        compare2SW.votesForOne = 100
+        compare2SW.votesForTwo = 100
         compare2SM.votesForOne = 550
         compare2SM.votesForTwo = 550
         

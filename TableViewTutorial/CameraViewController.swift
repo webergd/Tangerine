@@ -75,8 +75,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     } */
     
     func cropImage(storedImage: UIImage) -> UIImage {
-        var origX: CGFloat // = 0.0
-        var origY: CGFloat // = 0.0
+        var origX: CGFloat
+        var origY: CGFloat
         
         // sets up the "squareSideLength" of the little square that we will use to punch a hole out of the big square:
         let squareSideLength = storedImage.size.width / scrollView.zoomScale

@@ -23,6 +23,7 @@ public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
+
 //this allows for hard dates to be created for test examples
 public let formatter = NSDateFormatter()
 

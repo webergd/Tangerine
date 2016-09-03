@@ -23,17 +23,31 @@ class CompareViewController: UIViewController {
     @IBOutlet weak var winnerImageBottom: UIImageView!
     
     
+
+    
     var compare: Compare? {
         didSet {
             // Update the view.
             self.configureView()
         }
     }
+    
+    var winnerFlag: String = WinnerFlag.first.rawValue
+    
+    enum WinnerFlag: String {
+        case first
+        case second
+        case tie
+    }
 
-   func configureView() {
+   func configureView() -> Void {
+        //topImageView.hidden = false
         print("configuring compare view")
         // unwraps the compare that the tableView sent over:
-        if let thisCompare = self.compare {
+        guard let thisCompare = self.compare else {
+            print("the compare is nil")
+            return
+        }
             // unwraps images from the compare and sends to IBOutlets
             if let thisImageView = self.topImageView {
                 thisImageView.image = thisCompare.comparePhoto1
@@ -51,37 +65,68 @@ class CompareViewController: UIViewController {
             if let thisLabel = self.timeRemainingLabel {
                 thisLabel.text = "\(thisCompare.timePosted)"
             }
+    
+            /*
+            if let topTangerine = self.topImageView {
+                topTangerine.image = UIImage(named: "tangerineImage1")
+                print("stored an image to topTangerine")
+            }
+            if let bottomTangerine = self.bottomImageView {
+                if 1 == 1 {
+                bottomTangerine.hidden = true
+                }
+            }
+            */
+            // I wonder if an if statement will work instead:
+
+    
+            // This part is frustrating as fuck. I can't figure out why the system keeps seeing the winnerImageTop and winnerImageBottom as nil. It doesn't see them as nil outside of configureView().
+            // Maybe there is a way to determine who the winner is inside this method, and then change the hidden property of the images outside of this method. Maybe I can set a winner flag or something that another function uses.
+            if let topFruitFlag = winnerImageTop, bottomFruitFlag = winnerImageBottom {
             switch thisCompare.winner {
                 case CompareWinner.photo1Won.rawValue:
-                    winnerImageTop.hidden = false
-                    winnerImageBottom.hidden = true
+                    winnerFlag = WinnerFlag.first.rawValue
+                    print("inside switch - photo 1 won")
+                    topFruitFlag.hidden = false
+                    bottomFruitFlag.hidden = true
                 case CompareWinner.photo2Won.rawValue:
-                    print("inside switch")
-                
+                    //winnerFlag = WinnerFlag.second.rawValue
+                    print("inside switch - photo 2 won")
+                    //if winnerImageTop == nil {
+                    //    print("winnerImageTop is nil")
+                    //}
                     // as of now, any instruction I put in here (except for print) seems to throw a optional nil error
                     //unHideTopImage()
-                    //winnerImageTop.hidden = true
-                    //winnerImageBottom.hidden = false
+                    topFruitFlag.hidden = true
+                    bottomFruitFlag.hidden = false
                 case CompareWinner.itsATie.rawValue:
-                    winnerImageTop.hidden = true
-                    winnerImageBottom.hidden = true
+                    //winnerFlag = WinnerFlag.tie.rawValue
+                    topFruitFlag.hidden = false
+                    bottomFruitFlag.hidden = false
                 default:
                     print("issue with compare switch statement in CompareViewController - selected default")
             }
-            
-        } else {
-            print("Looks like ask is nil")
-        }
-        
+            }
+        //self.unHideWinnerImage()
+    
     }
 
-    func unHideTopImage(){
-        winnerImageTop.hidden = false
+    func unHideWinnerImage(){
+        switch winnerFlag {
+        case WinnerFlag.first.rawValue: winnerImageTop.hidden = false; winnerImageBottom.hidden = true
+        case WinnerFlag.second.rawValue: print()//winnerImageTop.hidden = true; winnerImageBottom.hidden = false
+        case WinnerFlag.tie.rawValue: winnerImageTop.hidden = false; winnerImageBottom.hidden = false
+        default: winnerImageTop.hidden = false; winnerImageBottom.hidden = false
+        }
     }
     
     override func viewDidLoad() {
-        //unHideTopImage()
         super.viewDidLoad()
+        //winnerImageTop.image = UIImage(named: "tangerineImage1")
+        if 1 == 1 {
+        winnerImageBottom.hidden = false
+        winnerImageBottom.image = UIImage(named: "tangerineImage1")
+        }
         self.configureView()
         // Do any additional setup after loading the view.
     }
