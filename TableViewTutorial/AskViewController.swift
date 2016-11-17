@@ -37,7 +37,19 @@ class AskViewController: UIViewController {
             
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
-                thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
+                
+                
+                if thisAsk.askRating > -1 {
+                    //thisLabel.font.fontWithSize(50)
+                    thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
+                } else {
+                    //thisLabel.font.fontWithSize(20)
+                    thisLabel.text = "No Votes Yet"
+                }
+                
+                
+                
+                //thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
             }
             // unwraps the imageView from the IBOutlet
             if let thisImageView = self.askImageView {
@@ -69,8 +81,8 @@ class AskViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let controller = segue.destinationViewController as! AskBreakDownViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let controller = segue.destination as! AskBreakDownViewController
         // Pass the selected object to the new view controller:
         controller.ask = self.ask
     }

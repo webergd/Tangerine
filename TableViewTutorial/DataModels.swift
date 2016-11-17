@@ -25,33 +25,51 @@ public var isCompare: Bool = false
 
 
 //this allows for hard dates to be created for test examples
-public let formatter = NSDateFormatter()
+public let formatter = DateFormatter()
 
 // This determines how long the compares and asks will be displayed before they expire.
 // It's a var so that we can change it at runtime in the future if we need to.
 // 5 hours is 5 * 3600 => 18,000 seconds
-public var displayTime: NSTimeInterval = 18000.0
+public var displayTime: TimeInterval = 18000.0
 
 
+// I'm supposed to change this to round(to places: Int) but to make that work I will also have to change all the places where it is implemented.
 public extension Double {
     /// Rounds the double to decimal places value
-    func roundToPlaces(places:Int) -> Double {
+    func roundToPlaces(_ places:Int) -> Double {
         let divisor = pow(10.0, Double(places))
-        return round(self * divisor) / divisor
+        return (self * divisor).rounded() / divisor
     }
 }
 
+// This enables us to set a View Controller so that when a user taps outside of a text field, the keyboard will dismiss.
+// the only other thing that has to be done is the line:
+// self.hideKeyboardWhenTappedAround()
+// must be added to the override func viewDidLoad method in each individual VC's source code.
+
+public extension UIViewController {
+    func hideKeyboardWhenTappedAround() {
+        let tap: UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector(UIViewController.dismissKeyboard))
+        view.addGestureRecognizer(tap)
+    }
+    
+    func dismissKeyboard() {
+        view.endEditing(true)
+    }
+}
+
+
 // MARK: TIME REMAINING
 
-public func calcTimeRemaining(timePosted: NSDate) -> String {
-    let elapsedTime = NSDate().timeIntervalSinceDate(timePosted) //returns a double representing seconds
-    let secondsRemaining: NSTimeInterval = displayTime - elapsedTime
+public func calcTimeRemaining(_ timePosted: Date) -> String {
+    let elapsedTime = Date().timeIntervalSince(timePosted) //returns a double representing seconds
+    let secondsRemaining: TimeInterval = displayTime - elapsedTime
     return secondsRemaining.time //applies the below extention to the NSTimeInterval (aka elapsed time, aka seconds converted to an actual time)
 }
 
-extension NSTimeInterval { //got this off the internet to convert an NSTimeInterval into a readable time String. NSTI is just a Double.
+extension TimeInterval { //got this off the internet to convert an NSTimeInterval into a readable time String. NSTI is just a Double.
     var time:String {
-        return String(format:"%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60))
+        return String(format:"%02d:%02d", Int((self/3600.0).truncatingRemainder(dividingBy: 24)), Int((self/60.0).truncatingRemainder(dividingBy: 60)))
         //use this way if I want seconds to display also:
         //return String(format:"%02d:%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60), Int((self)%60))
     }
@@ -61,7 +79,7 @@ extension NSTimeInterval { //got this off the internet to convert an NSTimeInter
 
 public protocol Query {
     var rowType: String {get set}
-    var timePosted: NSDate {get set}
+    var timePosted: Date {get set}
     var numVotes: Int {get}
     
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
@@ -73,13 +91,14 @@ public protocol Query {
 // an "Ask" is an object containing a single image to be rated
 // (and its associated values)
 
-public class Ask: Query {
+open class Ask: Query {
     
     var askTitle: String
     //var askRating: Double
     let askPhoto: UIImage
-    public var rowType: String = "\(RowType.isSingle)"
-    public var timePosted: NSDate
+    open var rowType: String = "\(RowType.isSingle)"
+    open var timePosted: Date
+    //let askCaption: Caption?
     
     // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
     let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
@@ -101,10 +120,14 @@ public class Ask: Query {
         
         let numerator: Double = numSW.rating * Double(numSW.numVotes) + numSM.rating * Double(numSM.numVotes) + numGW.rating * Double(numGW.numVotes) + numGM.rating * Double(numGM.numVotes)
         let denominator: Double = (Double(numSW.numVotes) + Double(numSM.numVotes) + Double(numGW.numVotes) + Double(numGM.numVotes))
-        return numerator/denominator //need some error handling in case the denominator is 0
+        if denominator <= 0 { // denominator is 0 if there are no votes yet for this ask
+            return -1.0 // this negative number will be a signal to the label to display "no votes yet"
+        } else {
+            return numerator/denominator
+        }
     }
     
-    public var numVotes: Int {
+    open var numVotes: Int {
         let numSW = breakdown.straightWomen as! AskDemo
         let numSM = breakdown.straightMen as! AskDemo
         let numGW = breakdown.gayWomen as! AskDemo
@@ -114,10 +137,11 @@ public class Ask: Query {
     }
     
 
-    init(title: String, photo: UIImage, timePosted time: NSDate) {
+    init(title: String, photo: UIImage, timePosted time: Date/*,caption: Caption?*/) {
         askTitle = title
         askPhoto = photo
         timePosted = time
+        //askCaption = caption
     }
 }
 
@@ -130,10 +154,13 @@ enum CompareWinner: String {
     case itsATie
 }
 
+
+//I'm commenting this out because I don't think this method is actually ever used:
+/*
 public func createAsk (){
     // create a new Ask using the photo, title, and timestamp
     // will also need to implement a caption string (using the editor)
-    let newAsk = Ask(title: currentTitle, photo: currentImage, timePosted: NSDate())
+    let newAsk = Ask(title: currentTitle, photo: currentImage, timePosted: NSDate()/*,caption: nil*/)
     
     
     print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
@@ -144,9 +171,9 @@ public func createAsk (){
     
     // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
 }
+*/ //Should be deleted in later versions. Doesn't seem to do anything at all.
 
-
-public class Compare: Query {
+open class Compare: Query {
     //first image (displayed on top or left)
     var compareTitle1: String
     let comparePhoto1: UIImage
@@ -156,7 +183,7 @@ public class Compare: Query {
     var compareTitle2: String
     let comparePhoto2: UIImage
     
-    public var timePosted: NSDate
+    open var timePosted: Date
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
     
     var compareVotes1: Int {
@@ -195,7 +222,7 @@ public class Compare: Query {
         }
     }
     
-    public var numVotes: Int {
+    open var numVotes: Int {
         let numSW = breakdown.straightWomen as! CompareDemo
         let numSM = breakdown.straightMen as! CompareDemo
         let numGW = breakdown.gayWomen as! CompareDemo
@@ -204,12 +231,12 @@ public class Compare: Query {
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
     
-    public var rowType: String = "\(RowType.isDual)"
+    open var rowType: String = "\(RowType.isDual)"
     
     // MARK: Also need to implement a timePosted value *********************
     // Maybe even a computed value that returns the time remaining using the timePosted
     
-    init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: NSDate) {
+    init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: Date) {
         
         compareTitle1 = title1
         comparePhoto1 = photo1
@@ -307,6 +334,24 @@ struct Breakdown {
         return straightWomenAverageAgeWeighted + straightMenAverageAgeWeighted + gayWomenAverageAgeWeighted + gayMenAverageAgeWeighted
     }
     
+}
+
+public struct Caption {
+    var text: String
+    //this way we can check to see if a caption exists for the give Ask or Compare
+    var exists: Bool {
+        if text == "" { return false }
+        else { return true }
+    }
+
+    var yLocation: Double
+    
+    init(txt: String) {
+        text = ""
+        //exists = false
+        //need to initialize yLocation, this is a placeholder:
+        yLocation = 0.1
+    }
 }
 
 

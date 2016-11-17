@@ -58,17 +58,17 @@ class CompareViewController: UIViewController {
             }
             // For some reason, I had to unwrap the tangerine images from this same ViewController in order to 
             // modify thier attributes inside an if-then or switch-case:
-            if let topFruitFlag = winnerImageTop, bottomFruitFlag = winnerImageBottom {
+            if let topFruitFlag = winnerImageTop, let bottomFruitFlag = winnerImageBottom {
                 switch thisCompare.winner {
                     case CompareWinner.photo1Won.rawValue:
-                        topFruitFlag.hidden = false
-                        bottomFruitFlag.hidden = true
+                        topFruitFlag.isHidden = false
+                        bottomFruitFlag.isHidden = true
                     case CompareWinner.photo2Won.rawValue:
-                        topFruitFlag.hidden = true
-                        bottomFruitFlag.hidden = false
+                        topFruitFlag.isHidden = true
+                        bottomFruitFlag.isHidden = false
                     case CompareWinner.itsATie.rawValue:
-                        topFruitFlag.hidden = false
-                        bottomFruitFlag.hidden = false
+                        topFruitFlag.isHidden = false
+                        bottomFruitFlag.isHidden = false
                     default:
                         print("issue with compare switch statement in CompareViewController - selected default")
                 }
@@ -87,8 +87,8 @@ class CompareViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-        let controller = segue.destinationViewController as! CompareBreakdownViewController
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let controller = segue.destination as! CompareBreakdownViewController
         // Pass the selected object to the new view controller:
         controller.compare = self.compare
     }

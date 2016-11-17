@@ -41,7 +41,7 @@ class AskTableViewController: UITableViewController {
         //except it is most definitely temporary code
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
-        let time1 = formatter.dateFromString("2016/08/09 00:01")! //force unwrap bc it's temp anyway
+        let time1 = formatter.date(from: "2016/08/09 00:01")! //force unwrap bc it's temp anyway
         let ask1 = Ask(title: "Red Reeboks", photo: photo1, timePosted: time1)
         let ask1SW = ask1.breakdown.straightWomen as! AskDemo
         let ask1GM = ask1.breakdown.gayMen as! AskDemo
@@ -51,14 +51,14 @@ class AskTableViewController: UITableViewController {
         ask1GM.numVotes = 10
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
-        let time2 = formatter.dateFromString("2016/08/09 00:11")!
+        let time2 = formatter.date(from: "2016/08/09 00:11")!
         let ask2 = Ask(title: "White Converse", photo: photo2, timePosted: time2)
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
  
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
-        let time3 = formatter.dateFromString("2016/08/09 00:06")!
+        let time3 = formatter.date(from: "2016/08/09 00:06")!
         let ask3 = Ask(title: "Violet Vans", photo: photo3, timePosted: time3)
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
@@ -82,7 +82,7 @@ class AskTableViewController: UITableViewController {
         let photo2 = UIImage(named: "\(Jeans.carmenJeansDark)")!
         let title2 = "Dark Carmens"
         
-        let time1 = formatter.dateFromString("2016/08/09 00:04")!
+        let time1 = formatter.date(from: "2016/08/09 00:04")!
         
         let compare1 = Compare(title1: title1, photo1: photo1, title2: title2, photo2: photo2, timePosted: time1)
         let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
@@ -106,7 +106,7 @@ class AskTableViewController: UITableViewController {
         let photo2a = UIImage(named: "\(Shoes.brownTooled)")!
         let title2a = "Brown Tooled"
         
-        let time2 = formatter.dateFromString("2016/08/09 00:08")!
+        let time2 = formatter.date(from: "2016/08/09 00:08")!
         
         let compare2 = Compare(title1: title1a, photo1: photo1a, title2: title2a, photo2: photo2a, timePosted: time2)
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
@@ -133,7 +133,7 @@ class AskTableViewController: UITableViewController {
         //load the sample data
         loadSampleAsks()
         loadSampleCompares()
-        sortedQueries = queries.sort { $0.timePosted.timeIntervalSince1970 < $1.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        sortedQueries = queries.sorted { $0.timePosted.timeIntervalSince1970 < $1.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -156,7 +156,7 @@ class AskTableViewController: UITableViewController {
     
     
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
-    override func viewDidAppear(animated: Bool) {
+    override func viewDidAppear(_ animated: Bool) {
         // MARK: There is an issue here with 
         // the way that the table is reloading after we introduce
         // a cell from an ask that was made by the CameraViewController
@@ -170,17 +170,17 @@ class AskTableViewController: UITableViewController {
         
         var index = 0
         for query in sortedQueries {
-            let indexPath = NSIndexPath(forRow: index, inSection: 0)
+            let indexPath = IndexPath(row: index, section: 0)
             if query.rowType == RowType.isSingle.rawValue {
                 // cellForRowAtIndexPath returns an optional cell so we use if let and then cast it as an optional ask cell
                 // one of the times it returns nil is when the cell isn't visible
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as! AskTableViewCell? {
+                if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {
                     let ask = sortedQueries[indexPath.row] as! Ask
                     let timeRemaining = calcTimeRemaining(ask.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
             } else if query.rowType == RowType.isDual.rawValue {
-                if let cell = tableView.cellForRowAtIndexPath(indexPath) as! CompareTableViewCell? {
+                if let cell = tableView.cellForRow(at: indexPath) as! CompareTableViewCell? {
                     let compare = sortedQueries[indexPath.row] as! Compare
                     let timeRemaining = calcTimeRemaining(compare.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
@@ -198,25 +198,25 @@ class AskTableViewController: UITableViewController {
 
     // MARK: - Table view data source
 
-    override func numberOfSectionsInTableView(tableView: UITableView) -> Int {
+    override func numberOfSections(in tableView: UITableView) -> Int {
         //return the number of sections
         return 1
     }
 
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return sortedQueries.count
     }
 
 
     //I believe this is setting up the cell row in the table
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // here we build a single ask cell:
         if sortedQueries[indexPath.row].rowType == RowType.isSingle.rawValue {
             
             let cellIdentifier: String = "AskTableViewCell"
-            let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! AskTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskTableViewCell
             let ask = sortedQueries[indexPath.row] as! Ask
             print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
@@ -224,7 +224,11 @@ class AskTableViewController: UITableViewController {
             cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
             let timeRemaining = calcTimeRemaining(ask.timePosted)
             cell.timeRemainingLabel.text = "\(timeRemaining)"
-            cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
+            if ask.askRating > -1 {
+                cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
+            } else {
+                cell.ratingLabel.text = "?"
+            }
             cell.photoImageView.image = ask.askPhoto
 
             return cell
@@ -233,7 +237,7 @@ class AskTableViewController: UITableViewController {
         } else  if sortedQueries[indexPath.row].rowType == RowType.isDual.rawValue {
             
             let cellIdentifier: String = "CompareTableViewCell"
-            let cell = tableView.dequeueReusableCellWithIdentifier(cellIdentifier, forIndexPath: indexPath) as! CompareTableViewCell
+            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareTableViewCell
             let compare = sortedQueries[indexPath.row] as! Compare
             
             cell.image1.image = compare.comparePhoto1
@@ -252,16 +256,16 @@ class AskTableViewController: UITableViewController {
             switch compare.winner {
                 case CompareWinner.photo1Won.rawValue:
                     cell.arrowImage.image = UIImage(named: "leftArrow")
-                    cell.winnerOutline1.hidden = false
-                    cell.winnerOutline2.hidden = true
+                    cell.winnerOutline1.isHidden = false
+                    cell.winnerOutline2.isHidden = true
                 case CompareWinner.photo2Won.rawValue:
                     cell.arrowImage.image = UIImage(named: "rightArrow")
-                    cell.winnerOutline1.hidden = true
-                    cell.winnerOutline2.hidden = false
+                    cell.winnerOutline1.isHidden = true
+                    cell.winnerOutline2.isHidden = false
                 case CompareWinner.itsATie.rawValue:
                     cell.arrowImage.image = UIImage(named: "shrug")
-                    cell.winnerOutline1.hidden = true // should I make them both false?
-                    cell.winnerOutline2.hidden = true // this might be too much orange shit everywhere
+                    cell.winnerOutline1.isHidden = true // should I make them both false?
+                    cell.winnerOutline2.isHidden = true // this might be too much orange shit everywhere
                 default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
                 
             }
@@ -327,7 +331,7 @@ class AskTableViewController: UITableViewController {
     // MARK: NEEDS TO BE UNCOMMENTED AND WORKED ON:
 
    
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         // Get the new view controller using segue.destinationViewController.
         //if segue.identifier == "showAsk" {
@@ -337,11 +341,11 @@ class AskTableViewController: UITableViewController {
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let passedQuery = sortedQueries[indexPath.row]
             if passedQuery.rowType == RowType.isSingle.rawValue {
-                let controller = segue.destinationViewController as! AskViewController
+                let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
                 controller.ask = passedQuery as! Ask
             } else if passedQuery.rowType == RowType.isDual.rawValue {
-                let controller = segue.destinationViewController as! CompareViewController
+                let controller = segue.destination as! CompareViewController
                 // Pass the selected object to the new view controller:
                 controller.compare = passedQuery as! Compare
             }
