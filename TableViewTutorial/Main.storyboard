@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -25,6 +24,19 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
+                                <rect key="frame" x="-93" y="318" width="560" height="30"/>
+                                <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <textInputTraits key="textInputTraits"/>
+                                <connections>
+                                    <action selector="titleTextFieldBeginEditing:" destination="sJJ-as-S31" eventType="editingDidBegin" id="hNP-Vk-MZP"/>
+                                    <action selector="titleTextFieldValueChanged:" destination="sJJ-as-S31" eventType="valueChanged" id="SHa-UP-O4o"/>
+                                    <action selector="userTappedDownTextField:" destination="sJJ-as-S31" eventType="editingDidEnd" id="E5o-c5-Tzy"/>
+                                    <action selector="userTappedTextField:" destination="sJJ-as-S31" eventType="touchUpInside" id="PDK-Mq-Wp3"/>
+                                    <outlet property="delegate" destination="sJJ-as-S31" id="v3w-fT-0hd"/>
+                                </connections>
+                            </textField>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
                                 <rect key="frame" x="0.0" y="64" width="600" height="600"/>
                                 <subviews>
@@ -35,32 +47,17 @@
                                             <constraint firstAttribute="width" secondItem="nvC-VA-hLO" secondAttribute="height" multiplier="1:1" id="LoL-Eh-wHd"/>
                                         </constraints>
                                     </imageView>
-                                    <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" ambiguous="YES" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
-                                        <rect key="frame" x="8" y="-38" width="560" height="30"/>
-                                        <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
-                                        <connections>
-                                            <action selector="titleTextFieldBeginEditing:" destination="sJJ-as-S31" eventType="editingDidBegin" id="hNP-Vk-MZP"/>
-                                            <action selector="titleTextFieldValueChanged:" destination="sJJ-as-S31" eventType="valueChanged" id="SHa-UP-O4o"/>
-                                            <action selector="userTappedDownTextField:" destination="sJJ-as-S31" eventType="editingDidEnd" id="E5o-c5-Tzy"/>
-                                            <action selector="userTappedTextField:" destination="sJJ-as-S31" eventType="touchUpInside" id="PDK-Mq-Wp3"/>
-                                            <outlet property="delegate" destination="sJJ-as-S31" id="v3w-fT-0hd"/>
-                                        </connections>
-                                    </textField>
                                 </subviews>
                                 <constraints>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="leading" secondItem="ZdZ-14-emU" secondAttribute="leading" id="65b-pE-bNK"/>
                                     <constraint firstAttribute="trailing" secondItem="nvC-VA-hLO" secondAttribute="trailing" id="Ele-NN-SAw"/>
                                     <constraint firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="height" multiplier="1:1" id="Ha6-LV-vSE"/>
                                     <constraint firstAttribute="bottom" secondItem="nvC-VA-hLO" secondAttribute="bottom" id="K0l-ZO-aat"/>
-                                    <constraint firstItem="GNG-qD-FV9" firstAttribute="leading" secondItem="ZdZ-14-emU" secondAttribute="leadingMargin" constant="24" id="PdP-Uz-l54"/>
                                     <constraint firstAttribute="bottom" secondItem="nvC-VA-hLO" secondAttribute="bottom" id="SLx-xl-TfE"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="top" id="UeY-oa-IE5"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="leading" secondItem="ZdZ-14-emU" secondAttribute="leading" id="Wt8-r5-xM3"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="width" id="ZKH-Il-aUy"/>
                                     <constraint firstAttribute="trailing" secondItem="nvC-VA-hLO" secondAttribute="trailing" id="cLd-WI-0wP"/>
-                                    <constraint firstItem="GNG-qD-FV9" firstAttribute="trailing" secondItem="ZdZ-14-emU" secondAttribute="trailingMargin" id="g33-rf-vG0"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="height" multiplier="1:1" id="gXe-so-nv3"/>
                                     <constraint firstItem="nvC-VA-hLO" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="top" id="lCJ-5u-oYS"/>
                                     <constraint firstAttribute="width" constant="560" id="lWb-oz-iBE"/>
@@ -82,10 +79,15 @@
                                     <outlet property="delegate" destination="sJJ-as-S31" id="eOQ-Qx-mvZ"/>
                                 </connections>
                             </scrollView>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Public Caption For Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
                                 <rect key="frame" x="0.0" y="285" width="600" height="30"/>
-                                <color key="textColor" red="0.50196081400000003" green="0.50196081400000003" blue="0.50196081400000003" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="14"/>
+                                <color key="backgroundColor" white="0.33333333333333331" alpha="0.75137392241379308" colorSpace="calibratedWhite"/>
+                                <color key="tintColor" white="0.33333333329999998" alpha="0.7513739224" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="30" id="nbD-w4-sWs"/>
+                                </constraints>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
                                 <connections>
                                     <action selector="captionTextFieldBeginEditing:" destination="sJJ-as-S31" eventType="editingDidBegin" id="8be-oa-fwV"/>
@@ -108,7 +110,7 @@
                                     <barButtonItem title="Caption Mirrors Title:" id="LOR-ct-FH2"/>
                                     <barButtonItem style="plain" id="Bu8-6I-5lU">
                                         <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="WDz-dI-ibQ">
-                                            <rect key="frame" x="413" y="6.5" width="51" height="31"/>
+                                            <rect key="frame" x="413" y="7" width="51" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <accessibility key="accessibilityConfiguration" identifier="mirrorSwitch" label="mirrorSwitch"/>
                                         </switch>
@@ -126,21 +128,23 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="2IU-TT-2e9"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="6zg-hf-fSR"/>
-                            <constraint firstItem="0F6-95-USV" firstAttribute="bottom" secondItem="ZdZ-14-emU" secondAttribute="centerY" id="CdI-UI-Oea"/>
+                            <constraint firstItem="GNG-qD-FV9" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="BLT-VY-Drf"/>
                             <constraint firstAttribute="bottom" secondItem="ZqT-a8-dwT" secondAttribute="bottom" id="ChL-t9-g3f"/>
                             <constraint firstAttribute="trailing" secondItem="ZqT-a8-dwT" secondAttribute="trailing" id="FPe-xJ-IbS"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="HcL-aM-RP9"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="Hl1-Ya-O0V"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leading" id="I2D-R1-6oH"/>
+                            <constraint firstItem="ZdZ-14-emU" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" id="J4b-Hg-hqj"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="MHc-yf-CFZ"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Pv3-gH-Z1J"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Qd8-M0-ir0"/>
-                            <constraint firstItem="0F6-95-USV" firstAttribute="bottom" secondItem="nvC-VA-hLO" secondAttribute="bottom" id="THS-cY-med"/>
+                            <constraint firstItem="GNG-qD-FV9" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="VAE-Kr-Nay"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="bXj-rj-FWZ"/>
+                            <constraint firstItem="0F6-95-USV" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" constant="221" id="fJi-kk-pvb"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="kgm-vH-vH4"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ZdZ-14-emU" secondAttribute="leading" id="ndE-kG-Uqd"/>
+                            <constraint firstItem="GNG-qD-FV9" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" id="pTP-9L-wt7"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="sxd-6d-2YD"/>
-                            <constraint firstItem="ZdZ-14-emU" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" id="uVD-tD-4Sq"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -150,13 +154,12 @@
                                 <exclude reference="ndE-kG-Uqd"/>
                                 <exclude reference="6zg-hf-fSR"/>
                                 <exclude reference="sxd-6d-2YD"/>
-                                <exclude reference="THS-cY-med"/>
                             </mask>
                         </variation>
                     </view>
                     <connections>
                         <outlet property="captionTextField" destination="0F6-95-USV" id="Wuy-W0-eIt"/>
-                        <outlet property="captionTextFieldBottomConstraint" destination="CdI-UI-Oea" id="h17-0p-ogd"/>
+                        <outlet property="captionTextFieldTopConstraint" destination="fJi-kk-pvb" id="Qur-eC-Ups"/>
                         <outlet property="imageView" destination="nvC-VA-hLO" id="UhN-cg-7YC"/>
                         <outlet property="mirrorSwitch" destination="WDz-dI-ibQ" id="iPh-8V-fc5"/>
                         <outlet property="scrollView" destination="ZdZ-14-emU" id="1jy-F1-YA1"/>

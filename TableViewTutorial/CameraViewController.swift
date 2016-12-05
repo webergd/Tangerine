@@ -16,10 +16,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var captionTextField: UITextField!
     @IBOutlet weak var mirrorSwitch: UISwitch!
+    @IBOutlet weak var captionTextFieldTopConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var captionTextFieldBottomConstraint: NSLayoutConstraint!
-    
-    @IBOutlet weak var titleTextFieldBottomConstraint: NSLayoutConstraint!
+
+    /*@IBOutlet weak var captionTextFieldBottomConstraint: NSLayoutConstraint!*/
     
     // I need some kind of event that sees when the value of mirrorSwitch.on is changed. Then I can adjust the captionTextField as appropriate.
     // In user settings I could have another switch that sets a default value for mirrorSwitch, depending on user preferences
@@ -27,12 +27,26 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     
-
+    // many of these are 0.0 becuase I didn't want to bother with an initializer method since they all get set before use anyway.
     let imagePicker = UIImagePickerController()
     var titleHasBeenTapped: Bool = false
     var captionHasBeenTapped: Bool = false
     var tappedLoc: CGPoint = CGPoint(x: 0.0, y: 0.0)
     var captionYValue: CGFloat = 0.0 //this is an arbitrary value to be reset later
+    var activeTextField = UITextField()
+    var titleFrameRect: CGRect = CGRect()
+    var titleTextFieldHeight: CGFloat = 0.0
+    var captionFrameRect: CGRect = CGRect()
+    var captionTextFieldHeight: CGFloat = 0.0
+    var scrollViewFrameRect: CGRect = CGRect()
+    var scrollViewHeight: CGFloat = 0.0
+    var screenHeight: CGFloat = 0.0
+    var screenWidth: CGFloat = 0.0
+    var captionTopLimit: CGFloat = 0.0
+    var captionBottomLimit: CGFloat = 0.0
+    var captionLocationToSet: CGFloat = 0.0
+    
+    
     
     // I'm trying to make this a reference corner for the image to be cropped
 
@@ -82,12 +96,24 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         imageView.image = currentImage
         titleHasBeenTapped = false
         imagePicker.delegate = self
+        captionTextField.delegate = self
         self.scrollView.minimumZoomScale = 1.0
         self.scrollView.maximumZoomScale = 6.0
         
         // Hides keyboard when user taps outside of text field
         self.hideKeyboardWhenTappedAround()
         
+        // This gives a done key but requires other code to dismiss the keyboard
+        self.captionTextField.returnKeyType = UIReturnKeyType.done
+        
+        // This gives a done key but requires other code to dismiss the keyboard
+        self.titleTextField.returnKeyType = UIReturnKeyType.done
+        
+        // This gets us the height of the caption text field to be used later for spacing things out correctly
+        self.captionFrameRect = self.captionTextField.frame
+        self.captionTextFieldHeight = captionFrameRect.height
+        // This gets the height of the screen for spacing things out later
+        self.screenHeight = UIScreen.main.bounds.height
         
         // This will move the caption text box out of the way when the keyboard pops up:
         NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
@@ -95,93 +121,188 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // This will move the caption text box back down when the keyboard goes away:
         NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
+        // This gets us the height of the caption text field to be used later for spacing things out correctly
+        self.captionTextFieldHeight = self.captionTextField.frame.height
+        
+        // This gets us the height of the title text field to be used later for spacing things out correctly
+        self.titleTextFieldHeight = self.titleTextField.frame.height
+        
+        // This sets up the min and max values that the caption's top contstraint can have and still be over the image
+        self.captionTopLimit = self.topLayoutGuide.length + self.titleTextFieldHeight
+        
+        //self.scrollViewHeight = self.scrollView.frame.height
+        print("scrollView height is: \(scrollViewHeight)")
+        print("self.screenHeight is: \(self.screenHeight)")
+        print("self.screenWidth is: \(UIScreen.main.bounds.width)")
+        self.screenWidth = UIScreen.main.bounds.width
+        
+        
+        // This gets the actual height of the image, not just as it is displayed but the actual file's height dimension:
+        /*var imageHeight: CGFloat = 200 //magic number, fucking fix this
+        if let iH = imageView.image?.size.height {
+            imageHeight = iH
+            print("stored image height is \(imageHeight)")
+        } else {
+            print("no image exists")
+        }*/
+        self.captionBottomLimit = self.captionTopLimit + screenWidth - self.captionTextFieldHeight
+        
+        
+
         
         //Enables tap on image to show caption (1 of 2):
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(CameraViewController.userTappedImage(_:)))
         imageView.addGestureRecognizer(tapImageGesture)
         imageView.isUserInteractionEnabled = true
-        
-        
-        
+  
         //Enables user to drag caption around (1 of 2):
         let dragCaptionGesture = UIPanGestureRecognizer(target: self, action: #selector(CameraViewController.userDragged(_:)))
         captionTextField.addGestureRecognizer(dragCaptionGesture)
         captionTextField.isUserInteractionEnabled = true
             
     }
-    //Enables tap on image to show caption (1 of 2):
-    func userTappedImage(_ tapImageGesture: UIPanGestureRecognizer){
+    //Enables tap on image to show caption (2 of 2):
+    func userTappedImage(_ tapImageGesture: UITapGestureRecognizer){
         print("user tapped image")
         captionTextField.translatesAutoresizingMaskIntoConstraints = false
         tappedLoc = tapImageGesture.location(in: self.view)
-        self.captionTextField.center.y = tappedLoc.y
+        print("User tapped: \(tappedLoc)")
         
-        if captionTextField.isHidden == true {
+        
+        //print("captionTextField.center.y = \(self.captionTextField.center.y)")
+        
+        if captionTextField.isHidden == true && titleTextField.isEditing == false {
+            // Show the captionTextField:
             captionTextField.isHidden = false
+            // Position the captionTextField where the user tapped:
+            self.captionTextFieldTopConstraint.constant = tappedLoc.y - self.topLayoutGuide.length - (0.5 * captionTextFieldHeight)
+            captionTextField.becomeFirstResponder()
+            //self.captionTextField.center.y = tappedLoc.y
+            
         } else {
             // if the caption is displayed and the user taps the image, dismiss the keyboard
             view.endEditing(true)
+            print("back inside userTappedImage function")
+            print("captionTextField.center.y= \(self.captionTextField.center.y)")
+            print("end of userTappedImage function")
         }
     }
-    
     
     //Enables user to drag caption around (2 of 2):
     func userDragged(_ dragCaptionGesture: UIPanGestureRecognizer){
         tappedLoc = dragCaptionGesture.location(in: self.view)
-        self.captionTextField.center.y = tappedLoc.y
+        captionLocationToSet = tappedLoc.y - self.topLayoutGuide.length - (0.5 * captionTextFieldHeight)
+        self.captionTextFieldTopConstraint.constant = setCaptionTopConstraint(captionLocationToSet)
+        
+        //self.captionTextField.center.y = tappedLoc.y
+        //This is more efficient: self.captionTextField.center.y = dragCaptionGesture.location(in: self.view).y
         print("tappedLoc.y: \(tappedLoc.y)")
     }
+    
+    
+    // This determines whether the caption y value is within the prescribed limits within the bounds of the imageView and if it is not, returns the limit that it has crossed.
+    func setCaptionTopConstraint(_ desiredLocation: CGFloat) -> CGFloat {
+        
+        if desiredLocation < captionTopLimit {
+            print("returning captionTopLimit: \(captionTopLimit)")
+            return captionTopLimit
+        } else if desiredLocation > captionBottomLimit {
+            print("returning captionBottomLimit: \(captionBottomLimit)")
+            return captionBottomLimit
+            
+        } else {
+            return desiredLocation
+        }
+    }
 
-    
-    // I think I need a paremeter to pass in the text box we're editing so that we can tell that one to pop up
-    
-    /* I now have an outlet for the caption text field bottom constraint as well as the title text field bottom constraint. I need a way to pass these into the two functions below in order to make the correct text box pop up above the keyboard when I tap inside it */
-    
+
     
     // This is called in the viewDidLoad section in our NSNotificationCenter command
     func keyboardWillShow(_ notification: Notification) {
-        //get the height of the keyboard that will show and then shift the text field up by that amount
-        if let userInfoDict = notification.userInfo, let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+        // Basically all this shit is for moving the caption out of the way of the keyboard while we're editing it:
+        if self.captionTextField.isEditing == true {
+            //get the height of the keyboard that will show and then shift the text field up by that amount
+            if let userInfoDict = notification.userInfo, let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+
+                let keyboardFrame = keyboardFrameValue.cgRectValue
             
-            let keyboardFrame = keyboardFrameValue.cgRectValue
-            
-            //this makes the text box movement animated so it looks smoother:
-            UIView.animate(withDuration: 0.8, animations: {
-                //this moves the text box based on how big the keyboard is:
-                //print("caption before: \(self.captionTextFieldBottomConstraint.constant)")
-                //self.captionTextFieldBottomConstraint.constant = keyboardFrame.size.height + 10
-                //print("caption after: \(self.captionTextFieldBottomConstraint.constant)")
+                //this makes the text box movement animated so it looks smoother:
+                UIView.animate(withDuration: 0.8, animations: {
+                    //this moves the text box based on how big the keyboard is:
+                    //print("caption before: \(self.captionTextFieldBottomConstraint.constant)")
+                    //This ends up sending the caption out of view behind the keyboard
+                    //self.captionYValue = self.captionTextField.center.y
+                    
+                    // Save the captionTextField's Location so we can restore it after editing:
+                    self.captionYValue = self.captionTextFieldTopConstraint.constant
+                    
+                    
+                    print("should be setting captionTextFieldBottomConstraint.constant. KB frame height is: \(keyboardFrame.size.height)")
+                    //self.captionTextFieldBottomConstraint.constant = keyboardFrame.size.height
+                    self.captionTextFieldTopConstraint.constant = self.screenHeight - keyboardFrame.size.height - self.topLayoutGuide.length - self.captionTextFieldHeight
                 
-                //saves the old location of the caption:
-                self.captionYValue = self.captionTextField.center.y
-                //moves the caption out of the way of the keyboard:
-                //self.captionTextField.center.y = keyboardFrame.size.height + 10
+                    //print("caption after: \(self.captionTextFieldBottomConstraint.constant)")
+                
+                    //saves the old location of the caption:
+                    //self.captionYValue = self.captionTextField.center.y
+                    //moves the caption out of the way of the keyboard:
+                    //This one doesn't seem to do anything:
+                    //self.captionTextField.center.y = keyboardFrame.size.height - 10
                 
                 
-                self.view.layoutIfNeeded()
-            }) 
+                
+                    self.view.layoutIfNeeded()
+                })
    
+            }
         }
     }
     
+    
+    // Am I ever even calling this?
+    /*func textFieldShouldReturn(textField: UITextField!) -> Bool {
+        captionTextField.resignFirstResponder()
+        print("tFSR 1 called")
+        return true
+    }*/
+    
     func keyboardWillHide(_ notification: Notification) {
         //get the height of the keyboard that will show and then shift the text field down by that amount
-            
+        
+        if self.captionTextField.text == "" {
+            self.captionTextField.isHidden = true
+        }
+        
             //this makes the text box movement animated so it looks smoother:
-            UIView.animate(withDuration: 0.8, animations: {
+            UIView.animate(withDuration: 1.0, animations: {
                 //this moves the text box back to its original location
-                //if there comes a point where I decide I don't want the title at the very bottom, I will need to adjust this as well since it's a "magic number" of zero regardless of what I udate for the constraints in interface builder
+
                 
                 //moves the caption back to its old location:
-                self.captionTextField.center.y = self.captionYValue
+
                 
+                self.captionTextFieldTopConstraint.constant = self.captionYValue
+                
+                //print("keyboard hiding now. tappedLoc.y = \(self.tappedLoc.y)")
+                //self.captionTextField.center.y = self.tappedLoc.y
+                //print("captionTextField.center.y= \(self.captionTextField.center.y)")
+                //self.captionTextField.center.y = self.captionYValue
+            })
                 //self.captionTextFieldBottomConstraint.constant = 0
-                self.view.layoutIfNeeded()
-            }) 
+        // If the user has entered no text in the titleTextField, reset it to how it was originally:
+        if self.titleTextField.text == "" {
+            self.titleTextField.text = "Enter a Private Title for Your Photo Here"
+            self.titleTextField.textColor = UIColor.gray
+            self.titleHasBeenTapped = false
+        }
+            self.view.layoutIfNeeded()
+            
+
+
 
     }
     
-    // This dismisses the keyboard when the user clicks return
+    // This dismisses the keyboard when the user clicks the DONE button on the keyboard
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -259,19 +380,21 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func userTappedDownTextField(_ sender: AnyObject) {
     }
     
-    
+    // Can be deleted later. Just have to unlink the IBAction. Deleting this code will cause SIGABRT otherwise.
     @IBAction func captionTextFieldBeginEditing(_ sender: AnyObject) {
-        captionHasBeenTapped = self.resetTextField(captionTextField, tappedYet: captionHasBeenTapped)
+        //captionHasBeenTapped = self.resetTextField(captionTextField, tappedYet: captionHasBeenTapped)
+        //self.captionTextField.text = ""
     }
 
+    
     @IBAction func titleTextFieldBeginEditing(_ sender: AnyObject) {
-        self.captionTextField.center.y = tappedLoc.y
+        //self.captionTextField.center.y = tappedLoc.y Not sure why tf this is here
         titleHasBeenTapped = self.resetTextField(titleTextField, tappedYet: titleHasBeenTapped)
     }
-    
+ 
 
     @IBAction func titleTextFieldValueChanged(_ sender: AnyObject) {
-                self.captionTextField.center.y = tappedLoc.y
+        //self.captionTextField.center.y = tappedLoc.y
     }
     //this sets the text field that we pass in to no text and black text, as long as we have a variable to track whether it has been tapped already:
     func resetTextField(_ textField: UITextField, tappedYet: Bool) -> Bool {

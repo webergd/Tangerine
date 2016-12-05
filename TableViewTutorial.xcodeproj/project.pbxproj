@@ -223,6 +223,7 @@
 				TargetAttributes = {
 					2AEBBD851D35E175001F7388 = {
 						CreatedOnToolsVersion = 7.3.1;
+						DevelopmentTeam = DTP3595845;
 						LastSwiftMigration = 0810;
 					};
 					2AEBBD991D35E175001F7388 = {
@@ -434,6 +435,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DTP3595845;
 				INFOPLIST_FILE = TableViewTutorial/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tangerinedata.TableViewTutorial;
@@ -446,6 +448,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DTP3595845;
 				INFOPLIST_FILE = TableViewTutorial/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = tangerinedata.TableViewTutorial;
