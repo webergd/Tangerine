@@ -24,8 +24,8 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
-                                <rect key="frame" x="-93" y="318" width="560" height="30"/>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
+                                <rect key="frame" x="-0.5" y="64" width="375" height="30"/>
                                 <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -37,11 +37,11 @@
                                     <outlet property="delegate" destination="sJJ-as-S31" id="v3w-fT-0hd"/>
                                 </connections>
                             </textField>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
-                                <rect key="frame" x="0.0" y="64" width="600" height="600"/>
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
+                                <rect key="frame" x="0.0" y="94" width="375" height="375"/>
                                 <subviews>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
-                                        <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                                         <accessibility key="accessibilityConfiguration" identifier="imageView" label="imageView"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="nvC-VA-hLO" secondAttribute="height" multiplier="1:1" id="LoL-Eh-wHd"/>
@@ -79,8 +79,8 @@
                                     <outlet property="delegate" destination="sJJ-as-S31" id="eOQ-Qx-mvZ"/>
                                 </connections>
                             </scrollView>
-                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
-                                <rect key="frame" x="0.0" y="285" width="600" height="30"/>
+                            <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
+                                <rect key="frame" x="0.0" y="285" width="375" height="30"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="0.75137392241379308" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333329999998" alpha="0.7513739224" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -93,8 +93,8 @@
                                     <action selector="captionTextFieldBeginEditing:" destination="sJJ-as-S31" eventType="editingDidBegin" id="8be-oa-fwV"/>
                                 </connections>
                             </textField>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" misplaced="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZqT-a8-dwT">
-                                <rect key="frame" x="0.0" y="556" width="600" height="44"/>
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqT-a8-dwT">
+                                <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
                                     <barButtonItem title="Camera" id="hgd-7q-uIf" userLabel="useCamera">
                                         <connections>
@@ -110,7 +110,7 @@
                                     <barButtonItem title="Caption Mirrors Title:" id="LOR-ct-FH2"/>
                                     <barButtonItem style="plain" id="Bu8-6I-5lU">
                                         <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="WDz-dI-ibQ">
-                                            <rect key="frame" x="413" y="7" width="51" height="31"/>
+                                            <rect key="frame" x="254" y="7" width="51" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <accessibility key="accessibilityConfiguration" identifier="mirrorSwitch" label="mirrorSwitch"/>
                                         </switch>
@@ -650,8 +650,8 @@
                         <variation key="default">
                             <mask key="constraints">
                                 <exclude reference="DcC-rL-DQ6"/>
-                                <exclude reference="AFT-Nr-pgq"/>
                                 <exclude reference="0fl-f4-ZOL"/>
+                                <exclude reference="AFT-Nr-pgq"/>
                                 <exclude reference="17v-1U-V1N"/>
                             </mask>
                         </variation>
