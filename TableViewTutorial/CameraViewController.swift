@@ -45,12 +45,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var captionTopLimit: CGFloat = 0.0
     var captionBottomLimit: CGFloat = 0.0
     var captionLocationToSet: CGFloat = 0.0
-    
-    
-    
-    // I'm trying to make this a reference corner for the image to be cropped
 
-    
     enum CameraError: Swift.Error {
         case noName
     }
@@ -64,25 +59,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         } else {
             imagePicker.sourceType = .photoLibrary // if we're in the simulator it just redirects to the photo library
         }
-
         present(imagePicker, animated: true, completion: nil)
-    
     }
-    
-    
-    
-    
+
     //This happens when the user clicks on the use camera roll bar button
     //Realistically I'd rather not ever use this except for testing since this
     //should be an app where users are in the moment and using pics they are taking
     //themselves. Like snapchap does.
     @IBAction func useCameraRoll(_ sender: AnyObject) {
-
         imagePicker.allowsEditing = false
         imagePicker.mediaTypes = [kUTTypeImage as String] //supposedly this prevents the user from taking videos
-        
         imagePicker.sourceType = .photoLibrary
-        
         present(imagePicker, animated: true, completion: nil)
     }
     
@@ -136,20 +123,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("self.screenWidth is: \(UIScreen.main.bounds.width)")
         self.screenWidth = UIScreen.main.bounds.width
         
-        
-        // This gets the actual height of the image, not just as it is displayed but the actual file's height dimension:
-        /*var imageHeight: CGFloat = 200 //magic number, fucking fix this
-        if let iH = imageView.image?.size.height {
-            imageHeight = iH
-            print("stored image height is \(imageHeight)")
-        } else {
-            print("no image exists")
-        }*/
+        // This constrains the caption drag to stay above the bottom of the image
         self.captionBottomLimit = self.captionTopLimit + screenWidth - self.captionTextFieldHeight
-        
-        
 
-        
         //Enables tap on image to show caption (1 of 2):
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(CameraViewController.userTappedImage(_:)))
         imageView.addGestureRecognizer(tapImageGesture)
@@ -167,10 +143,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         captionTextField.translatesAutoresizingMaskIntoConstraints = false
         tappedLoc = tapImageGesture.location(in: self.view)
         print("User tapped: \(tappedLoc)")
-        
-        
-        //print("captionTextField.center.y = \(self.captionTextField.center.y)")
-        
+
         if captionTextField.isHidden == true && titleTextField.isEditing == false {
             // Show the captionTextField:
             captionTextField.isHidden = false
@@ -196,7 +169,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         //self.captionTextField.center.y = tappedLoc.y
         //This is more efficient: self.captionTextField.center.y = dragCaptionGesture.location(in: self.view).y
-        print("tappedLoc.y: \(tappedLoc.y)")
+        //print("tappedLoc.y: \(tappedLoc.y)")
     }
     
     
@@ -215,8 +188,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
 
-
-    
     // This is called in the viewDidLoad section in our NSNotificationCenter command
     func keyboardWillShow(_ notification: Notification) {
         // Basically all this shit is for moving the caption out of the way of the keyboard while we're editing it:
@@ -228,44 +199,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             
                 //this makes the text box movement animated so it looks smoother:
                 UIView.animate(withDuration: 0.8, animations: {
-                    //this moves the text box based on how big the keyboard is:
-                    //print("caption before: \(self.captionTextFieldBottomConstraint.constant)")
-                    //This ends up sending the caption out of view behind the keyboard
-                    //self.captionYValue = self.captionTextField.center.y
-                    
                     // Save the captionTextField's Location so we can restore it after editing:
                     self.captionYValue = self.captionTextFieldTopConstraint.constant
-                    
-                    
-                    print("should be setting captionTextFieldBottomConstraint.constant. KB frame height is: \(keyboardFrame.size.height)")
                     //self.captionTextFieldBottomConstraint.constant = keyboardFrame.size.height
                     self.captionTextFieldTopConstraint.constant = self.screenHeight - keyboardFrame.size.height - self.topLayoutGuide.length - self.captionTextFieldHeight
-                
-                    //print("caption after: \(self.captionTextFieldBottomConstraint.constant)")
-                
-                    //saves the old location of the caption:
-                    //self.captionYValue = self.captionTextField.center.y
-                    //moves the caption out of the way of the keyboard:
-                    //This one doesn't seem to do anything:
-                    //self.captionTextField.center.y = keyboardFrame.size.height - 10
-                
-                
-                
                     self.view.layoutIfNeeded()
                 })
    
             }
         }
     }
-    
-    
-    // Am I ever even calling this?
-    /*func textFieldShouldReturn(textField: UITextField!) -> Bool {
-        captionTextField.resignFirstResponder()
-        print("tFSR 1 called")
-        return true
-    }*/
-    
+
     func keyboardWillHide(_ notification: Notification) {
         //get the height of the keyboard that will show and then shift the text field down by that amount
         
@@ -275,20 +219,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
             //this makes the text box movement animated so it looks smoother:
             UIView.animate(withDuration: 1.0, animations: {
-                //this moves the text box back to its original location
-
-                
-                //moves the caption back to its old location:
-
-                
+                //moves the caption back to its original location:
                 self.captionTextFieldTopConstraint.constant = self.captionYValue
-                
-                //print("keyboard hiding now. tappedLoc.y = \(self.tappedLoc.y)")
-                //self.captionTextField.center.y = self.tappedLoc.y
-                //print("captionTextField.center.y= \(self.captionTextField.center.y)")
-                //self.captionTextField.center.y = self.captionYValue
+
             })
-                //self.captionTextFieldBottomConstraint.constant = 0
         // If the user has entered no text in the titleTextField, reset it to how it was originally:
         if self.titleTextField.text == "" {
             self.titleTextField.text = "Enter a Private Title for Your Photo Here"
@@ -296,10 +230,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             self.titleHasBeenTapped = false
         }
             self.view.layoutIfNeeded()
-            
-
-
-
     }
     
     // This dismisses the keyboard when the user clicks the DONE button on the keyboard
@@ -312,13 +242,36 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return self.imageView
     }
-    
-    
-    
 
-    
-    
     func cropImage(_ storedImage: UIImage) -> UIImage {
+        
+        /*
+        var croppedImage:UIImage
+        
+        // This is the code I got from this website:
+        // http://timrichardson.co/2015/03/cropping-an-image-from-uiscrollview-using-swift/
+        // It had to be updated for Swift 3.0 and I'm not sure if I converted it all right.
+        // There are also some force unwrapped optional values in here that need to be addressed
+        // Not to mention that this code does not correctly crop the image
+        // Double check that it's not just an issue with what value I am returning or the value I am storing to currentImage
+        let scale = 1 / scrollView.zoomScale
+        let visibleRect = CGRect(x: scrollView.contentOffset.x * scale, y: scrollView.contentOffset.y * scale, width: scrollView.bounds.size.width * scale, height: scrollView.bounds.size.height * scale)
+        
+        if let ref:CGImage = storedImage.cgImage!.cropping(to: visibleRect) {
+        
+            croppedImage = UIImage(cgImage: ref)
+            print("image cropped")
+        } else {
+            croppedImage = currentImage
+            print("************************Cropping Failed**************************************")
+        }
+        
+        return croppedImage
+        */
+        
+
+        // This was the original cropping code. It may be closer to what I need than the above:
+        
         var origX: CGFloat
         var origY: CGFloat
         
@@ -355,7 +308,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             print("cropping failed - image was nil")
             //let alertController = UIAlertController(title: "Cropping Failed", message: nil, preferredStyle: .Alert)
             //presentViewController(alertController, animated: true, completion: nil)
-            return currentImage
+            return storedImage
         }
     }
     
@@ -391,10 +344,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //self.captionTextField.center.y = tappedLoc.y Not sure why tf this is here
         titleHasBeenTapped = self.resetTextField(titleTextField, tappedYet: titleHasBeenTapped)
     }
- 
-
+    
     @IBAction func titleTextFieldValueChanged(_ sender: AnyObject) {
-        //self.captionTextField.center.y = tappedLoc.y
     }
     //this sets the text field that we pass in to no text and black text, as long as we have a variable to track whether it has been tapped already:
     func resetTextField(_ textField: UITextField, tappedYet: Bool) -> Bool {
@@ -408,7 +359,44 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func createAsk (){
         // create a new Ask using the photo, title, and timestamp
         
-        let newAsk = Ask(title: currentTitle, photo: currentImage, timePosted: Date())
+        print("currentImage orientation before ask is created \(currentImage.imageOrientation.rawValue)")
+        // Begin experimentation ************************
+        /*
+        // Here I am attempting to rotate currentImage before saving it to the Ask:
+        // (for testing purposes only - this is the opposite of what I really want to do)
+        // A CGAffineTransform is a weird ass thing that I don't understand...
+        var transform:CGAffineTransform = CGAffineTransform.identity
+        // I think this is saying that we will flip the image upside down:
+        transform = transform.rotated(by: CGFloat(M_PI))
+        // From what I can gather, the CGContext is some kind of blank canvas in which we will draw our newly rotated image, this line seems to add our old image to it so at the end of the operation, we have an exact copy of the original image, now contained within the CGContext
+        let ctx:CGContext = CGContext(data: nil, width: Int(currentImage.size.width), height: Int(currentImage.size.height),
+                                      bitsPerComponent: currentImage.cgImage!.bitsPerComponent, bytesPerRow: 0,
+                                      space: currentImage.cgImage!.colorSpace!,
+                                      bitmapInfo: currentImage.cgImage!.bitmapInfo.rawValue)!
+        // Lastly, I believe this concatenation spins the image around the amount specified in the variable 'transform'
+        ctx.concatenate(transform)
+        // Now it's fitting the image into a rectangle...?
+        ctx.draw(currentImage.cgImage!, in: CGRect(x:0,y:0,width:currentImage.size.height,height:currentImage.size.width))
+        
+        let cgimg:CGImage = ctx.makeImage()!
+        let imgEnd:UIImage = UIImage(cgImage: cgimg)
+        
+        */
+        // End experimentation **********************
+        
+        let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
+        currentImage = imageToCreateAskWith
+        // To fix back to normal, replace imgEnd with currentImage in the next line:
+        let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, timePosted: Date())
+        
+        // So the next step here is to upload the app to the iphone and see if the unfucking method that I pasted at the bottom of this file works as advertized and flips it back to normal before storing it to the ask
+        // If it is still messed up even after I have applied the unfucking method, it is probably because the system is rotating the image later on, perhaps right after it creates the Ask. If this is the case, I need to apply the unfucking method to the actual image property of the Ask I just created and see if I can rotate that. Hopefully that's not the issue becuase the unfucking method basically just stores a rotated copy of the image to the Ask anyway so the mechanism that is flipping it will probably just flip it again, counteracting the best efforts of the unfucking method.
+        
+        
+        
+        
+        print("newAsk.image orientation after ask is created \(newAsk.askPhoto.imageOrientation.rawValue)")
+
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
         print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
@@ -425,17 +413,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func publishButtonTapped(_ sender: AnyObject) {
         print("publish button tapped")
         // check to see if the text box is empty
-
         do {
             if let title = titleTextField.text {
                 if title == "" || titleHasBeenTapped == false {
                     throw CameraError.noName
                 } else {
                     currentTitle = title
+                    currentImage = self.cropImage(currentImage)
                     createAsk()
                     self.navigationController?.popViewController(animated: true) //rtn to main page
                 }
-            
             }
         } catch CameraError.noName {
             let alertController = UIAlertController(title: "Title Not Provided", message: "Publish your photo without a title?", preferredStyle: .alert)
@@ -443,6 +430,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 UIAlertAction in
                 print("Proceed with no title clicked")
                 currentTitle = "(no title)"
+                currentImage = self.cropImage(currentImage)
                 self.createAsk()
                 self.navigationController?.popViewController(animated: true)
                 }
@@ -456,14 +444,102 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
         
         //testing the crop function
+        /* 
         print("cropping image")
         let croppedImage = self.cropImage(currentImage)
         currentImage = croppedImage
-        
+        */
         
         
     }
     
+    func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
+        
+        print("inside the beginning of the rotation unfucker")
+        // No-op if the orientation is already correct
+        
+        
+        
+        if (img.imageOrientation == UIImageOrientation.up) {
+            return img;
+        }
+        
+        
+        
+        
+        // We need to calculate the proper transformation to make the image upright.
+        // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
+        var transform:CGAffineTransform = CGAffineTransform.identity
+        
+        
+        if (img.imageOrientation == UIImageOrientation.down
+            || img.imageOrientation == UIImageOrientation.downMirrored) {
+            
+            transform = transform.translatedBy(x: img.size.width, y: img.size.height)
+            transform = transform.rotated(by: CGFloat(M_PI)) //seems to be the number of radians we rotate the image
+        }
+        
+        if (img.imageOrientation == UIImageOrientation.left
+            || img.imageOrientation == UIImageOrientation.leftMirrored) {
+            
+            transform = transform.translatedBy(x: img.size.width, y: 0)
+            transform = transform.rotated(by: CGFloat(M_PI_2))
+        }
+        
+        if (img.imageOrientation == UIImageOrientation.right
+            || img.imageOrientation == UIImageOrientation.rightMirrored) {
+            
+            transform = transform.translatedBy(x: 0, y: img.size.height);
+            transform = transform.rotated(by: CGFloat(-M_PI_2));
+        }
+        
+        if (img.imageOrientation == UIImageOrientation.upMirrored
+            || img.imageOrientation == UIImageOrientation.downMirrored) {
+            
+            transform = transform.translatedBy(x: img.size.width, y: 0)
+            transform = transform.scaledBy(x: -1, y: 1)
+        }
+        
+        if (img.imageOrientation == UIImageOrientation.leftMirrored
+            || img.imageOrientation == UIImageOrientation.rightMirrored) {
+            
+            transform = transform.translatedBy(x: img.size.height, y: 0);
+            transform = transform.scaledBy(x: -1, y: 1);
+        }
+        
+        
+        // Now we draw the underlying CGImage into a new context, applying the transform
+        // calculated above.
+        let ctx:CGContext = CGContext(data: nil, width: Int(img.size.width), height: Int(img.size.height),
+                                      bitsPerComponent: img.cgImage!.bitsPerComponent, bytesPerRow: 0,
+                                      space: img.cgImage!.colorSpace!,
+                                      bitmapInfo: img.cgImage!.bitmapInfo.rawValue)!
+        
+        ctx.concatenate(transform)
+        
+        
+        if (img.imageOrientation == UIImageOrientation.left
+            || img.imageOrientation == UIImageOrientation.leftMirrored
+            || img.imageOrientation == UIImageOrientation.right
+            || img.imageOrientation == UIImageOrientation.rightMirrored
+            ) {
+            print("inside the if statement of the rotation unfucker")
+            //I'm not sure why there is even an if statemet since they perform the same operation in both cases...
+            ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.height,height:img.size.width))
+            
+        } else {
+            print("inside the else statement of the rotation unfucker")
+            ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.width,height:img.size.height))
+        }
+        
+        
+        // And now we just create a new UIImage from the drawing context
+        let cgimg:CGImage = ctx.makeImage()!
+        let imgEnd:UIImage = UIImage(cgImage: cgimg)
+        
+        return imgEnd
+        
+    }
     
     
 }
