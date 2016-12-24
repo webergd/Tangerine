@@ -141,6 +141,9 @@ open class Ask: Query {
         askTitle = title
         askPhoto = photo
         timePosted = time
+        print("inside the Ask initializer method")
+        print("currentImage orientation is upright \(currentImage.imageOrientation == UIImageOrientation.up)")
+        print("newAsk.image orientation is upright \(askPhoto.imageOrientation == UIImageOrientation.up)")
         //askCaption = caption
     }
 }

@@ -220,6 +220,17 @@ class AskTableViewController: UITableViewController {
             let ask = sortedQueries[indexPath.row] as! Ask
             print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
+            print("Cell title: \(cell.titleLabel.text)")
+                
+            print("Photo orientation is up? (in the ask itself): \(ask.askPhoto.imageOrientation == UIImageOrientation.up)")
+            
+            if let rowImage = cell.photoImageView.image {
+                print("Photo orientation is up? (in the row): \(rowImage.imageOrientation == UIImageOrientation.up)")
+            } else {
+                print("row image was nil - unable to determine orientation")
+            }
+                
+                
             // MARK: need to send value to the numVotesLabel
             cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
             let timeRemaining = calcTimeRemaining(ask.timePosted)

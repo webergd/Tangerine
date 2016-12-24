@@ -80,6 +80,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        print("currentImage orientation is upright \(currentImage.imageOrientation == UIImageOrientation.up)")
+        
         imageView.image = currentImage
         titleHasBeenTapped = false
         imagePicker.delegate = self
@@ -317,8 +320,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
             if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 imageView.contentMode = .scaleAspectFit
-                imageView.image = pickedImage
-                currentImage = pickedImage
+                print("just picked the image")
+                self.printImageOrientations(passedImage: pickedImage)
+                //currentImage = self.fixOrientation(img: pickedImage)
+                currentImage = self.sFunc_imageFixOrientation(img: pickedImage)
+                imageView.image = currentImage
+                
             }
             
             dismiss(animated: true, completion: nil)
@@ -383,29 +390,38 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         */
         // End experimentation **********************
+        print("currentImage orientation before Ask is created:")
+        self.printImageOrientations(passedImage: currentImage)
         
         let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
+        
         currentImage = imageToCreateAskWith
-        // To fix back to normal, replace imgEnd with currentImage in the next line:
+        print("currentImage just updated with unfucked image")
+        
+        
+        // To fix back to normal, replace imageToCreateAskWith with currentImage in the next line:
         let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, timePosted: Date())
         
         // So the next step here is to upload the app to the iphone and see if the unfucking method that I pasted at the bottom of this file works as advertized and flips it back to normal before storing it to the ask
         // If it is still messed up even after I have applied the unfucking method, it is probably because the system is rotating the image later on, perhaps right after it creates the Ask. If this is the case, I need to apply the unfucking method to the actual image property of the Ask I just created and see if I can rotate that. Hopefully that's not the issue becuase the unfucking method basically just stores a rotated copy of the image to the Ask anyway so the mechanism that is flipping it will probably just flip it again, counteracting the best efforts of the unfucking method.
+        // I don't think the above is the problem since the images are just stored rotated because the camera doesn't rotate. There's something else going on here. Also, if this is the issue, perhaps I can set up the unfucker to rotate the image 180 deg so that when it gets put back 90 deg, it will be in the right orientation.
         
         
         
+        print("currentImage orientation:")
+        self.printImageOrientations(passedImage: currentImage)
+        print("new askPhoto orientation:")
+        self.printImageOrientations(passedImage: newAsk.askPhoto)
         
-        print("newAsk.image orientation after ask is created \(newAsk.askPhoto.imageOrientation.rawValue)")
-
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
         print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
-        
+
         // Once the Ask is created it is appended to the main array:
         mainArray.append(newAsk)
         
         let testAsk = mainArray.last as! Ask
-        print("Test Ask Created! title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
+        print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
      
         // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
     }
@@ -461,7 +477,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         
         if (img.imageOrientation == UIImageOrientation.up) {
-            return img;
+            print("returning original image")
+            //return img;
         }
         
         
@@ -471,7 +488,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
         var transform:CGAffineTransform = CGAffineTransform.identity
         
-        
+        //added:
+        //transform = transform.translatedBy(x: img.size.width, y: img.size.height)
+        //transform = transform.rotated(by: CGFloat(M_PI))
+        //end added
+      
         if (img.imageOrientation == UIImageOrientation.down
             || img.imageOrientation == UIImageOrientation.downMirrored) {
             
@@ -481,28 +502,28 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         if (img.imageOrientation == UIImageOrientation.left
             || img.imageOrientation == UIImageOrientation.leftMirrored) {
-            
+            print("image is left or left mirrored")
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.rotated(by: CGFloat(M_PI_2))
         }
         
         if (img.imageOrientation == UIImageOrientation.right
             || img.imageOrientation == UIImageOrientation.rightMirrored) {
-            
+            print("image is right or right mirrored")
             transform = transform.translatedBy(x: 0, y: img.size.height);
             transform = transform.rotated(by: CGFloat(-M_PI_2));
         }
         
         if (img.imageOrientation == UIImageOrientation.upMirrored
             || img.imageOrientation == UIImageOrientation.downMirrored) {
-            
+            print("image is upMirrored or downMirrored")
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         }
         
         if (img.imageOrientation == UIImageOrientation.leftMirrored
             || img.imageOrientation == UIImageOrientation.rightMirrored) {
-            
+            print("image is leftMirrored or rightMirrored")
             transform = transform.translatedBy(x: img.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         }
@@ -524,7 +545,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             || img.imageOrientation == UIImageOrientation.rightMirrored
             ) {
             print("inside the if statement of the rotation unfucker")
-            //I'm not sure why there is even an if statemet since they perform the same operation in both cases...
+            //I'm not sure why there is even an if statement since they perform the same operation in both cases...
             ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.height,height:img.size.width))
             
         } else {
@@ -541,10 +562,37 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    public func printImageOrientations (passedImage: UIImage) {
+        print("newAsk.image orientation is upright \(passedImage.imageOrientation == UIImageOrientation.up)")
+        print("newAsk.image orientation is left \(passedImage.imageOrientation == UIImageOrientation.left)")
+        print("newAsk.image orientation is right \(passedImage.imageOrientation == UIImageOrientation.right)")
+        print("newAsk.image orientation is down \(passedImage.imageOrientation == UIImageOrientation.down)")
+    }
+    
+    // This is an alternate, more elegant method for fixing image rotation that I am not currently
+    // using. It still runs into the original problem of needing to have the correct metadata.
+    // Also, I'm not really sure what UIGraphicsGetImageFromCurrentImageContext() is doing.
+    func fixOrientation(img:UIImage) -> UIImage {
+        
+        if (img.imageOrientation == UIImageOrientation.up) {
+            return img;
+        }
+        
+        UIGraphicsBeginImageContextWithOptions(img.size, false, img.scale);
+        let rect = CGRect(x: 0, y: 0, width: img.size.width, height: img.size.height)
+        img.draw(in: rect)
+        
+        //force unwrapped - may need to fix:
+        let normalizedImage : UIImage = UIGraphicsGetImageFromCurrentImageContext()!
+        UIGraphicsEndImageContext();
+        return normalizedImage;
+        
+    }
+    
     
 }
-    
-    
+
+
     
     
     
