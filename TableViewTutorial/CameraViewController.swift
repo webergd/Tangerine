@@ -311,7 +311,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("origin: \(origX), \(origY)")
         
         //let imageOrigin = scrollView.bounds.origin
-        let crop = CGRect(x: origX,y: origY, width: squareSideLength * 2, height: squareSideLength)
+        let crop = CGRect(x: origX,y: origY, width: squareSideLength, height: squareSideLength)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
             let image:UIImage = UIImage(cgImage: cgImage) //convert it from a CGImage to a UIImage
             return image
