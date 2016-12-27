@@ -278,8 +278,16 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         var origX: CGFloat
         var origY: CGFloat
         
+        var squareSideLength: CGFloat {
+            if storedImage.size.width < storedImage.size.height {
+                return storedImage.size.width / scrollView.zoomScale
+            } else {
+                return storedImage.size.height / scrollView.zoomScale
+            }
+        }
+        
         // sets up the "squareSideLength" of the little square that we will use to punch a hole out of the big square:
-        let squareSideLength = storedImage.size.width / scrollView.zoomScale
+        //let squareSideLength = storedImage.size.width / scrollView.zoomScale
         print("imageView width: \(imageView.bounds.size.width)")
         print("screen width: \(UIScreen.main.bounds.size.width)")
         print("actual image width: \(storedImage.size.width)")
@@ -303,7 +311,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("origin: \(origX), \(origY)")
         
         //let imageOrigin = scrollView.bounds.origin
-        let crop = CGRect(x: origX,y: origY, width: squareSideLength, height: squareSideLength)
+        let crop = CGRect(x: origX,y: origY, width: squareSideLength * 2, height: squareSideLength)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
             let image:UIImage = UIImage(cgImage: cgImage) //convert it from a CGImage to a UIImage
             return image
@@ -473,25 +481,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         print("inside the beginning of the rotation unfucker")
         // No-op if the orientation is already correct
-        
-        
-        
+
         if (img.imageOrientation == UIImageOrientation.up) {
             print("returning original image")
-            //return img;
+            return img;
         }
-        
-        
-        
-        
+
         // We need to calculate the proper transformation to make the image upright.
         // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
         var transform:CGAffineTransform = CGAffineTransform.identity
-        
-        //added:
-        //transform = transform.translatedBy(x: img.size.width, y: img.size.height)
-        //transform = transform.rotated(by: CGFloat(M_PI))
-        //end added
       
         if (img.imageOrientation == UIImageOrientation.down
             || img.imageOrientation == UIImageOrientation.downMirrored) {
@@ -527,8 +525,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             transform = transform.translatedBy(x: img.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         }
-        
-        
+
         // Now we draw the underlying CGImage into a new context, applying the transform
         // calculated above.
         let ctx:CGContext = CGContext(data: nil, width: Int(img.size.width), height: Int(img.size.height),
@@ -562,6 +559,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    //this is for testing the image rotation. May be deleted.
     public func printImageOrientations (passedImage: UIImage) {
         print("newAsk.image orientation is upright \(passedImage.imageOrientation == UIImageOrientation.up)")
         print("newAsk.image orientation is left \(passedImage.imageOrientation == UIImageOrientation.left)")
