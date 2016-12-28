@@ -16,6 +16,12 @@ public enum RowType: String {
     case isDual
 }
 
+public enum ImageAspectType: String {
+    case isPortrait
+    case isLandscape
+    case isSquare
+}
+
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional

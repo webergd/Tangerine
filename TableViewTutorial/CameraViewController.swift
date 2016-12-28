@@ -81,8 +81,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print("currentImage orientation is upright \(currentImage.imageOrientation == UIImageOrientation.up)")
-        
         imageView.image = currentImage
         titleHasBeenTapped = false
         imagePicker.delegate = self
@@ -275,16 +273,22 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
         // This was the original cropping code. It may be closer to what I need than the above:
         
+        /*
         var origX: CGFloat
         var origY: CGFloat
+         */
         
-        var squareSideLength: CGFloat {
-            if storedImage.size.width < storedImage.size.height {
-                return storedImage.size.width / scrollView.zoomScale
-            } else {
-                return storedImage.size.height / scrollView.zoomScale
+        var imageAspectType: ImageAspectType {
+            if storedImage.size.width < storedImage.size.height { //portrait
+                return .isPortrait
+            } else if storedImage.size.width > storedImage.size.height { //landscape
+                return .isLandscape
+            } else { //square image already
+                return .isSquare
             }
         }
+        
+
         
         // sets up the "squareSideLength" of the little square that we will use to punch a hole out of the big square:
         //let squareSideLength = storedImage.size.width / scrollView.zoomScale
@@ -296,14 +300,97 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         let unzoomedOffsetX = scrollView.contentOffset.x / scrollView.zoomScale
         let unzoomedOffsetY = scrollView.contentOffset.y / scrollView.zoomScale
         //this stores the width of the actual displayed UIImage on the iPhone screen:
-        let displayedImageWidth = UIScreen.main.bounds.size.width
+        //I'm not sure if it does. This looks like it is just getting the actual width of the screen. If the image is narrower than the screen as in the case of a portrait image that is not zoomed in all the way, the displayed width of the image and the width of the screen will be different.
+        // Maybe I can make this a computed property such that it will return the actual displayed image width, not just the screen width.
+        let phoneScreenWidth = UIScreen.main.bounds.size.width
+
         //this stores the size of the actual image that is in memory (and currently being resized to fit on the iPhone screen):
         let underlyingImageWidth = storedImage.size.width
-        //this determines the "scale" as far as how many times bigger or smaller the displayed image is to the actual size of the stored image in memory (fuck the height, we don't care about that for this):
-        let underlyingToDisplayedRatio = (underlyingImageWidth / displayedImageWidth)
+        let underlyingImageHeight = storedImage.size.height
+        //this determines the "scale" as far as how many times bigger or smaller the displayed image is to the actual size of the stored image in memory /*(fuck the height, we don't care about that for this)*/:
+        //I actually need to compare the iphone screen's width (which is the same an scrollview's height, with the longest side of the image to ge the real ratio.
+        var underlyingToDisplayedRatio: CGFloat {
+            // if width is smaller than height then we have a portrait image:
+            if storedImage.size.width < storedImage.size.height {
+                return underlyingImageHeight / phoneScreenWidth
+                // Otherwise, we have a square or landscape image and the width is the longest side.
+            } else {
+                return underlyingImageWidth / phoneScreenWidth
+            }
+        }
+        
+        // At the below zoomscale, we are now cutting off some of the height and width. Below it, we are only cutting off height or width because it's not zoomed in enough.
+        var zoomThreshold: CGFloat { // follows the form: big/little to get a value > 1
+            if imageAspectType == ImageAspectType.isPortrait {
+                return underlyingImageHeight / underlyingImageWidth
+            } else if imageAspectType == ImageAspectType.isLandscape {
+                return underlyingImageWidth / underlyingImageHeight
+            } else { //square image already
+                return 1.0 //this means we will start cropping both sides at the same time (at a zoomscale of 1)
+            }
+        }
+        
+        // Basically this returns the value of the longest side cut down by zoomScale
+        var squareSideLength: CGFloat {
+            if imageAspectType == ImageAspectType.isPortrait {
+                return underlyingImageHeight / scrollView.zoomScale
+            } else {
+                return underlyingImageWidth / scrollView.zoomScale
+            }
+        }
+        
+        var cropSizeWidth: CGFloat {
+            if imageAspectType == ImageAspectType.isPortrait && scrollView.zoomScale < zoomThreshold {
+                return underlyingImageWidth
+            } else {
+                return squareSideLength
+            }
+        }
+        
+        var cropSizeHeight: CGFloat {
+            if imageAspectType == ImageAspectType.isLandscape && scrollView.zoomScale < zoomThreshold {
+                return underlyingImageHeight
+            } else {
+                return squareSideLength
+            }
+        }
+        
+        
+        var whiteArea: CGFloat {
+            if imageAspectType == ImageAspectType.isPortrait {
+                return (underlyingImageHeight - underlyingImageWidth) / 2
+            } else if imageAspectType == ImageAspectType.isLandscape {
+                return (underlyingImageWidth - underlyingImageHeight) / 2
+            } else { //it's a square, there is no white space
+                return 0.0
+            }
+        }
+        
+        
         //the next two lines store the x and y coordinates that the system will use to go to the underlying stored image and use as the upper left corner of the square that it crops from it:
-        origX = unzoomedOffsetX * underlyingToDisplayedRatio
-        origY = unzoomedOffsetY * underlyingToDisplayedRatio
+        //origX = unzoomedOffsetX * underlyingToDisplayedRatio
+        // The if statement is not correct, just copied over from cropSizeHeight
+        
+        var origX: CGFloat {
+            if imageAspectType == ImageAspectType.isPortrait {
+                print("returning \((unzoomedOffsetX * underlyingToDisplayedRatio) - whiteArea) for origX")
+                return (unzoomedOffsetX * underlyingToDisplayedRatio) - whiteArea
+            } else {
+                return unzoomedOffsetX * underlyingToDisplayedRatio
+            }
+        }
+        
+        
+        //origY = unzoomedOffsetY * underlyingToDisplayedRatio
+        // The if statement is not correct, just copied over from cropSizeHeight
+        var origY: CGFloat {
+            if imageAspectType == ImageAspectType.isLandscape {
+                print("returning \((unzoomedOffsetY * underlyingToDisplayedRatio) - whiteArea) for origY")
+                return (unzoomedOffsetY * underlyingToDisplayedRatio) - whiteArea
+            } else {
+                return unzoomedOffsetY * underlyingToDisplayedRatio
+            }
+        }
 
         // zoomScale tells us how far we are zoomed in at a given moment
         print("zoomscale: \(scrollView.zoomScale)")
@@ -311,7 +398,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("origin: \(origX), \(origY)")
         
         //let imageOrigin = scrollView.bounds.origin
-        let crop = CGRect(x: origX,y: origY, width: squareSideLength, height: squareSideLength)
+        let crop = CGRect(x: origX,y: origY, width: cropSizeWidth, height: cropSizeHeight)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
             let image:UIImage = UIImage(cgImage: cgImage) //convert it from a CGImage to a UIImage
             return image
@@ -329,7 +416,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 imageView.contentMode = .scaleAspectFit
                 print("just picked the image")
-                self.printImageOrientations(passedImage: pickedImage)
                 //currentImage = self.fixOrientation(img: pickedImage)
                 currentImage = self.sFunc_imageFixOrientation(img: pickedImage)
                 imageView.image = currentImage
@@ -374,7 +460,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func createAsk (){
         // create a new Ask using the photo, title, and timestamp
         
-        print("currentImage orientation before ask is created \(currentImage.imageOrientation.rawValue)")
         // Begin experimentation ************************
         /*
         // Here I am attempting to rotate currentImage before saving it to the Ask:
@@ -398,29 +483,18 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         */
         // End experimentation **********************
-        print("currentImage orientation before Ask is created:")
-        self.printImageOrientations(passedImage: currentImage)
         
         let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
         
         currentImage = imageToCreateAskWith
-        print("currentImage just updated with unfucked image")
-        
-        
+
         // To fix back to normal, replace imageToCreateAskWith with currentImage in the next line:
         let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, timePosted: Date())
         
         // So the next step here is to upload the app to the iphone and see if the unfucking method that I pasted at the bottom of this file works as advertized and flips it back to normal before storing it to the ask
         // If it is still messed up even after I have applied the unfucking method, it is probably because the system is rotating the image later on, perhaps right after it creates the Ask. If this is the case, I need to apply the unfucking method to the actual image property of the Ask I just created and see if I can rotate that. Hopefully that's not the issue becuase the unfucking method basically just stores a rotated copy of the image to the Ask anyway so the mechanism that is flipping it will probably just flip it again, counteracting the best efforts of the unfucking method.
         // I don't think the above is the problem since the images are just stored rotated because the camera doesn't rotate. There's something else going on here. Also, if this is the issue, perhaps I can set up the unfucker to rotate the image 180 deg so that when it gets put back 90 deg, it will be in the right orientation.
-        
-        
-        
-        print("currentImage orientation:")
-        self.printImageOrientations(passedImage: currentImage)
-        print("new askPhoto orientation:")
-        self.printImageOrientations(passedImage: newAsk.askPhoto)
-        
+
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
         print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
