@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11542" systemVersion="15G1108" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11524"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="11757"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -43,6 +43,7 @@
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
                                         <accessibility key="accessibilityConfiguration" identifier="imageView" label="imageView"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="nvC-VA-hLO" secondAttribute="height" multiplier="1:1" id="LoL-Eh-wHd"/>
                                         </constraints>
@@ -123,6 +124,28 @@
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xHB-t2-Bcb">
+                                <rect key="frame" x="284" y="469" width="75" height="30"/>
+                                <state key="normal" title="Clear Blurs"/>
+                                <connections>
+                                    <action selector="clearBlursTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="Qnl-Sy-Bei"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Bz-y1-TJt">
+                                <rect key="frame" x="287" y="469" width="72" height="30"/>
+                                <accessibility key="accessibilityConfiguration" identifier="enableBlurring"/>
+                                <state key="normal" title="Blur Faces"/>
+                                <connections>
+                                    <action selector="enableBlurring:" destination="sJJ-as-S31" eventType="touchUpInside" id="wGn-pe-kYi"/>
+                                </connections>
+                            </button>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XOo-iF-27H">
+                                <rect key="frame" x="16" y="469" width="107" height="30"/>
+                                <state key="normal" title="Return to Zoom"/>
+                                <connections>
+                                    <action selector="returnToZoom:" destination="sJJ-as-S31" eventType="touchUpInside" id="qHr-Bw-p9z"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
@@ -130,21 +153,27 @@
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="6zg-hf-fSR"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="BLT-VY-Drf"/>
                             <constraint firstAttribute="bottom" secondItem="ZqT-a8-dwT" secondAttribute="bottom" id="ChL-t9-g3f"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="xHB-t2-Bcb" secondAttribute="trailing" id="Eyh-xH-Dfz"/>
                             <constraint firstAttribute="trailing" secondItem="ZqT-a8-dwT" secondAttribute="trailing" id="FPe-xJ-IbS"/>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="HcL-aM-RP9"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="Hl1-Ya-O0V"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leading" id="I2D-R1-6oH"/>
+                            <constraint firstItem="XOo-iF-27H" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="bottom" id="IzA-sD-NvX"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" id="J4b-Hg-hqj"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="XOo-iF-27H" secondAttribute="leading" id="JLQ-Of-UQp"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="MHc-yf-CFZ"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Pv3-gH-Z1J"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Qd8-M0-ir0"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="VAE-Kr-Nay"/>
+                            <constraint firstItem="xHB-t2-Bcb" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="bottom" id="ZHi-6x-BrG"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="6Bz-y1-TJt" secondAttribute="trailing" id="bCI-20-LKY"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="bXj-rj-FWZ"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" constant="221" id="fJi-kk-pvb"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="kgm-vH-vH4"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ZdZ-14-emU" secondAttribute="leading" id="ndE-kG-Uqd"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" id="pTP-9L-wt7"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="sxd-6d-2YD"/>
+                            <constraint firstItem="6Bz-y1-TJt" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="bottom" id="uYx-aN-ugJ"/>
                         </constraints>
                         <variation key="default">
                             <mask key="constraints">
@@ -160,8 +189,11 @@
                     <connections>
                         <outlet property="captionTextField" destination="0F6-95-USV" id="Wuy-W0-eIt"/>
                         <outlet property="captionTextFieldTopConstraint" destination="fJi-kk-pvb" id="Qur-eC-Ups"/>
+                        <outlet property="clearBlursButton" destination="xHB-t2-Bcb" id="wL2-sp-hhv"/>
+                        <outlet property="enableBlurringButton" destination="6Bz-y1-TJt" id="PYb-ey-cQy"/>
                         <outlet property="imageView" destination="nvC-VA-hLO" id="UhN-cg-7YC"/>
                         <outlet property="mirrorSwitch" destination="WDz-dI-ibQ" id="iPh-8V-fc5"/>
+                        <outlet property="returnToZoomButton" destination="XOo-iF-27H" id="wvs-bZ-jcl"/>
                         <outlet property="scrollView" destination="ZdZ-14-emU" id="1jy-F1-YA1"/>
                         <outlet property="titleTextField" destination="GNG-qD-FV9" id="Zwt-6d-QdE"/>
                     </connections>

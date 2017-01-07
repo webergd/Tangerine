@@ -18,7 +18,13 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var mirrorSwitch: UISwitch!
     @IBOutlet weak var captionTextFieldTopConstraint: NSLayoutConstraint!
     
-
+    @IBOutlet var longPressTap: UILongPressGestureRecognizer!
+    @IBOutlet weak var clearBlursButton: UIButton!
+    @IBOutlet weak var enableBlurringButton: UIButton!
+    @IBOutlet weak var returnToZoomButton: UIButton!
+    
+    
+    
     /*@IBOutlet weak var captionTextFieldBottomConstraint: NSLayoutConstraint!*/
     
     // I need some kind of event that sees when the value of mirrorSwitch.on is changed. Then I can adjust the captionTextField as appropriate.
@@ -45,12 +51,14 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var captionTopLimit: CGFloat = 0.0
     var captionBottomLimit: CGFloat = 0.0
     var captionLocationToSet: CGFloat = 0.0
-
+    let blurColor = UIColor(red: 172/255, green: 132/255, blue: 76/255, alpha: 0.05)
+    var blurringEnabled: Bool = false
+    var blurFace: BlurFace = BlurFace(image: currentImage)
+    
+    
     enum CameraError: Swift.Error {
         case noName
     }
-    
-    // MARK: Camera Needed    - > need to create and implement a camera option
     
     @IBAction func useCamera(_ sender: AnyObject) {
         // makes sure we have a camera, aka this is not the simulator
@@ -63,14 +71,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
 
     //This happens when the user clicks on the use camera roll bar button
-    //Realistically I'd rather not ever use this except for testing since this
-    //should be an app where users are in the moment and using pics they are taking
-    //themselves. Like snapchap does.
     @IBAction func useCameraRoll(_ sender: AnyObject) {
         imagePicker.allowsEditing = false
         imagePicker.mediaTypes = [kUTTypeImage as String] //supposedly this prevents the user from taking videos
         imagePicker.sourceType = .photoLibrary
         present(imagePicker, animated: true, completion: nil)
+        
     }
     
         // MARK: DELETE THIS this is just so that the sample image will keep loading for testing:
@@ -87,7 +93,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         captionTextField.delegate = self
         self.scrollView.minimumZoomScale = 1.0
         self.scrollView.maximumZoomScale = 6.0
-        
         // Hides keyboard when user taps outside of text field
         self.hideKeyboardWhenTappedAround()
         
@@ -136,7 +141,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         let dragCaptionGesture = UIPanGestureRecognizer(target: self, action: #selector(CameraViewController.userDragged(_:)))
         captionTextField.addGestureRecognizer(dragCaptionGesture)
         captionTextField.isUserInteractionEnabled = true
-            
+        
+        
+        //Enables user to long press image for blurred circle (1 of 2):
+        /*
+        let pressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userPressed(_:)))
+        imageView.addGestureRecognizer(pressImageGesture)
+        */
+        //captionTextField.isUserInteractionEnabled = true
+        
     }
     //Enables tap on image to show caption (2 of 2):
     func userTappedImage(_ tapImageGesture: UITapGestureRecognizer){
@@ -240,44 +253,221 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     
+    
+    
+    @IBAction func enableBlurring(_ sender: UIButton) {
+        //self.lockScrollView()
+        self.enableBlurringButton.isHidden = true
+        self.clearBlursButton.isHidden = false
+        //self.returnToZoomButton.isHidden = false
+        self.blurringEnabled = true
+        //the next 2 lines blur detected faces but don't set the blurred image to currentImage yet
+        
+        currentImage = imageView.image! //this saves a copy of the unblurred image
+        
+        blurFace.setImage(image: imageView.image)
+        imageView.image = blurFace.blurFaces()
+        
+        
+        //currentImage = pixellate(image: currentImage)
+        //imageView.image = currentImage
+        // What I will ultimately need to do is only modify imageView.image and then store that image to currentImage when
+        // the user clicks publish, that way I can revert back to the non-blurred image at any moment by 
+        // reassigning currentImage to the imageView.image
+    }
+    
+    /*
+    @IBAction func returnToZoom(_ sender: Any) {
+        self.returnToZoomButton.isHidden = true
+        self.clearBlurs()
+        self.unlockScrollView()
+        self.enableBlurringButton.isHidden = false
+        self.clearBlursButton.isHidden = true
+        self.blurringEnabled = false
+    
+    }
+    */
+    
+    
+    //Enables user to long press image for flesh colored transluscent circle (2 of 2):
+    /*
+    func userPressed(_ pressImageGesture: UILongPressGestureRecognizer){
+        tappedLoc = pressImageGesture.location(in: self.view)
+        if blurringEnabled == true {
+            self.drawCircle(tappedLoc)
+        } else {
+            // this is where the label need to be made to appear to tell the user to leave cropping mode before trying to blur.
+        }
+    }
+    
+    func drawCircle(_ circleCenter: CGPoint) {
+        let circlePath = UIBezierPath(arcCenter: circleCenter, radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
+        
+        let shapeLayer = CAShapeLayer()
+        shapeLayer.path = circlePath.cgPath
+        
+        //change the fill color
+        shapeLayer.fillColor = blurColor.cgColor //blurColor is defined at the top of this swift file
+        //you can change the stroke color
+        shapeLayer.strokeColor = blurColor.cgColor
+        //you can change the line width
+        shapeLayer.lineWidth = 1.0
+        
+        view.layer.addSublayer(shapeLayer)
+    }
+    */
+    // This clears out all the translucent circles we drew to blur out the face
+    /*
+    func clearBlurs() {
+        for layer: CALayer in self.view.layer.sublayers! {
+            if layer is CAShapeLayer {
+                layer.removeFromSuperlayer()
+            }
+            
+        }
+        
+        // This is a closure expression that does the same thing as above minus the if statement
+        //self.view.layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+        // There is definitely a sexier way to do this whole thing with closures but the above works
+    }
+    */
+ 
+    @IBAction func clearBlursTapped(_ sender: UIButton) {
+        //self.clearBlurs()
+        
+        imageView.image = currentImage
+        self.enableBlurringButton.isHidden = false
+        self.clearBlursButton.isHidden = true
+        self.blurringEnabled = false
+        
+    }
+    
+    func lockScrollView() {
+        self.scrollView.minimumZoomScale = 1.0
+        self.scrollView.maximumZoomScale = 1.0
+        self.scrollView.isScrollEnabled = false
+    }
+    
+    func unlockScrollView() {
+        self.scrollView.minimumZoomScale = 1.0
+        self.scrollView.maximumZoomScale = 6.0
+        self.scrollView.isScrollEnabled = true
+    }
+    
+    
+    // Rewritten version of flattenViews iterating through all CALayers rather than UIViews
+    /*
+    func flattenViews() -> UIImage? {
+        // Return nil if <allViews> empty
+        /*if (allViews.isEmpty) {
+            return nil
+        }*/
+        
+        // If here, compose image out of views in <allViews>
+        // Create graphics context
+        UIGraphicsBeginImageContextWithOptions(UIScreen.main.bounds.size, false, UIScreen.main.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.interpolationQuality = CGInterpolationQuality.high
+        } else {
+            print("UIGraphicsGetCurrentContext() failed, nil image returned")
+            return nil
+        }
+        
+        // Draw each view into context
+        for layer: CALayer in self.view.layer.sublayers! as UIView {
+            curView.drawHierarchy(in: curView.frame, afterScreenUpdates: false)
+        }
+        
+        // Extract image & end context
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // Return image
+        return image
+    }
+    
+ */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // Flattens <allViews> into single UIImage - not implemented yet
+/*    func flattenViews(allViews: [UIView]) -> UIImage? {
+        // Return nil if <allViews> empty
+        if (allViews.isEmpty) {
+            return nil
+        }
+        
+        // If here, compose image out of views in <allViews>
+        // Create graphics context
+        UIGraphicsBeginImageContextWithOptions(UIScreen.main.bounds.size, false, UIScreen.main.scale)
+        if let context = UIGraphicsGetCurrentContext() {
+            context.interpolationQuality = CGInterpolationQuality.high
+        } else {
+            print("UIGraphicsGetCurrentContext() failed, nil image returned")
+            return nil
+        }
+        
+        // Draw each view into context
+        for curView in allViews {
+            curView.drawHierarchy(in: curView.frame, afterScreenUpdates: false)
+        }
+        
+        // Extract image & end context
+        let image = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        // Return image
+        return image
+    } */
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    // I'm not sure what this method is doing? Do we even use it?
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return self.imageView
     }
 
+    // Takes an image passed in, uses the zoomscale and offset of the scrollview to crop out the visible
+    // portion of the image, and return a new image using only the cropped portion.
     func cropImage(_ storedImage: UIImage) -> UIImage {
-        
-        /*
-        var croppedImage:UIImage
-        
-        // This is the code I got from this website:
-        // http://timrichardson.co/2015/03/cropping-an-image-from-uiscrollview-using-swift/
-        // It had to be updated for Swift 3.0 and I'm not sure if I converted it all right.
-        // There are also some force unwrapped optional values in here that need to be addressed
-        // Not to mention that this code does not correctly crop the image
-        // Double check that it's not just an issue with what value I am returning or the value I am storing to currentImage
-        let scale = 1 / scrollView.zoomScale
-        let visibleRect = CGRect(x: scrollView.contentOffset.x * scale, y: scrollView.contentOffset.y * scale, width: scrollView.bounds.size.width * scale, height: scrollView.bounds.size.height * scale)
-        
-        if let ref:CGImage = storedImage.cgImage!.cropping(to: visibleRect) {
-        
-            croppedImage = UIImage(cgImage: ref)
-            print("image cropped")
-        } else {
-            croppedImage = currentImage
-            print("************************Cropping Failed**************************************")
-        }
-        
-        return croppedImage
-        */
-        
-
-        // This was the original cropping code. It may be closer to what I need than the above:
-        
-        /*
-        var origX: CGFloat
-        var origY: CGFloat
-         */
-        
+ 
+        // determines whether the image is portrait, landscape, or square. Portraits with different h to w ratios
+        // would still be considered portraits. We use this value later to avoid redundant logic statements.
         var imageAspectType: ImageAspectType {
             if storedImage.size.width < storedImage.size.height { //portrait
                 return .isPortrait
@@ -287,39 +477,37 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return .isSquare
             }
         }
-        
-
-        
-        // sets up the "squareSideLength" of the little square that we will use to punch a hole out of the big square:
-        //let squareSideLength = storedImage.size.width / scrollView.zoomScale
+        /*
         print("imageView width: \(imageView.bounds.size.width)")
         print("screen width: \(UIScreen.main.bounds.size.width)")
         print("actual image width: \(storedImage.size.width)")
+        */
         
         //the next two lines take away the built in effect of zoomScale on the content offset:
+        // They are still in the scale of the scrollview though and cannot yet be used to edit the image itself.
         let unzoomedOffsetX = scrollView.contentOffset.x / scrollView.zoomScale
         let unzoomedOffsetY = scrollView.contentOffset.y / scrollView.zoomScale
-        //this stores the width of the actual displayed UIImage on the iPhone screen:
-        //I'm not sure if it does. This looks like it is just getting the actual width of the screen. If the image is narrower than the screen as in the case of a portrait image that is not zoomed in all the way, the displayed width of the image and the width of the screen will be different.
-        // Maybe I can make this a computed property such that it will return the actual displayed image width, not just the screen width.
+        
+        //this stores the width of the actual displayed scrollview/imageview on the iPhone screen:
+        // if the image is a square or landscape, then it is also the value of the displayed image width
+        // Keep in mind, the real image has been resized to fit into the scrollview though
+        // so to manipulate the image itself, we must use values translated by the underlyingToDisplayedRatio (seen below)
         let phoneScreenWidth = UIScreen.main.bounds.size.width
 
         //this stores the size of the actual image that is in memory (and currently being resized to fit on the iPhone screen):
         let underlyingImageWidth = storedImage.size.width
         let underlyingImageHeight = storedImage.size.height
-        //this determines the "scale" as far as how many times bigger or smaller the displayed image is to the actual size of the stored image in memory /*(fuck the height, we don't care about that for this)*/:
-        //I actually need to compare the iphone screen's width (which is the same an scrollview's height, with the longest side of the image to ge the real ratio.
+        
+        //this determines the "scale" as far as how many times bigger or smaller the longest side of the displayed image is to the actual size of the longest side of the stored image in memory:
         var underlyingToDisplayedRatio: CGFloat {
-            // if width is smaller than height then we have a portrait image:
-            if storedImage.size.width < storedImage.size.height {
+            if imageAspectType == ImageAspectType.isPortrait {
                 return underlyingImageHeight / phoneScreenWidth
-                // Otherwise, we have a square or landscape image and the width is the longest side.
-            } else {
+            } else { //encompasses landscape and square images
                 return underlyingImageWidth / phoneScreenWidth
             }
         }
         
-        // At the below zoomscale, we are now cutting off some of the height and width. Below it, we are only cutting off height or width because it's not zoomed in enough.
+        // At and above zoomscale, we are now cutting off some of the height AND width. Below it, we are only cutting off height OR width because it's not zoomed in enough yet for us to need to trim both of the dimensions.
         var zoomThreshold: CGFloat { // follows the form: big/little to get a value > 1
             if imageAspectType == ImageAspectType.isPortrait {
                 return underlyingImageHeight / underlyingImageWidth
@@ -330,7 +518,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             }
         }
         
-        // Basically this returns the value of the longest side cut down by zoomScale
+        // This returns the value of the longest side cut down by zoomScale
         var squareSideLength: CGFloat {
             if imageAspectType == ImageAspectType.isPortrait {
                 return underlyingImageHeight / scrollView.zoomScale
@@ -354,9 +542,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return squareSideLength
             }
         }
-        
-        
-        var whiteArea: CGFloat {
+
+        // This computes the linear value of the white space either to the sides or above and below the non-square image.
+        // The actual value returned is only one of the two rectangles, not the total added up space. Hence the "/ 2."
+        var whiteSpace: CGFloat {
             if imageAspectType == ImageAspectType.isPortrait {
                 return (underlyingImageHeight - underlyingImageWidth) / 2
             } else if imageAspectType == ImageAspectType.isLandscape {
@@ -365,39 +554,35 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return 0.0
             }
         }
-        
-        
-        //the next two lines store the x and y coordinates that the system will use to go to the underlying stored image and use as the upper left corner of the square that it crops from it:
-        //origX = unzoomedOffsetX * underlyingToDisplayedRatio
-        // The if statement is not correct, just copied over from cropSizeHeight
+
+        //the next two computed properties (origX and origY) store the x and y coordinates that the system will use to go to the underlying stored image and use as the upper left corner of the square that it crops from it
         
         var origX: CGFloat {
+            //if it's not a square, we need to account for the white space.
+            //Since we know the photo is centered between the white space, we know that half of the white space
+            // is on either side of it. (already factored into the white space value)
             if imageAspectType == ImageAspectType.isPortrait {
-                print("returning \((unzoomedOffsetX * underlyingToDisplayedRatio) - whiteArea) for origX")
-                return (unzoomedOffsetX * underlyingToDisplayedRatio) - whiteArea
+                print("returning \((unzoomedOffsetX * underlyingToDisplayedRatio) - whiteSpace) for origX")
+                return (unzoomedOffsetX * underlyingToDisplayedRatio) - whiteSpace
             } else {
                 return unzoomedOffsetX * underlyingToDisplayedRatio
             }
         }
-        
-        
-        //origY = unzoomedOffsetY * underlyingToDisplayedRatio
-        // The if statement is not correct, just copied over from cropSizeHeight
+    
         var origY: CGFloat {
             if imageAspectType == ImageAspectType.isLandscape {
-                print("returning \((unzoomedOffsetY * underlyingToDisplayedRatio) - whiteArea) for origY")
-                return (unzoomedOffsetY * underlyingToDisplayedRatio) - whiteArea
+                print("returning \((unzoomedOffsetY * underlyingToDisplayedRatio) - whiteSpace) for origY")
+                return (unzoomedOffsetY * underlyingToDisplayedRatio) - whiteSpace
             } else {
                 return unzoomedOffsetY * underlyingToDisplayedRatio
             }
         }
 
-        // zoomScale tells us how far we are zoomed in at a given moment
+        // zoomScale tells us how far we are zoomed in at a given moment. 2x zoom = zoomScale of 2.
         print("zoomscale: \(scrollView.zoomScale)")
         print("content offset x, y: \(scrollView.contentOffset.x), \(scrollView.contentOffset.y)")
         print("origin: \(origX), \(origY)")
         
-        //let imageOrigin = scrollView.bounds.origin
         let crop = CGRect(x: origX,y: origY, width: cropSizeWidth, height: cropSizeHeight)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
             let image:UIImage = UIImage(cgImage: cgImage) //convert it from a CGImage to a UIImage
@@ -410,15 +595,20 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
     
+    
+    
+    
         // MARK: - UIImagePickerControllerDelegate Methods
         
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+            
             if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
                 imageView.contentMode = .scaleAspectFit
                 print("just picked the image")
                 //currentImage = self.fixOrientation(img: pickedImage)
                 currentImage = self.sFunc_imageFixOrientation(img: pickedImage)
                 imageView.image = currentImage
+                
                 
             }
             
@@ -459,30 +649,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func createAsk (){
         // create a new Ask using the photo, title, and timestamp
-        
-        // Begin experimentation ************************
-        /*
-        // Here I am attempting to rotate currentImage before saving it to the Ask:
-        // (for testing purposes only - this is the opposite of what I really want to do)
-        // A CGAffineTransform is a weird ass thing that I don't understand...
-        var transform:CGAffineTransform = CGAffineTransform.identity
-        // I think this is saying that we will flip the image upside down:
-        transform = transform.rotated(by: CGFloat(M_PI))
-        // From what I can gather, the CGContext is some kind of blank canvas in which we will draw our newly rotated image, this line seems to add our old image to it so at the end of the operation, we have an exact copy of the original image, now contained within the CGContext
-        let ctx:CGContext = CGContext(data: nil, width: Int(currentImage.size.width), height: Int(currentImage.size.height),
-                                      bitsPerComponent: currentImage.cgImage!.bitsPerComponent, bytesPerRow: 0,
-                                      space: currentImage.cgImage!.colorSpace!,
-                                      bitmapInfo: currentImage.cgImage!.bitmapInfo.rawValue)!
-        // Lastly, I believe this concatenation spins the image around the amount specified in the variable 'transform'
-        ctx.concatenate(transform)
-        // Now it's fitting the image into a rectangle...?
-        ctx.draw(currentImage.cgImage!, in: CGRect(x:0,y:0,width:currentImage.size.height,height:currentImage.size.width))
-        
-        let cgimg:CGImage = ctx.makeImage()!
-        let imgEnd:UIImage = UIImage(cgImage: cgimg)
-        
-        */
-        // End experimentation **********************
+
         
         let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
         
@@ -491,10 +658,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // To fix back to normal, replace imageToCreateAskWith with currentImage in the next line:
         let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, timePosted: Date())
         
-        // So the next step here is to upload the app to the iphone and see if the unfucking method that I pasted at the bottom of this file works as advertized and flips it back to normal before storing it to the ask
-        // If it is still messed up even after I have applied the unfucking method, it is probably because the system is rotating the image later on, perhaps right after it creates the Ask. If this is the case, I need to apply the unfucking method to the actual image property of the Ask I just created and see if I can rotate that. Hopefully that's not the issue becuase the unfucking method basically just stores a rotated copy of the image to the Ask anyway so the mechanism that is flipping it will probably just flip it again, counteracting the best efforts of the unfucking method.
-        // I don't think the above is the problem since the images are just stored rotated because the camera doesn't rotate. There's something else going on here. Also, if this is the issue, perhaps I can set up the unfucker to rotate the image 180 deg so that when it gets put back 90 deg, it will be in the right orientation.
-
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
         print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
@@ -517,9 +680,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                     throw CameraError.noName
                 } else {
                     currentTitle = title
+                    currentImage = imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
                     currentImage = self.cropImage(currentImage)
                     createAsk()
                     self.navigationController?.popViewController(animated: true) //rtn to main page
+                    //let arrayOfViewsToBeMerged: [UIView] = [currentImage]
                 }
             }
         } catch CameraError.noName {
@@ -528,6 +693,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 UIAlertAction in
                 print("Proceed with no title clicked")
                 currentTitle = "(no title)"
+                currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
                 currentImage = self.cropImage(currentImage)
                 self.createAsk()
                 self.navigationController?.popViewController(animated: true)
@@ -540,14 +706,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         } catch let error {
             fatalError("\(error)")
         }
-        
-        //testing the crop function
-        /* 
-        print("cropping image")
-        let croppedImage = self.cropImage(currentImage)
-        currentImage = croppedImage
-        */
-        
         
     }
     
@@ -641,6 +799,31 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("newAsk.image orientation is down \(passedImage.imageOrientation == UIImageOrientation.down)")
     }
     
+    // This is set to a generic flesh tone. 
+    // A better solution would be to either sample the color underneath where the user pressed
+    //  or to use some kind of blurring algorithm to actually shift the pixel colors
+    //  around randomly within the bounds of the circle.
+
+
+
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     // This is an alternate, more elegant method for fixing image rotation that I am not currently
     // using. It still runs into the original problem of needing to have the correct metadata.
     // Also, I'm not really sure what UIGraphicsGetImageFromCurrentImageContext() is doing.
@@ -665,8 +848,77 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 }
 
 
+
+// This code was pulled from this site: https://github.com/dcordero/BlurFace/commit/8378ba531dbc4ddc4bd07d974f5deb9488a218f8
+// It is part of some larger program that detect the faces and then blurs them. Right now I'm just trying to figure out how to use this code to draw a circle on top of the currentImage.
+// From there, I should be able to use the coordinates of where the user long taps to draw the circle where they long tapped, thus blurring the face.
+
+
+/*
+
+public class BlurFace {
+    //private let ciDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil ,options: [CIDetectorAccuracy : CIDetectorAccuracyHigh])
+    private var ciImage: CIImage!
+    private var orientation: UIImageOrientation = .up
+    //private lazy var features : [AnyObject]! = { self.ciDetector.featuresInImage(self.ciImage) }()
+    private lazy var context = { CIContext(options: nil) }()
     
+    // MARK: Initializers
     
+    public init(image: UIImage!) {
+        setImage(image: image)
+    }
+    public func setImage(image: UIImage!) {
+        ciImage = CIImage(image: image)
+        orientation = image.imageOrientation
+        // features = nil
+    }
     
+
+    public func blurFaces() -> UIImage {
+        let pixelateFilter = CIFilter(name: "CIPixellate")
+        pixelateFilter.setValue(ciImage, forKey: kCIInputImageKey)
+        pixelateFilter.setValue(max(ciImage!.extent().width, ciImage.extent().height) / 60.0, forKey: kCIInputScaleKey)
+        
+        var maskImage: CIImage?
+        for feature in featureFaces() {
+            let centerX = feature.bounds.origin.x + feature.bounds.size.width / 2.0
+            let centerY = feature.bounds.origin.y + feature.bounds.size.height / 2.0
+            let radius = min(feature.bounds.size.width, feature.bounds.size.height) / 1.5
+            
+            let radialGradient = CIFilter(name: "CIRadialGradient")
+            radialGradient.setValue(radius, forKey: "inputRadius0")
+            radialGradient.setValue(radius + 1, forKey: "inputRadius1")
+            radialGradient.setValue(CIColor(red: 0, green: 1, blue: 0, alpha: 1), forKey: "inputColor0")
+            radialGradient.setValue(CIColor(red: 0, green: 0, blue: 0, alpha: 0), forKey: "inputColor1")
+            radialGradient.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
+            
+            let croppedImage = radialGradient.outputImage.imageByCroppingToRect(ciImage.extent())
+            
+            let circleImage = croppedImage
+            if (maskImage == nil) {
+                maskImage = circleImage
+            } else {
+                let filter =  CIFilter(name: "CISourceOverCompositing")
+                filter.setValue(circleImage, forKey: kCIInputImageKey)
+                filter.setValue(maskImage, forKey: kCIInputBackgroundImageKey)
+                
+                maskImage = filter.outputImage
+            }
+        }
+        
+        let composite = CIFilter(name: "CIBlendWithMask")
+        composite?.setValue(pixelateFilter?.outputImage, forKey: kCIInputImageKey) //I added the force unwrap ?'s
+        composite.setValue(ciImage, forKey: kCIInputBackgroundImageKey)
+        composite.setValue(maskImage, forKey: kCIInputMaskImageKey)
+        
+        let cgImage = context.createCGImage(composite.outputImage, fromRect: composite.outputImage.extent())
+        return UIImage(CGImage: cgImage, scale: 1, orientation: orientation)!
+    }
+}
+*/
+
+
+
 
 
