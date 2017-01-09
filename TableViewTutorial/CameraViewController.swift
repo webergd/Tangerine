@@ -89,6 +89,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         imageView.image = currentImage
         titleHasBeenTapped = false
+        
+        self.enableBlurringButton.isHidden = false
+        self.clearBlursButton.isHidden = true
+        
         imagePicker.delegate = self
         captionTextField.delegate = self
         self.scrollView.minimumZoomScale = 1.0
@@ -124,9 +128,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         self.captionTopLimit = self.topLayoutGuide.length + self.titleTextFieldHeight
         
         //self.scrollViewHeight = self.scrollView.frame.height
-        print("scrollView height is: \(scrollViewHeight)")
-        print("self.screenHeight is: \(self.screenHeight)")
-        print("self.screenWidth is: \(UIScreen.main.bounds.width)")
+        //print("scrollView height is: \(scrollViewHeight)")
+        //print("self.screenHeight is: \(self.screenHeight)")
+        //print("self.screenWidth is: \(UIScreen.main.bounds.width)")
         self.screenWidth = UIScreen.main.bounds.width
         
         // This constrains the caption drag to stay above the bottom of the image
@@ -169,9 +173,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         } else {
             // if the caption is displayed and the user taps the image, dismiss the keyboard
             view.endEditing(true)
-            print("back inside userTappedImage function")
-            print("captionTextField.center.y= \(self.captionTextField.center.y)")
-            print("end of userTappedImage function")
+            //print("back inside userTappedImage function")
+            //print("captionTextField.center.y= \(self.captionTextField.center.y)")
+            //print("end of userTappedImage function")
         }
     }
     
@@ -191,10 +195,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func setCaptionTopConstraint(_ desiredLocation: CGFloat) -> CGFloat {
         
         if desiredLocation < captionTopLimit {
-            print("returning captionTopLimit: \(captionTopLimit)")
+            //print("returning captionTopLimit: \(captionTopLimit)")
             return captionTopLimit
         } else if desiredLocation > captionBottomLimit {
-            print("returning captionBottomLimit: \(captionBottomLimit)")
+            //print("returning captionBottomLimit: \(captionBottomLimit)")
             return captionBottomLimit
             
         } else {
@@ -267,6 +271,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         blurFace.setImage(image: imageView.image)
         imageView.image = blurFace.blurFaces()
+        if numFaces < 1 {
+            noFacesDetectedMessage()
+        }
         
         
         //currentImage = pixellate(image: currentImage)
@@ -274,6 +281,13 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // What I will ultimately need to do is only modify imageView.image and then store that image to currentImage when
         // the user clicks publish, that way I can revert back to the non-blurred image at any moment by 
         // reassigning currentImage to the imageView.image
+    }
+    
+    public func noFacesDetectedMessage() {
+        let alertController = UIAlertController(title: "Tangerine Detected No Faces!", message: "Press and hold each face to manually blur.", preferredStyle: .alert)
+        let okAction = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(okAction)
+        present(alertController, animated: true, completion: nil)
     }
     
     /*
@@ -562,7 +576,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             //Since we know the photo is centered between the white space, we know that half of the white space
             // is on either side of it. (already factored into the white space value)
             if imageAspectType == ImageAspectType.isPortrait {
-                print("returning \((unzoomedOffsetX * underlyingToDisplayedRatio) - whiteSpace) for origX")
+                //print("returning \((unzoomedOffsetX * underlyingToDisplayedRatio) - whiteSpace) for origX")
                 return (unzoomedOffsetX * underlyingToDisplayedRatio) - whiteSpace
             } else {
                 return unzoomedOffsetX * underlyingToDisplayedRatio
@@ -571,7 +585,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
         var origY: CGFloat {
             if imageAspectType == ImageAspectType.isLandscape {
-                print("returning \((unzoomedOffsetY * underlyingToDisplayedRatio) - whiteSpace) for origY")
+                //print("returning \((unzoomedOffsetY * underlyingToDisplayedRatio) - whiteSpace) for origY")
                 return (unzoomedOffsetY * underlyingToDisplayedRatio) - whiteSpace
             } else {
                 return unzoomedOffsetY * underlyingToDisplayedRatio
@@ -579,9 +593,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
 
         // zoomScale tells us how far we are zoomed in at a given moment. 2x zoom = zoomScale of 2.
-        print("zoomscale: \(scrollView.zoomScale)")
-        print("content offset x, y: \(scrollView.contentOffset.x), \(scrollView.contentOffset.y)")
-        print("origin: \(origX), \(origY)")
+        //print("zoomscale: \(scrollView.zoomScale)")
+        //print("content offset x, y: \(scrollView.contentOffset.x), \(scrollView.contentOffset.y)")
+        //print("origin: \(origX), \(origY)")
         
         let crop = CGRect(x: origX,y: origY, width: cropSizeWidth, height: cropSizeHeight)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
@@ -711,11 +725,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
         
-        print("inside the beginning of the rotation unfucker")
         // No-op if the orientation is already correct
 
         if (img.imageOrientation == UIImageOrientation.up) {
-            print("returning original image")
             return img;
         }
 
@@ -732,28 +744,24 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         if (img.imageOrientation == UIImageOrientation.left
             || img.imageOrientation == UIImageOrientation.leftMirrored) {
-            print("image is left or left mirrored")
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.rotated(by: CGFloat(M_PI_2))
         }
         
         if (img.imageOrientation == UIImageOrientation.right
             || img.imageOrientation == UIImageOrientation.rightMirrored) {
-            print("image is right or right mirrored")
             transform = transform.translatedBy(x: 0, y: img.size.height);
             transform = transform.rotated(by: CGFloat(-M_PI_2));
         }
         
         if (img.imageOrientation == UIImageOrientation.upMirrored
             || img.imageOrientation == UIImageOrientation.downMirrored) {
-            print("image is upMirrored or downMirrored")
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         }
         
         if (img.imageOrientation == UIImageOrientation.leftMirrored
             || img.imageOrientation == UIImageOrientation.rightMirrored) {
-            print("image is leftMirrored or rightMirrored")
             transform = transform.translatedBy(x: img.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         }
@@ -773,12 +781,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             || img.imageOrientation == UIImageOrientation.right
             || img.imageOrientation == UIImageOrientation.rightMirrored
             ) {
-            print("inside the if statement of the rotation unfucker")
             //I'm not sure why there is even an if statement since they perform the same operation in both cases...
             ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.height,height:img.size.width))
             
         } else {
-            print("inside the else statement of the rotation unfucker")
             ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.width,height:img.size.height))
         }
         

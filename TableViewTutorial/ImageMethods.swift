@@ -11,6 +11,9 @@ import UIKit
 import CoreImage
 
 
+public var numFaces: Int = 0
+var maskImage: CIImage?
+
 private var context = { CIContext(options: nil) }()
 
 /*
@@ -120,14 +123,28 @@ public class BlurFace {
         // features = nil
     }
     
+
+    
     
     public func blurFaces() -> UIImage {
+        
+        
+        // testing this here to see if refreshing the context every time removes the blurring issues
+        context = { CIContext(options: nil) }()
+        print("context refreshed")
+        
+        
+        
         let pixelateFilter = CIFilter(name: "CIPixellate")
         pixelateFilter?.setValue(ciImage, forKey: kCIInputImageKey)
         pixelateFilter?.setValue(max(ciImage!.extent.width, ciImage.extent.height) / 60.0, forKey: kCIInputScaleKey)
         
-        var maskImage: CIImage?
+        //var maskImage: CIImage?
+        numFaces = 0
         for feature in featureFaces() {
+            numFaces += 1
+            print("\(numFaces) faces detected")
+            
             let centerX = feature.bounds.origin.x + feature.bounds.size.width / 2.0
             let centerY = feature.bounds.origin.y + feature.bounds.size.height / 2.0
             let radius = min(feature.bounds.size.width, feature.bounds.size.height) / 1.5
@@ -151,6 +168,9 @@ public class BlurFace {
                 
                 maskImage = filter?.outputImage
             }
+        }
+        if numFaces < 1 {
+            print("numFaces = \(numFaces)")
         }
         
         let composite = CIFilter(name: "CIBlendWithMask")
