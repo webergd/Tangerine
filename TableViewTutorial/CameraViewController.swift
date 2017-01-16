@@ -22,6 +22,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var clearBlursButton: UIButton!
     @IBOutlet weak var enableBlurringButton: UIButton!
     @IBOutlet weak var returnToZoomButton: UIButton!
+    @IBOutlet weak var blurringInProgressLabel: UILabel!
     
     
     
@@ -54,6 +55,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     let blurColor = UIColor(red: 172/255, green: 132/255, blue: 76/255, alpha: 0.05)
     var blurringEnabled: Bool = false
     var blurFace: BlurFace = BlurFace(image: currentImage)
+    var pressStartTime: TimeInterval = 0.0
+    let blurRadiusMultiplier: Double = 75.0
+    public let phoneScreenWidth: CGFloat = UIScreen.main.bounds.size.width
     
     
     enum CameraError: Swift.Error {
@@ -148,10 +152,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         
         //Enables user to long press image for blurred circle (1 of 2):
-        /*
-        let pressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userPressed(_:)))
+        
+        let pressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userPressed(_:) ))
         imageView.addGestureRecognizer(pressImageGesture)
-        */
+
         //captionTextField.isUserInteractionEnabled = true
         
     }
@@ -304,16 +308,107 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     //Enables user to long press image for flesh colored transluscent circle (2 of 2):
-    /*
-    func userPressed(_ pressImageGesture: UILongPressGestureRecognizer){
-        tappedLoc = pressImageGesture.location(in: self.view)
-        if blurringEnabled == true {
-            self.drawCircle(tappedLoc)
-        } else {
+    
+    func manualBlur(location: CGPoint, radius: CGFloat) {
+        blurringInProgressLabel.isHidden = false
+        
+        
+        blurFace.setImage(image: imageView.image)
+        
+        //I need a way to pass the tapped location on the image rather than on the screen
+        
+        // ways to convert it:
+        // take zoomscale into account
+        // take scrollview offset into account
+        // take image's actual size in comparision to its apparent size in imageView into account.
+
+        
+        imageView.image = blurFace.manualBlurFace(at: location, with: radius)
+        self.drawCircle(tappedLoc)
+        
+
+        
+        //if blurringEnabled == true {
+            //self.drawCircle(tappedLoc)
+        //} else {
             // this is where the label need to be made to appear to tell the user to leave cropping mode before trying to blur.
-        }
+        //}
+        blurringInProgressLabel.isHidden = true
     }
     
+    // This calls code in ImageMethods.swift, and manually blurs a location using a radius that depends on press time duration (in seconds).
+    // Press less than 1.5 sec = small radius. Press more than 1.5 sec = large radius.
+    func userPressed(_ pressImageGesture: UILongPressGestureRecognizer){
+        print("userPressed activated")
+        clearBlursButton.isHidden = false
+        
+        // This takes the amount of time the user held down, multiplies by the blurRadiusMultiplier (currently 75) to get the radius
+        let blurRadiusToBePassed: CGFloat = CGFloat(blurRadiusMultiplier * handleRecognizer(gesture: pressImageGesture))
+        // This takes the radius from above as well as the location where the user pressed and blurs an oval shaped area
+        print("converting point...")
+        print("starting point was: \(pressImageGesture.location(in: self.view))")
+        var convertedPointToBeBlurred: CGPoint = computeOrig(passedImage: currentImage, pointToConvert: pressImageGesture.location(in: self.view), screenWidth: phoneScreenWidth, contentOffset: scrollView.contentOffset, zoomScale: scrollView.zoomScale)
+        
+        
+        
+        // I believe this is necessary because of an underlying difference in the coordinate system of the mask vs the actual image
+        // Y seems to start from the bottom when using the mask. Still not 100% sure on this.
+        convertedPointToBeBlurred.y = currentImage.size.height - convertedPointToBeBlurred.y
+
+        
+        print("converted point is: \(convertedPointToBeBlurred)")
+    
+        //pressImageGesture.location(in: self.view)
+        
+        manualBlur(location: convertedPointToBeBlurred, radius: blurRadiusToBePassed)
+        
+        
+        
+        /*
+        if handleRecognizer(gesture: pressImageGesture) < 1.5 {
+            //manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
+            print("user pressed location: \(pressImageGesture.location(in: self.imageView))")
+            manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
+            
+        } else {
+            manualBlur(radius: 300.0, location: pressImageGesture.location(in: self.view))
+        }
+        */
+    }
+    
+    // This method allows us to find out how long the user has been pressing on the screen for an extended duration
+    // It returns that duration in seconds. We use it in userPressed() to determine what the blur radius should be.
+    func handleRecognizer(gesture: UILongPressGestureRecognizer) -> Double {
+        var duration: TimeInterval = 0
+        
+        
+        switch (gesture.state) {
+        case .began:
+            //Keeping start time...
+            self.pressStartTime = NSDate.timeIntervalSinceReferenceDate
+            
+        case .ended:
+            //Calculating duration
+            duration = NSDate.timeIntervalSinceReferenceDate - self.pressStartTime
+            //Note that NSTimeInterval is a double value...
+            print("Duration : \(duration)")
+            
+        default:
+            break;
+        }
+        
+        return duration
+    }
+    
+    /*
+    let pressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userPressed(_:) ))
+    imageView.addGestureRecognizer(pressImageGesture)
+    
+    let longPressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userLongPressed(_:)))
+    imageView.addGestureRecognizer(longPressImageGesture)
+    */
+    
+    // this is just here for testing purposes right now (to see where user tapped for blur)
     func drawCircle(_ circleCenter: CGPoint) {
         let circlePath = UIBezierPath(arcCenter: circleCenter, radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
         
@@ -329,7 +424,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         view.layer.addSublayer(shapeLayer)
     }
-    */
+ 
     // This clears out all the translucent circles we drew to blur out the face
     /*
     func clearBlurs() {
@@ -402,31 +497,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
  */
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+
     
     
     
@@ -465,12 +536,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     
-    
-    
-    
-    
-    
-    
     // I'm not sure what this method is doing? Do we even use it?
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
         return self.imageView
@@ -482,6 +547,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
  
         // determines whether the image is portrait, landscape, or square. Portraits with different h to w ratios
         // would still be considered portraits. We use this value later to avoid redundant logic statements.
+        
+        let imageAspectType = computeImageAspectType(passedImage: storedImage)
+        
+        /*
         var imageAspectType: ImageAspectType {
             if storedImage.size.width < storedImage.size.height { //portrait
                 return .isPortrait
@@ -491,6 +560,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return .isSquare
             }
         }
+        */
+        
+        
         /*
         print("imageView width: \(imageView.bounds.size.width)")
         print("screen width: \(UIScreen.main.bounds.size.width)")
@@ -499,20 +571,30 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         //the next two lines take away the built in effect of zoomScale on the content offset:
         // They are still in the scale of the scrollview though and cannot yet be used to edit the image itself.
-        let unzoomedOffsetX = scrollView.contentOffset.x / scrollView.zoomScale
-        let unzoomedOffsetY = scrollView.contentOffset.y / scrollView.zoomScale
+        
+        
+        // 1/16/17:
+        //let unzoomedOffsetX = scrollView.contentOffset.x / scrollView.zoomScale
+        //let unzoomedOffsetY = scrollView.contentOffset.y / scrollView.zoomScale
+              
+        
         
         //this stores the width of the actual displayed scrollview/imageview on the iPhone screen:
         // if the image is a square or landscape, then it is also the value of the displayed image width
         // Keep in mind, the real image has been resized to fit into the scrollview though
         // so to manipulate the image itself, we must use values translated by the underlyingToDisplayedRatio (seen below)
-        let phoneScreenWidth = UIScreen.main.bounds.size.width
+        
+        //public let phoneScreenWidth = UIScreen.main.bounds.size.width
 
         //this stores the size of the actual image that is in memory (and currently being resized to fit on the iPhone screen):
         let underlyingImageWidth = storedImage.size.width
         let underlyingImageHeight = storedImage.size.height
         
         //this determines the "scale" as far as how many times bigger or smaller the longest side of the displayed image is to the actual size of the longest side of the stored image in memory:
+        
+        let underlyingToDisplayedRatio: CGFloat = computeUnderlyingToDisplayedRatio(passedImage: storedImage, screenWidth: phoneScreenWidth)
+        
+        /*
         var underlyingToDisplayedRatio: CGFloat {
             if imageAspectType == ImageAspectType.isPortrait {
                 return underlyingImageHeight / phoneScreenWidth
@@ -520,6 +602,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return underlyingImageWidth / phoneScreenWidth
             }
         }
+        */
         
         // At and above zoomscale, we are now cutting off some of the height AND width. Below it, we are only cutting off height OR width because it's not zoomed in enough yet for us to need to trim both of the dimensions.
         var zoomThreshold: CGFloat { // follows the form: big/little to get a value > 1
@@ -559,6 +642,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
         // This computes the linear value of the white space either to the sides or above and below the non-square image.
         // The actual value returned is only one of the two rectangles, not the total added up space. Hence the "/ 2."
+        
+        //let whiteSpace: CGFloat = computeWhiteSpace(passedImage: storedImage)
+        
+        /*
         var whiteSpace: CGFloat {
             if imageAspectType == ImageAspectType.isPortrait {
                 return (underlyingImageHeight - underlyingImageWidth) / 2
@@ -568,9 +655,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return 0.0
             }
         }
+        */
+        
 
         //the next two computed properties (origX and origY) store the x and y coordinates that the system will use to go to the underlying stored image and use as the upper left corner of the square that it crops from it
         
+        /*
         var origX: CGFloat {
             //if it's not a square, we need to account for the white space.
             //Since we know the photo is centered between the white space, we know that half of the white space
@@ -591,13 +681,21 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 return unzoomedOffsetY * underlyingToDisplayedRatio
             }
         }
+        */
 
         // zoomScale tells us how far we are zoomed in at a given moment. 2x zoom = zoomScale of 2.
         //print("zoomscale: \(scrollView.zoomScale)")
         //print("content offset x, y: \(scrollView.contentOffset.x), \(scrollView.contentOffset.y)")
         //print("origin: \(origX), \(origY)")
         
-        let crop = CGRect(x: origX,y: origY, width: cropSizeWidth, height: cropSizeHeight)
+        // we store a copy of the origin (0,0) because that is the point on the scrollview that we want to convert to a point on the image
+        // (for cropping). Then we pass it into the converion method computeOrig
+        let pointZeroZero: CGPoint = CGPoint(x: 0.0, y: 0.0)
+        
+        let orig = computeOrig(passedImage: storedImage, pointToConvert: pointZeroZero, screenWidth: phoneScreenWidth, contentOffset: scrollView.contentOffset, zoomScale: scrollView.zoomScale)
+        
+        
+        let crop = CGRect(x: orig.x,y: orig.y, width: cropSizeWidth, height: cropSizeHeight)
         if let cgImage = storedImage.cgImage?.cropping(to: crop) {
             let image:UIImage = UIImage(cgImage: cgImage) //convert it from a CGImage to a UIImage
             return image
