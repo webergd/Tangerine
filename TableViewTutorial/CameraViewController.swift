@@ -345,15 +345,24 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // This takes the amount of time the user held down, multiplies by the blurRadiusMultiplier (currently 75) to get the radius
         let blurRadiusToBePassed: CGFloat = CGFloat(blurRadiusMultiplier * handleRecognizer(gesture: pressImageGesture))
         // This takes the radius from above as well as the location where the user pressed and blurs an oval shaped area
+        print("scrollView hieght is: \(imageView.bounds.height)")
+
+        
         print("converting point...")
-        print("starting point was: \(pressImageGesture.location(in: self.view))")
-        var convertedPointToBeBlurred: CGPoint = computeOrig(passedImage: currentImage, pointToConvert: pressImageGesture.location(in: self.view), screenWidth: phoneScreenWidth, contentOffset: scrollView.contentOffset, zoomScale: scrollView.zoomScale)
+        print("starting point was: \(pressImageGesture.location(in: imageView))")
+        print("scrollView content offset is: \(scrollView.contentOffset)")
+        // We pass these two values in for contentOffset and zoomScale because our coordinate point info is coming from the image itself
+        //  which is oblivious to what the scrollView is doing. The point come directly from the image, 
+        //  regardless of how it looks in the scrollView.
+        let zeroContentOffset: CGPoint = CGPoint(x: 0, y: 0)
+        let noZoom: CGFloat = 1.0
+        var convertedPointToBeBlurred: CGPoint = computeOrig(passedImage: currentImage, pointToConvert: pressImageGesture.location(in: imageView), screenWidth: phoneScreenWidth, contentOffset: zeroContentOffset, zoomScale: noZoom)
         
         
         
         // I believe this is necessary because of an underlying difference in the coordinate system of the mask vs the actual image
         // Y seems to start from the bottom when using the mask. Still not 100% sure on this.
-        convertedPointToBeBlurred.y = currentImage.size.height - convertedPointToBeBlurred.y
+        convertedPointToBeBlurred.y = currentImage.size.height - convertedPointToBeBlurred.y //+ (blurRadiusToBePassed/2)
 
         
         print("converted point is: \(convertedPointToBeBlurred)")
@@ -445,6 +454,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //self.clearBlurs()
         
         imageView.image = currentImage
+        blurFace = BlurFace(image: currentImage)
         self.enableBlurringButton.isHidden = false
         self.clearBlursButton.isHidden = true
         self.blurringEnabled = false
