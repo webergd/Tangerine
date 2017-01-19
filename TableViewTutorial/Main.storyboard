@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1212" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="11762" systemVersion="15G1217" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -94,8 +94,8 @@
                                     <action selector="captionTextFieldBeginEditing:" destination="sJJ-as-S31" eventType="editingDidBegin" id="8be-oa-fwV"/>
                                 </connections>
                             </textField>
-                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" misplaced="YES" text=":: blurring in progress ::" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YCX-1N-MAI">
-                                <rect key="frame" x="93" y="539" width="177" height="21"/>
+                            <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text=":: blurring in progress ::" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="YCX-1N-MAI">
+                                <rect key="frame" x="141" y="603" width="93.5" height="10"/>
                                 <accessibility key="accessibilityConfiguration" identifier="blurringInProgressLabel"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="8"/>
                                 <nil key="textColor"/>
@@ -158,6 +158,7 @@
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="2IU-TT-2e9"/>
                             <constraint firstItem="xHB-t2-Bcb" firstAttribute="top" secondItem="6Bz-y1-TJt" secondAttribute="bottom" id="4vD-nU-o7e"/>
+                            <constraint firstItem="YCX-1N-MAI" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="6c6-Ac-0tc"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="6zg-hf-fSR"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="BLT-VY-Drf"/>
                             <constraint firstAttribute="bottom" secondItem="ZqT-a8-dwT" secondAttribute="bottom" id="ChL-t9-g3f"/>
@@ -169,15 +170,14 @@
                             <constraint firstItem="XOo-iF-27H" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="bottom" id="IzA-sD-NvX"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" id="J4b-Hg-hqj"/>
                             <constraint firstAttribute="leadingMargin" secondItem="XOo-iF-27H" secondAttribute="leading" id="JLQ-Of-UQp"/>
-                            <constraint firstItem="YCX-1N-MAI" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" constant="77" id="M5p-qX-Zme"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="MHc-yf-CFZ"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Pv3-gH-Z1J"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Qd8-M0-ir0"/>
-                            <constraint firstItem="YCX-1N-MAI" firstAttribute="centerY" secondItem="s4g-4i-nXH" secondAttribute="centerY" id="U6f-RW-ggY"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="VAE-Kr-Nay"/>
                             <constraint firstAttribute="trailingMargin" secondItem="6Bz-y1-TJt" secondAttribute="trailing" id="bCI-20-LKY"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="bXj-rj-FWZ"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" constant="221" id="fJi-kk-pvb"/>
+                            <constraint firstItem="ZqT-a8-dwT" firstAttribute="top" secondItem="YCX-1N-MAI" secondAttribute="bottom" constant="10" id="gGw-C2-eP3"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="kgm-vH-vH4"/>
                             <constraint firstAttribute="leadingMargin" secondItem="ZdZ-14-emU" secondAttribute="leading" id="ndE-kG-Uqd"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" id="pTP-9L-wt7"/>

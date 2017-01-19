@@ -84,9 +84,8 @@ public class BlurFace {
         
         
         // testing this here to see if refreshing the context every time removes the blurring issues
-        context = { CIContext(options: nil) }()
-        print("context refreshed")
-        
+        //context = { CIContext(options: nil) }()
+        //print("context refreshed")
         
         
         //let pixelateFilter = CIFilter(name: "CIPixellate")
@@ -148,6 +147,11 @@ public class BlurFace {
     
     public func manualBlurFace(at location: CGPoint, with radius: CGFloat) -> UIImage {
         
+        // this is a sloppy work around to try and get it to stop blurring twice
+        // if radius == 0.0 { return currentImage}
+        // which isn't even that good because this way it deletes the initial blurs if the user wants to add more than one
+        
+        
         // beacuse I don't have an autodetected face, I need to manually determine the size and location of the face box
         let centerX: CGFloat = location.x
         let centerY: CGFloat = location.y
@@ -196,10 +200,10 @@ public func computeUnderlyingToDisplayedRatio(passedImage: UIImage, screenWidth:
     let underlyingImageHeight = passedImage.size.height
     
     if computeImageAspectType(passedImage: passedImage) == ImageAspectType.isPortrait {
-        print("Portrait detected. UnderlyingImageToDisplayedRatio is: \(underlyingImageHeight / screenWidth)")
+        //print("Portrait detected. UnderlyingImageToDisplayedRatio is: \(underlyingImageHeight / screenWidth)")
         return underlyingImageHeight / screenWidth
     } else { //encompasses landscape and square images
-        print("Landscape or square detected. UnderlyingImageToDisplayedRatio is: \(underlyingImageHeight / screenWidth)")
+        //print("Landscape or square detected. UnderlyingImageToDisplayedRatio is: \(underlyingImageHeight / screenWidth)")
         return underlyingImageWidth / screenWidth
     }
 }
@@ -216,7 +220,7 @@ public func computeWhiteSpace(passedImage: UIImage) -> CGFloat {
     let underlyingImageHeight = passedImage.size.height
     
     if imageAspectType == ImageAspectType.isPortrait {
-        print("Portrait, computed white space is: \((underlyingImageHeight - underlyingImageWidth) / 2)")
+        //print("Portrait, computed white space is: \((underlyingImageHeight - underlyingImageWidth) / 2)")
         return (underlyingImageHeight - underlyingImageWidth) / 2
     } else if imageAspectType == ImageAspectType.isLandscape {
         return (underlyingImageWidth - underlyingImageHeight) / 2
