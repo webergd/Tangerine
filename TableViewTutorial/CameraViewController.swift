@@ -98,7 +98,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         self.enableBlurringButton.isHidden = false
         self.clearBlursButton.isHidden = true
         
-        blurRadiusMultiplier = phoneScreenWidth / 3.0
+        // blurRadiusMultiplier = phoneScreenWidth / 3.0
+        print("setting blur radius mutliplier using phone screen width (psw/3)")
+        print("phoneScreenWidth is: \(phoneScreenWidth)")
+        print("blur radius multiplier is: \(blurRadiusMultiplier)")
         
         imagePicker.delegate = self
         captionTextField.delegate = self
@@ -157,7 +160,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //Enables user to long press image for blurred circle (1 of 2):
         
         let pressImageGesture = UILongPressGestureRecognizer(target: self, action: #selector(CameraViewController.userPressed(_:) ))
-        pressImageGesture.minimumPressDuration = 0.25
+        pressImageGesture.minimumPressDuration = 0.10
         imageView.addGestureRecognizer(pressImageGesture)
 
         //captionTextField.isUserInteractionEnabled = true
@@ -269,6 +272,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     @IBAction func enableBlurring(_ sender: UIButton) {
         //self.lockScrollView()
+        blurringInProgressLabel.isHidden = false
         self.enableBlurringButton.isHidden = true
         self.clearBlursButton.isHidden = false
         //self.returnToZoomButton.isHidden = false
@@ -283,6 +287,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             noFacesDetectedMessage()
         }
         
+        blurringInProgressLabel.isHidden = true
         
         //currentImage = pixellate(image: currentImage)
         //imageView.image = currentImage
@@ -314,7 +319,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     //Enables user to long press image for flesh colored transluscent circle (2 of 2):
     
     func manualBlur(location: CGPoint, radius: CGFloat) {
-        blurringInProgressLabel.isHidden = false
+        //blurringInProgressLabel.isHidden = false
         
         
         blurFace.setImage(image: imageView.image)
@@ -337,7 +342,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //} else {
             // this is where the label need to be made to appear to tell the user to leave cropping mode before trying to blur.
         //}
-        blurringInProgressLabel.isHidden = true
+        //blurringInProgressLabel.isHidden = true
     }
     
     // This calls code in ImageMethods.swift, and manually blurs a location using a radius that depends on press time duration (in seconds).
@@ -348,72 +353,95 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         if (pressImageGesture.state == UIGestureRecognizerState.began) {
             print("Long press detected.")
+            blurringInProgressLabel.text = ":: setting blur radius ::"
             blurringInProgressLabel.isHidden = false
             // we have to call this in order to "start the stopwatch" so we can measure how long the user presses down:
             handleRecognizer(gesture: pressImageGesture)
+            
+            
+
+            
+            
+            
+            
             return
         } else if (pressImageGesture.state == UIGestureRecognizerState.ended) {
             print("Long press ended.")
+            blurringInProgressLabel.text = ":: blurring in progress ::"
+            //blurringInProgressLabel.isHidden = true
+        //}
+            /*
+             if userPressedCounter == 0 {
+             userPressedCounter += 1
+             print("userPressed called. Bailing out of method")
+             return
+             }
+             */
+ 
+            print("userPressed activated.")
+            //userPressedCounter = 0
+ 
+        
+            clearBlursButton.isHidden = false
+            
+            
+            // For testing only: delete later:
+            let ratio = computeUnderlyingToDisplayedRatio(passedImage: currentImage, screenWidth: screenWidth)
+            print("underlying Image Ratio is: \(ratio)")
+            
+            blurRadiusMultiplier = ratio * 40
+
+            print("setting blurRadiusMultiplier to: \(blurRadiusMultiplier)")
+
+            
+        
+            // This takes the amount of time the user held down, multiplies by the blurRadiusMultiplier to get the radius
+            let blurRadiusToBePassed: CGFloat = blurRadiusMultiplier * CGFloat(handleRecognizer(gesture: pressImageGesture))
+            // This takes the radius from above as well as the location where the user pressed and blurs an oval shaped area
+            // print("scrollView hieght is: \(imageView.bounds.height)")
+
+        
+            //print("converting point...")
+            //print("starting point was: \(pressImageGesture.location(in: imageView))")
+            //print("scrollView content offset is: \(scrollView.contentOffset)")
+        
+            // We pass these two values in for contentOffset and zoomScale because our coordinate point info is coming from the image itself
+            //  which is oblivious to what the scrollView is doing. The point come directly from the image,
+            //  regardless of how it looks in the scrollView.
+            let zeroContentOffset: CGPoint = CGPoint(x: 0, y: 0)
+            let noZoom: CGFloat = 1.0
+        
+            // This line translates the coordinates from the UIImageView to the coordinates on the underlying image.
+            var convertedPointToBeBlurred: CGPoint = computeOrig(passedImage: currentImage, pointToConvert: pressImageGesture.location(in: imageView), screenWidth: phoneScreenWidth, contentOffset: zeroContentOffset, zoomScale: noZoom)
+        
+        
+        
+            // We reverse the y coordindate because the mask image that will be blurred is a CIImage.
+            // CIImage coordinates start from with the origin at the bottom left vice the top left.
+            convertedPointToBeBlurred.y = currentImage.size.height - convertedPointToBeBlurred.y //+ (blurRadiusToBePassed/2)
+
+        
+            //print("converted point is: \(convertedPointToBeBlurred)")
+    
+            //pressImageGesture.location(in: self.view)
+        
+            manualBlur(location: convertedPointToBeBlurred, radius: blurRadiusToBePassed)
+        
+        
+        
+            /*
+             if handleRecognizer(gesture: pressImageGesture) < 1.5 {
+             //manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
+             print("user pressed location: \(pressImageGesture.location(in: self.imageView))")
+             manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
+            
+             } else {
+                manualBlur(radius: 300.0, location: pressImageGesture.location(in: self.view))
+             }
+             */
+        
             blurringInProgressLabel.isHidden = true
         }
-        /*
-        if userPressedCounter == 0 {
-            userPressedCounter += 1
-            print("userPressed called. Bailing out of method")
-            return
-        }
-        */
- 
-        print("userPressed activated.")
-        //userPressedCounter = 0
- 
-        
-        clearBlursButton.isHidden = false
-        
-        // This takes the amount of time the user held down, multiplies by the blurRadiusMultiplier to get the radius
-        let blurRadiusToBePassed: CGFloat = blurRadiusMultiplier * CGFloat(handleRecognizer(gesture: pressImageGesture))
-        // This takes the radius from above as well as the location where the user pressed and blurs an oval shaped area
-        // print("scrollView hieght is: \(imageView.bounds.height)")
-
-        
-        //print("converting point...")
-        //print("starting point was: \(pressImageGesture.location(in: imageView))")
-        //print("scrollView content offset is: \(scrollView.contentOffset)")
-        
-        // We pass these two values in for contentOffset and zoomScale because our coordinate point info is coming from the image itself
-        //  which is oblivious to what the scrollView is doing. The point come directly from the image, 
-        //  regardless of how it looks in the scrollView.
-        let zeroContentOffset: CGPoint = CGPoint(x: 0, y: 0)
-        let noZoom: CGFloat = 1.0
-        
-        // This line translates the coordinates from the UIImageView to the coordinates on the underlying image.
-        var convertedPointToBeBlurred: CGPoint = computeOrig(passedImage: currentImage, pointToConvert: pressImageGesture.location(in: imageView), screenWidth: phoneScreenWidth, contentOffset: zeroContentOffset, zoomScale: noZoom)
-        
-        
-        
-        // We reverse the y coordindate because the mask image that will be blurred is a CIImage.
-        // CIImage coordinates start from with the origin at the bottom left vice the top left.
-        convertedPointToBeBlurred.y = currentImage.size.height - convertedPointToBeBlurred.y //+ (blurRadiusToBePassed/2)
-
-        
-        //print("converted point is: \(convertedPointToBeBlurred)")
-    
-        //pressImageGesture.location(in: self.view)
-        
-        manualBlur(location: convertedPointToBeBlurred, radius: blurRadiusToBePassed)
-        
-        
-        
-        /*
-        if handleRecognizer(gesture: pressImageGesture) < 1.5 {
-            //manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
-            print("user pressed location: \(pressImageGesture.location(in: self.imageView))")
-            manualBlur(radius: 150.0, location: pressImageGesture.location(in: self.view))
-            
-        } else {
-            manualBlur(radius: 300.0, location: pressImageGesture.location(in: self.view))
-        }
-        */
     }
     
     // This method allows us to find out how long the user has been pressing on the screen for an extended duration

@@ -53,7 +53,7 @@ public class BlurFace {
         radialGradient?.setValue(CIColor(red: 0, green: 0, blue: 0, alpha: 0), forKey: "inputColor1")
         radialGradient?.setValue(CIVector(x: centerX, y: centerY), forKey: kCIInputCenterKey)
         
-        print("CIVector coordinates are x: \(centerX). y: \(centerY)")
+        //print("CIVector coordinates are x: \(centerX). y: \(centerY)")
         
         let croppedImage = radialGradient?.outputImage?.cropping(to: ciImage.extent)
         
@@ -155,9 +155,10 @@ public class BlurFace {
         // beacuse I don't have an autodetected face, I need to manually determine the size and location of the face box
         let centerX: CGFloat = location.x
         let centerY: CGFloat = location.y
-        print("manualBlurFace called. Location passed to it is x: \(location.x) y: \(location.y)")
+        //print("manualBlurFace called. Location passed to it is x: \(location.x) y: \(location.y)")
         // I still need a way for the user to set the radius
         //let radius: CGFloat = 100.0
+        
         
         print("manual face blurring with radius of: \(radius)")
         setupBlurMask(centerX: centerX, centerY: centerY, radius: radius)
