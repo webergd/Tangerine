@@ -26,6 +26,7 @@
 		2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
 		2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */; };
 		2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
+		2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -71,6 +72,7 @@
 		2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareTableViewCell.swift; sourceTree = "<group>"; };
 		2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareViewController.swift; sourceTree = "<group>"; };
 		2AECD6CD1D42938A00AAB743 /* DataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
+		2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCameraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
+				2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */,
 				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
 				2ACDFA031E2008A600471E3D /* ImageMethods.swift */,
 				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
@@ -300,6 +303,7 @@
 				2AE338C31D48858D00B32C03 /* CompareBreakdownViewController.swift in Sources */,
 				2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */,
 				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
+				2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,
 				2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */,
 				2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */,

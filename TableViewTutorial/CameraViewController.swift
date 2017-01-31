@@ -99,9 +99,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         self.clearBlursButton.isHidden = true
         
         // blurRadiusMultiplier = phoneScreenWidth / 3.0
-        print("setting blur radius mutliplier using phone screen width (psw/3)")
-        print("phoneScreenWidth is: \(phoneScreenWidth)")
-        print("blur radius multiplier is: \(blurRadiusMultiplier)")
+        //print("setting blur radius mutliplier using phone screen width (psw/3)")
+        //print("phoneScreenWidth is: \(phoneScreenWidth)")
+        //print("blur radius multiplier is: \(blurRadiusMultiplier)")
         
         imagePicker.delegate = self
         captionTextField.delegate = self
@@ -285,6 +285,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         imageView.image = blurFace.blurFaces()
         if numFaces < 1 {
             noFacesDetectedMessage()
+            self.enableBlurringButton.isHidden = false
+            self.clearBlursButton.isHidden = true
         }
         
         blurringInProgressLabel.isHidden = true
@@ -322,6 +324,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //blurringInProgressLabel.isHidden = false
         
         
+        
+        
         blurFace.setImage(image: imageView.image)
         
         //I need a way to pass the tapped location on the image rather than on the screen
@@ -333,7 +337,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
         
         imageView.image = blurFace.manualBlurFace(at: location, with: radius)
-        self.drawCircle(tappedLoc)
+        //self.drawCircle(tappedLoc)
         
 
         
@@ -353,6 +357,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         if (pressImageGesture.state == UIGestureRecognizerState.began) {
             print("Long press detected.")
+            
+            // a cool thing to have here would be a bar that gets bigger on the screen the longer the user holds down
+            // in order to give them a visual indication of how big the blur radius is going to be, but alas,
+            // perhaps for an updated version later on.
+            
             blurringInProgressLabel.text = ":: setting blur radius ::"
             blurringInProgressLabel.isHidden = false
             // we have to call this in order to "start the stopwatch" so we can measure how long the user presses down:
@@ -369,27 +378,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             print("Long press ended.")
             blurringInProgressLabel.text = ":: blurring in progress ::"
             //blurringInProgressLabel.isHidden = true
-        //}
-            /*
-             if userPressedCounter == 0 {
-             userPressedCounter += 1
-             print("userPressed called. Bailing out of method")
-             return
-             }
-             */
+
  
             print("userPressed activated.")
             //userPressedCounter = 0
- 
-        
+
             clearBlursButton.isHidden = false
             
             
-            // For testing only: delete later:
-            let ratio = computeUnderlyingToDisplayedRatio(passedImage: currentImage, screenWidth: screenWidth)
-            print("underlying Image Ratio is: \(ratio)")
-            
-            blurRadiusMultiplier = ratio * 40
+            // So far this is the most natural ratio I've been able to determine as far as hold down time to blur size ratio multiplier
+            // The idea seems to be around 130 radius size units for every second of hold down, on a 1000 units wide scree
+            blurRadiusMultiplier = computeUnderlyingToDisplayedRatio(passedImage: currentImage, screenWidth: screenWidth) * 40
 
             print("setting blurRadiusMultiplier to: \(blurRadiusMultiplier)")
 

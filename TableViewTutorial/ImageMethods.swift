@@ -75,6 +75,7 @@ public class BlurFace {
         composite?.setValue(maskImage, forKey: kCIInputMaskImageKey)
         
         let cgImage = context.createCGImage(composite!.outputImage!, from: composite!.outputImage!.extent)
+        
         return UIImage(cgImage: cgImage!, scale: 1, orientation: orientation)
     }
     
@@ -162,7 +163,7 @@ public class BlurFace {
         
         print("manual face blurring with radius of: \(radius)")
         setupBlurMask(centerX: centerX, centerY: centerY, radius: radius)
-        
+
         return addBlurMaskToImage()
     }
 

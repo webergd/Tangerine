@@ -13,6 +13,97 @@
     </dependencies>
     <scenes>
         <!--Camera View Controller-->
+        <scene sceneID="5rC-uo-7ea">
+            <objects>
+                <viewController storyboardIdentifier="AVCameraViewController" id="GWS-Lv-6ut" customClass="AVCameraViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="egI-nx-ect"/>
+                        <viewControllerLayoutGuide type="bottom" id="1wz-MM-5Ph"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="3LS-bM-ZBx">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IFV-Kh-xCP">
+                                <rect key="frame" x="0.0" y="64" width="375" height="603"/>
+                                <subviews>
+                                    <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zjE-YL-Q9g">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="603"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="avImageView"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dfm-dT-IOw">
+                                        <rect key="frame" x="137.5" y="486" width="100" height="100"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="takePhotoButton" label="takePhotoButton"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="100" id="VH5-i1-vlA"/>
+                                            <constraint firstAttribute="width" secondItem="dfm-dT-IOw" secondAttribute="height" multiplier="1:1" id="cME-zZ-EbY"/>
+                                            <constraint firstAttribute="height" constant="100" id="iQD-jq-hOn"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="TakePhoto1"/>
+                                        <connections>
+                                            <action selector="takePhoto:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="65B-Y1-VZq"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LYE-Vi-CwO">
+                                        <rect key="frame" x="8" y="550" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="LYE-Vi-CwO" secondAttribute="height" multiplier="1:1" id="H76-es-dcT"/>
+                                            <constraint firstAttribute="width" constant="45" id="ekr-24-IfV"/>
+                                        </constraints>
+                                        <state key="normal" title="Lib" image="square-icon"/>
+                                        <connections>
+                                            <action selector="selectFromPhotoLibrary:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="ddk-2i-USI"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YTv-pR-yjs">
+                                        <rect key="frame" x="8" y="477" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="45" id="5fe-uo-oZ2"/>
+                                            <constraint firstAttribute="width" secondItem="YTv-pR-yjs" secondAttribute="height" multiplier="1:1" id="yqv-WG-nFE"/>
+                                        </constraints>
+                                        <state key="normal" image="no-flash"/>
+                                        <connections>
+                                            <action selector="toggleFlash:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="m8t-cw-V68"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <accessibility key="accessibilityConfiguration" identifier="avCameraView"/>
+                                <constraints>
+                                    <constraint firstItem="LYE-Vi-CwO" firstAttribute="top" secondItem="YTv-pR-yjs" secondAttribute="bottom" constant="28" id="BQ3-70-nkT"/>
+                                    <constraint firstItem="zjE-YL-Q9g" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="top" id="UEr-dy-Vba"/>
+                                    <constraint firstAttribute="trailing" secondItem="zjE-YL-Q9g" secondAttribute="trailing" id="Wqa-UG-6WI"/>
+                                    <constraint firstItem="zjE-YL-Q9g" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" id="YCk-D8-Oqm"/>
+                                    <constraint firstAttribute="bottom" secondItem="zjE-YL-Q9g" secondAttribute="bottom" id="u20-mn-I9L"/>
+                                </constraints>
+                            </view>
+                        </subviews>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1wz-MM-5Ph" firstAttribute="top" secondItem="LYE-Vi-CwO" secondAttribute="bottom" constant="8" id="Cpo-3p-r2l"/>
+                            <constraint firstItem="IFV-Kh-xCP" firstAttribute="top" secondItem="egI-nx-ect" secondAttribute="bottom" id="GQ1-N0-fpE"/>
+                            <constraint firstItem="dfm-dT-IOw" firstAttribute="centerX" secondItem="3LS-bM-ZBx" secondAttribute="centerX" id="HnN-od-dKk"/>
+                            <constraint firstItem="LYE-Vi-CwO" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-8" id="ItA-Tq-ZPi"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="IFV-Kh-xCP" secondAttribute="trailing" constant="-16" id="Ks3-Vb-GPZ"/>
+                            <constraint firstItem="1wz-MM-5Ph" firstAttribute="top" secondItem="dfm-dT-IOw" secondAttribute="bottom" constant="17" id="cyf-if-ugJ"/>
+                            <constraint firstItem="YTv-pR-yjs" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-8" id="kcJ-ud-jFu"/>
+                            <constraint firstItem="IFV-Kh-xCP" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-16" id="lIF-N6-rNg"/>
+                            <constraint firstItem="1wz-MM-5Ph" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="bottom" id="sJV-F9-yYs"/>
+                        </constraints>
+                    </view>
+                    <navigationItem key="navigationItem" id="8or-7J-0t0"/>
+                    <connections>
+                        <outlet property="avCameraView" destination="IFV-Kh-xCP" id="CEn-bQ-Tui"/>
+                        <outlet property="avImageView" destination="zjE-YL-Q9g" id="9IP-m3-Jk1"/>
+                        <outlet property="photoLibraryButton" destination="LYE-Vi-CwO" id="0D4-9d-sI9"/>
+                        <outlet property="takePhotoButton" destination="dfm-dT-IOw" id="Q7m-EI-4Qh"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="LlC-Oh-gsK" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="-199.19999999999999" y="-314.39280359820094"/>
+        </scene>
+        <!--Camera View Controller-->
         <scene sceneID="eQa-bk-I7z">
             <objects>
                 <viewController id="sJJ-as-S31" customClass="CameraViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
@@ -25,7 +116,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
-                                <rect key="frame" x="0.0" y="64" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="20" width="375" height="30"/>
                                 <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -38,7 +129,7 @@
                                 </connections>
                             </textField>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
-                                <rect key="frame" x="0.0" y="94" width="375" height="375"/>
+                                <rect key="frame" x="0.0" y="50" width="375" height="375"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
@@ -81,7 +172,7 @@
                                 </connections>
                             </scrollView>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
-                                <rect key="frame" x="0.0" y="285" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="241" width="375" height="30"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="0.75137392241379308" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333329999998" alpha="0.7513739224" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -118,7 +209,7 @@
                                     <barButtonItem title="Caption Mirrors Title:" id="LOR-ct-FH2"/>
                                     <barButtonItem style="plain" id="Bu8-6I-5lU">
                                         <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="WDz-dI-ibQ">
-                                            <rect key="frame" x="254" y="7" width="51" height="31"/>
+                                            <rect key="frame" x="254" y="6.5" width="51" height="31"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <accessibility key="accessibilityConfiguration" identifier="mirrorSwitch" label="mirrorSwitch"/>
                                         </switch>
@@ -132,21 +223,21 @@
                                 </items>
                             </toolbar>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xHB-t2-Bcb">
-                                <rect key="frame" x="284" y="499" width="75" height="30"/>
+                                <rect key="frame" x="284" y="455" width="75" height="30"/>
                                 <state key="normal" title="Clear Blurs"/>
                                 <connections>
                                     <action selector="clearBlursTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="Qnl-Sy-Bei"/>
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XOo-iF-27H">
-                                <rect key="frame" x="16" y="469" width="107" height="30"/>
+                                <rect key="frame" x="16" y="425" width="107" height="30"/>
                                 <state key="normal" title="Return to Zoom"/>
                                 <connections>
                                     <action selector="returnToZoom:" destination="sJJ-as-S31" eventType="touchUpInside" id="qHr-Bw-p9z"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Bz-y1-TJt">
-                                <rect key="frame" x="252" y="469" width="107" height="30"/>
+                                <rect key="frame" x="252" y="425" width="107" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="enableBlurring"/>
                                 <state key="normal" title="Auto Blur Faces"/>
                                 <connections>
@@ -195,6 +286,7 @@
                             </mask>
                         </variation>
                     </view>
+                    <navigationItem key="navigationItem" id="5p9-CJ-2Gp"/>
                     <connections>
                         <outlet property="blurringInProgressLabel" destination="YCX-1N-MAI" id="IJM-Gc-45q"/>
                         <outlet property="captionTextField" destination="0F6-95-USV" id="Wuy-W0-eIt"/>
@@ -246,7 +338,7 @@
                                 </constraints>
                                 <state key="normal" title="Take Photo (camera icon)"/>
                                 <connections>
-                                    <segue destination="sJJ-as-S31" kind="show" id="bKx-rD-mcc"/>
+                                    <segue destination="GWS-Lv-6ut" kind="push" id="wA2-LK-tnM"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cfM-mk-jPr">
@@ -1392,8 +1484,11 @@
         </scene>
     </scenes>
     <resources>
+        <image name="TakePhoto1" width="200" height="200"/>
         <image name="defaultPhoto" width="138" height="91"/>
+        <image name="no-flash" width="512" height="512"/>
         <image name="shrug" width="250" height="174"/>
+        <image name="square-icon" width="512" height="512"/>
         <image name="tangerineImage1" width="224" height="216"/>
     </resources>
 </document>
