@@ -10,17 +10,23 @@ import UIKit
 import AVFoundation
 import MobileCoreServices // enables us to usekUTTypeImage
 
-// I need to change this to take still photos
 
-
-
-class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+@available(iOS 10.0, *) // so I guess this means users are out of luck if they don't update their phones
+class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCapturePhotoCaptureDelegate {
     
-    var captureSession : AVCaptureSession?
-    var stillImageOutput : AVCaptureStillImageOutput?
-    var previewLayer : AVCaptureVideoPreviewLayer?
+    //var stillImageOutput: AVCaptureStillImageOutput?
+    
+    
+    //belongs to the pre-iOS10 av camera (but I think also to the new one)
+    var captureSession: AVCaptureSession! //these 3 might need to be question marks instead of  exclamation points
+    var cameraOutput: AVCapturePhotoOutput!
+    var previewLayer: AVCaptureVideoPreviewLayer!
+ 
+    
     let imagePicker = UIImagePickerController()
     var justFinishedPicking: Bool = false
+    var capturedImage: UIImage = #imageLiteral(resourceName: "tangerineImage2")
+    
     
     enum flashState: String {
         case flashOn
@@ -32,8 +38,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     
     
     
-    @IBOutlet weak var avCameraView: UIView!
-    @IBOutlet weak var avImageView: UIImageView!
+    @IBOutlet weak var avCameraView: UIView! //this is where the preview layer should show up
+    @IBOutlet weak var avImageView: UIImageView! //we use this to display the image after it has been taken
     @IBOutlet weak var takePhotoButton: UIButton!
     @IBOutlet weak var photoLibraryButton: UIButton!
     @IBOutlet weak var flashButton: UIButton!
@@ -44,7 +50,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         super.viewDidLoad()
         imagePicker.delegate = self
         
-        // Do any additional setup after loading the view.
+        
     }
     
     override func didReceiveMemoryWarning() {
@@ -52,27 +58,75 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         // Dispose of any resources that can be recreated.
     }
     
+    /* // This is another suggested option for setting the frame for the preview layer. Probably unnecessary at this point.
+     override func viewDidLayoutSubviews() {
+     super.viewDidLayoutSubviews()
+     previewLayer.frame = cameraView.bounds
+     }
+    */
+    
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        
+        // May need to recreate the preview layer if the new swift 3 av camera doesn't do it automatically:
         previewLayer?.frame = UIScreen.main.bounds // for some reason using avCameraView.bounds created a L and R buffer
     }
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+
         captureSession = AVCaptureSession()
-        captureSession?.sessionPreset = AVCaptureSessionPreset1280x720
+        // we may want to change the AVCaptureSessionPreset____ to a different resolution to save space.
+        captureSession.sessionPreset = AVCaptureSessionPresetPhoto//AVCaptureSessionPresetPhoto
+        cameraOutput = AVCapturePhotoOutput()
+        
+        let device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        
+        if let input = try? AVCaptureDeviceInput(device: device) {
+            if (captureSession.canAddInput(input)) {
+                captureSession.addInput(input)
+                if (captureSession.canAddOutput(cameraOutput)) {
+                    captureSession.addOutput(cameraOutput)
+                    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                    
+                    // This causes the preview layer to take up the whole screen:
+                    let previewLayerBounds: CGRect = self.view.layer.bounds
+                    previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    previewLayer?.bounds = previewLayerBounds
+                    previewLayer?.position = CGPoint(x: previewLayerBounds.midX, y: previewLayerBounds.midY)
+                    
+                    
+                    //previewLayer.frame = avCameraView.bounds // if the line below this works, take this line out and see what happens
+                    
+                    //previewLayer.frame = UIScreen.main.bounds // for some reason using avCameraView.bounds created a L and R buffer
+                    avCameraView.layer.insertSublayer(previewLayer!, below: self.takePhotoButton.layer)
+                    captureSession.startRunning()
+                }
+            } else {
+                print("issue here : captureSession.canAddInput")
+            }
+        } else {
+            print("some problem here")
+        }
+
+        
+        
+        
+        
+        
+        
+        /* // Belongs to then old pre-iOS10 av camera
+        captureSession = AVCaptureSession()
+        captureSession!.sessionPreset = AVCaptureSessionPreset1280x720
         
         var backCamera = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
         
-        //var error : NSError?
-        //var input = AVCaptureDeviceInput(device: backCamera) throws -> error
-        
-        //var input = AVCaptureDeviceInput(device: backCamera, error: &error)
-        
         var error: NSError?
         var input: AVCaptureDeviceInput!
+        
+        
         do {
             input = try AVCaptureDeviceInput(device: backCamera)
         } catch let error1 as NSError {
@@ -110,17 +164,62 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             
             
         }
-        
+        */
         
         
     }
     
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+        
+    }
 
     
     @IBAction func takePhoto(_ sender: Any) {
         // Snaps a picture
+        
+        // New AVCapturePhotoOutput code goes here **************
+        
+        
+        let settings = AVCapturePhotoSettings()
+        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
+        let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
+                             kCVPixelBufferWidthKey as String: 160,
+                             kCVPixelBufferHeightKey as String: 160,
+                             ]
+        settings.previewPhotoFormat = previewFormat
+        self.cameraOutput.capturePhoto(with: settings, delegate: self)
+        print("wtf")
+        
+        
+        /* // Old stillImage stuff
+        if let videoConnection = stillImageOutput!.connectionWithMediaType(AVMediaTypeVideo) {
+            stillImageOutput?.captureStillImageAsynchronouslyFromConnection(videoConnection, completionHandler: { (sampleBuffer, error) -> Void in
+
+                // Process the image data (sampleBuffer) here to get an image file we can put in our captureImageView
+                if sampleBuffer != nil {
+                    let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(sampleBuffer)
+                    let dataProvider = CGDataProviderCreateWithCFData(imageData)
+                    let cgImageRef = CGImageCreateWithJPEGDataProvider(dataProvider, nil, true, CGColorRenderingIntent.RenderingIntentDefault)
+                    let image = UIImage(CGImage: cgImageRef!, scale: 1.0, orientation: UIImageOrientation.Right)
+                    // Add the image to captureImageView here...
+                    
+                }
+            })
+        }
+        */
+        
+        
+        
+        
+        
+        
+        /*
+        
         if let videoConnection = stillImageOutput!.connection(withMediaType: AVMediaTypeVideo) {
             stillImageOutput?.captureStillImageAsynchronously(from: videoConnection, completionHandler: { (sampleBuffer, error) -> Void in
+                
                 // ...
                 // Process the image data (sampleBuffer) here to get an image file we can put in our captureImageView
                 if sampleBuffer != nil {
@@ -137,9 +236,36 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             })
         }
         
-        hideCameraIcons()
+        
+        */
+        
+        //hideCameraIcons()
 
         
+    }
+    
+    
+    // This capture function has to be here or an error will be thrown when I try to take the picture.
+    // I still haven't figured out why.
+    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        
+        if let error = error {
+            print("error occure : \(error.localizedDescription)")
+        }
+        
+        if  let sampleBuffer = photoSampleBuffer,
+            let previewBuffer = previewPhotoSampleBuffer,
+            let dataImage =  AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer:  sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
+            print(UIImage(data: dataImage)?.size as Any)
+            
+            let dataProvider = CGDataProvider(data: dataImage as CFData)
+            let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
+            
+            self.capturedImage = image
+        } else {
+            print("some error here")
+        }
     }
     
     // gets rid of all the unnecessary buttons 
@@ -174,7 +300,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             justFinishedPicking = true
             avImageView.contentMode = .scaleAspectFit
             print("just picked the image")
-            self.previewLayer?.isHidden = true
+//            self.previewLayer?.isHidden = true
             self.avImageView.isHidden = false
             self.avImageView.image = pickedImage
             hideCameraIcons()
