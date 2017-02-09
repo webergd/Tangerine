@@ -73,6 +73,9 @@
                                             <constraint firstAttribute="width" secondItem="6cZ-hf-x0C" secondAttribute="height" multiplier="1:1" id="pG3-cP-z5d"/>
                                         </constraints>
                                         <state key="normal" title="Menu" image="menu"/>
+                                        <connections>
+                                            <action selector="menuButtonTapped:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="upJ-I2-FK5"/>
+                                        </connections>
                                     </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
@@ -105,6 +108,8 @@
                     <connections>
                         <outlet property="avCameraView" destination="IFV-Kh-xCP" id="CEn-bQ-Tui"/>
                         <outlet property="avImageView" destination="zjE-YL-Q9g" id="9IP-m3-Jk1"/>
+                        <outlet property="flashButton" destination="YTv-pR-yjs" id="PIa-EO-K2L"/>
+                        <outlet property="menuButton" destination="6cZ-hf-x0C" id="by8-MP-UnC"/>
                         <outlet property="photoLibraryButton" destination="LYE-Vi-CwO" id="0D4-9d-sI9"/>
                         <outlet property="takePhotoButton" destination="dfm-dT-IOw" id="Q7m-EI-4Qh"/>
                     </connections>

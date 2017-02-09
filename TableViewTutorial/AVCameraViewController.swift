@@ -26,6 +26,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     let imagePicker = UIImagePickerController()
     var justFinishedPicking: Bool = false
     var capturedImage: UIImage = #imageLiteral(resourceName: "tangerineImage2")
+    var photoSampleBuffer: CMSampleBuffer?
+    // var previewPhotoSampleBuffer: CMSampleBuffer?  //an option that we can enable if we start using thumbnails from the camera
     
     
     enum flashState: String {
@@ -43,6 +45,9 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     @IBOutlet weak var takePhotoButton: UIButton!
     @IBOutlet weak var photoLibraryButton: UIButton!
     @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var menuButton: UIButton!
+    
+    //@IBOutlet weak var flashButton: UIButton!
     
     //@IBOutlet var cameraView: UIView!
     
@@ -76,7 +81,14 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
         
+        // Hide the navigation bar on the this view controller
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
 
+        if justFinishedPicking == true {
+            return
+        }
+        
+        
         captureSession = AVCaptureSession()
         // we may want to change the AVCaptureSessionPreset____ to a different resolution to save space.
         captureSession.sessionPreset = AVCaptureSessionPresetPhoto//AVCaptureSessionPresetPhoto
@@ -174,6 +186,16 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         
         
     }
+    
+    // This is literally only in here to unhide the nav bar after this view goes away, it's debatible whether I need it or not.
+    
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        // Show the navigation bar on other view controllers
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
 
     
     @IBAction func takePhoto(_ sender: Any) {
@@ -185,12 +207,15 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         let settings = AVCapturePhotoSettings()
         let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
         let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
-                             kCVPixelBufferWidthKey as String: 160,
+                             kCVPixelBufferWidthKey as String: 160, //no clue what these numbers mean
                              kCVPixelBufferHeightKey as String: 160,
                              ]
         settings.previewPhotoFormat = previewFormat
         self.cameraOutput.capturePhoto(with: settings, delegate: self)
-        print("wtf")
+        
+        //capturedImage = whatever the fuck goes here
+        
+        
         
         
         /* // Old stillImage stuff
@@ -239,14 +264,40 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         
         */
         
-        //hideCameraIcons()
+        hideCameraIcons()
+        previewLayer.isHidden = true
+        avImageView.isHidden = false
 
+        
+    }
+    
+    //Maybe a better simpler version of the capture method?:
+    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        
+        if let error = error {
+            print(error.localizedDescription)
+        }
+        
+        if let sampleBuffer = photoSampleBuffer, let previewBuffer = previewPhotoSampleBuffer, let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
+            capturedImage = UIImage(data: dataImage)!
+            
+        }
+        
+        avImageView.image = capturedImage
+        
+        // I don't even know if I need this:
+        self.photoSampleBuffer = photoSampleBuffer
+        // self.previewPhotoSampleBuffer = previewPhotoSampleBuffer  // enable if using thumbnails from the camera - currently unnecessary
+        
+        
         
     }
     
     
     // This capture function has to be here or an error will be thrown when I try to take the picture.
     // I still haven't figured out why.
+    
+    /*
     func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         
         if let error = error {
@@ -267,6 +318,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             print("some error here")
         }
     }
+    */
     
     // gets rid of all the unnecessary buttons 
     // designed to be called after a photo is picked or taken
@@ -274,6 +326,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         photoLibraryButton.isHidden = true
         takePhotoButton.isHidden = true
         flashButton.isHidden = true
+        menuButton.isHidden = true
     }
     
     // not implemented yet
@@ -281,6 +334,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         photoLibraryButton.isHidden = false
         takePhotoButton.isHidden = false
         flashButton.isHidden = false
+        menuButton.isHidden = false
     }
     
     
@@ -300,7 +354,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             justFinishedPicking = true
             avImageView.contentMode = .scaleAspectFit
             print("just picked the image")
-//            self.previewLayer?.isHidden = true
+            self.previewLayer?.isHidden = true
             self.avImageView.isHidden = false
             self.avImageView.image = pickedImage
             hideCameraIcons()
@@ -393,5 +447,11 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
      }
      */
  
+    @IBAction func menuButtonTapped(_ sender: Any) {
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
+        
+    }
  
 }
