@@ -143,6 +143,7 @@ class AskTableViewController: UITableViewController {
         
         
         
+        
         //print("Queries: \(queries)")
         //print("SortedQueries: \(sortedQueries)")
         

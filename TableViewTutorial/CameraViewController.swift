@@ -903,7 +903,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     // I'm not sure if I still need this method since I'm using an AV camera now
-    func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
+    public func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
         
         // No-op if the orientation is already correct
 

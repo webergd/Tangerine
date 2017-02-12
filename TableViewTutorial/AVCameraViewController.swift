@@ -10,7 +10,7 @@ import UIKit
 import AVFoundation
 import MobileCoreServices // enables us to usekUTTypeImage
 
-public var justFinishedPicking: Bool = false
+public var justFinishedPicking: Bool = false //when it's false, the camera will load upon loading the view. When true, it will show the imageView instead.
 
 @available(iOS 10.0, *) // so I guess this means users are out of luck if they don't update their phones
 class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCapturePhotoCaptureDelegate {
@@ -72,7 +72,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
-        
+        //blackView.isHidden = true
+        //print("viewDidLoad, blackView is hidden")
     }
     
     override func didReceiveMemoryWarning() {
@@ -213,6 +214,16 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
                 captureSession.addInput(input)
                 if (captureSession.canAddOutput(cameraOutput)) {
                     captureSession.addOutput(cameraOutput)
+                    
+                    /*
+                    if let connection = previewLayer?.connection  {
+                        if connection.isVideoOrientationSupported {
+                                connection.videoOrientation = AVCaptureVideoOrientation.portrait
+                                print("portrait mode set for AVCamera")
+                            }
+                    }
+                    */
+                    
                     previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
                     
                     // This causes the preview layer to take up the whole screen:
@@ -351,8 +362,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
             let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
             
-            self.capturedImage = image
             
+            self.capturedImage = sFunc_imageFixOrientation(img: image)
             
             
             
