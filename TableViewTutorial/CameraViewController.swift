@@ -883,6 +883,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
     }
     
+
     @IBAction func publishButtonTapped(_ sender: AnyObject) {
         print("publish button tapped")
         // check to see if the text box is empty

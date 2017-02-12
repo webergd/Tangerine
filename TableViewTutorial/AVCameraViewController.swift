@@ -513,21 +513,21 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         avCameraFlash = .flashAuto
         //settings.flashMode = .auto
         //device.flashMode = .auto //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "auto-flash"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "auto-flash_white"), for: UIControlState.normal)
         print("flash mode set to auto")
     }
     func turnFlashOn() {
         avCameraFlash = .flashOn
         //settings.flashMode = .on
         //device.flashMode = .on //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "flash"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "flash_white"), for: UIControlState.normal)
         print("flash mode set to on")
     }
     func turnFlashOff() {
         avCameraFlash = .flashOff
         //settings.flashMode = .off
         //device.flashMode = .off //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "no-flash"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "no-flash_white"), for: UIControlState.normal)
         print("flash mode set to off")
     }
     
@@ -565,13 +565,13 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             lastFlashSettingForBackCamera = avCameraFlash //stores the user's last setting for the flash
             turnFlashOff() //disables the flash since the selfie cam doesn't have one
             flashButton.isHidden = true
-            cameraFlipButton.setImage(UIImage(named: "Selfie1"), for: .normal)
+            cameraFlipButton.setImage(UIImage(named: "CameraFlip3_white"), for: .normal)
             
             //device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front)
             print("camera instructed to switch to selfie mode")
         case .selfie: // if it's selfie SWITCH TO STANDARD (.back)
             cameraPosition = .standard
-            cameraFlipButton.setImage(UIImage(named: "CameraFlip1"), for: .normal)
+            cameraFlipButton.setImage(UIImage(named: "CameraFlip2_white"), for: .normal)
             
             // Checks which setting the flash was before the user switched over to the selfie camera
             //  and returns the flash to that state.
