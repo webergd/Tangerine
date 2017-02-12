@@ -92,6 +92,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        justFinishedPicking = true //prevents AVCameraViewController from reloading camera upon navigating back to it
+        
         imageView.image = currentImage
         titleHasBeenTapped = false
         
@@ -786,6 +788,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 imageView.contentMode = .scaleAspectFit
                 print("just picked the image")
                 //currentImage = self.fixOrientation(img: pickedImage)
+                print("fixing image orientation inside imagePickerController delgate method")
                 currentImage = self.sFunc_imageFixOrientation(img: pickedImage)
                 unblurredImageSave = currentImage
                 imageView.image = currentImage
@@ -831,7 +834,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func createAsk (){
         // create a new Ask using the photo, title, and timestamp
 
-        
+        print("fixing image orientation inside createAsk() ")
         let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
         
         currentImage = imageToCreateAskWith
@@ -864,7 +867,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                     currentImage = imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
                     currentImage = self.cropImage(currentImage)
                     createAsk()
-                    self.navigationController?.popViewController(animated: true) //rtn to main page
+                    backTwo() // should get us back to the menu by popping two ViewControllers at once
+                    //self.navigationController?.popViewController(animated: true) //rtn to main page
                     //let arrayOfViewsToBeMerged: [UIView] = [currentImage]
                 }
             }
@@ -877,7 +881,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
                 currentImage = self.cropImage(currentImage)
                 self.createAsk()
-                self.navigationController?.popViewController(animated: true)
+                self.backTwo()
+                //self.navigationController?.popViewController(animated: true)
                 }
             alertController.addAction(actionYes)
             let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .default, handler: nil) //no handler closure req'd bc we just go right back to the original view
@@ -890,6 +895,14 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
     }
     
+    func backTwo() {
+        
+        let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController];
+        self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true);
+        
+    }
+    
+    // I'm not sure if I still need this method since I'm using an AV camera now
     func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
         
         // No-op if the orientation is already correct

@@ -251,3 +251,360 @@ func applyFilterAndSaveToPhotoLibrary(_ sampleBuffer: CMSampleBuffer,
 
 
 */
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+
+
+
+
+
+import UIKit
+import AVFoundation
+import MobileCoreServices // enables us to usekUTTypeImage
+
+
+@available(iOS 10.0, *)
+class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate, AVCapturePhotoCaptureDelegate {
+
+    var captureSession: AVCaptureSession!
+    var cameraOutput: AVCapturePhotoOutput!
+    var previewLayer: AVCaptureVideoPreviewLayer!
+    
+    let imagePicker = UIImagePickerController()
+    var justFinishedPicking: Bool = false
+    var capturedImage: UIImage = #imageLiteral(resourceName: "tangerineImage2")
+    var photoSampleBufferContainer: CMSampleBuffer?
+
+    var cameraPosition: cameraPositionType = .standard // sets the default camera position to standard (vice selfie)
+
+    enum flashState: String {
+        case flashOn
+        case flashAuto
+        case flashOff
+    }
+    // sets the flash enum to off as the first default
+    var avCameraFlash: flashState = .flashOff
+    var lastFlashSettingForBackCamera: flashState = .flashOff // remembers what the setting was before user switches to selfie camera
+    
+    enum cameraPositionType: String {
+        case standard
+        case selfie
+    }
+    
+    @IBOutlet weak var avCameraView: UIView! //this is where the preview layer should show up
+    @IBOutlet weak var avImageView: UIImageView! //we use this to display the image after it has been taken
+    @IBOutlet weak var takePhotoButton: UIButton!
+    @IBOutlet weak var photoLibraryButton: UIButton!
+    @IBOutlet weak var flashButton: UIButton!
+    @IBOutlet weak var menuButton: UIButton!
+    @IBOutlet weak var cameraFlipButton: UIButton!
+    @IBOutlet weak var cancelPhotoButton: UIButton!
+
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        imagePicker.delegate = self
+    }
+    
+    override func didReceiveMemoryWarning() {
+        super.didReceiveMemoryWarning()
+        // Dispose of any resources that can be recreated.
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        // Hide the navigation bar on the this view controller
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+        
+        if justFinishedPicking == true { // not sure if this should go here or in reload camera
+            return
+        }
+        
+        reloadCamera()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        // Show the navigation bar on other view controllers
+        self.navigationController?.setNavigationBarHidden(false, animated: animated)
+    }
+    
+    func reloadCamera() {
+        captureSession = AVCaptureSession()
+        captureSession.sessionPreset = AVCaptureSessionPresetPhoto//AVCaptureSessionPresetPhoto
+        cameraOutput = AVCapturePhotoOutput()
+        
+        // default to back camera
+        var device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        print("camera loaded in standard mode (back camera")
+        // unless we have switched our enum to selfie, then use that
+        if cameraPosition == .selfie {
+            print("camera loaded in selfie mode")
+            device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front)
+        }
+        
+        if let input = try? AVCaptureDeviceInput(device: device) {
+            if (captureSession.canAddInput(input)) {
+                captureSession.addInput(input)
+                if (captureSession.canAddOutput(cameraOutput)) {
+                    captureSession.addOutput(cameraOutput)
+                    previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                    
+                    // This causes the preview layer to take up the whole screen:
+                    let previewLayerBounds: CGRect = self.view.layer.bounds
+                    previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    previewLayer?.bounds = previewLayerBounds
+                    previewLayer?.position = CGPoint(x: previewLayerBounds.midX, y: previewLayerBounds.midY)
+
+                    avCameraView.layer.insertSublayer(previewLayer!, below: self.takePhotoButton.layer)
+                    captureSession.startRunning()
+                }
+            } else {
+                print("Issue encountered inside captureSession.canAddInput")
+            }
+            
+        } else {
+            print("Issue encountered when reloading camera.")
+        }
+        
+    }
+    
+    
+    @IBAction func takePhoto(_ sender: Any) {
+        let settings = AVCapturePhotoSettings()
+        
+        switch avCameraFlash {
+        case .flashAuto: settings.flashMode = .auto
+        case .flashOff: settings.flashMode = .off
+        case .flashOn: settings.flashMode = .on
+        }
+        
+        let previewPixelType = settings.availablePreviewPhotoPixelFormatTypes.first!
+        let previewFormat = [kCVPixelBufferPixelFormatTypeKey as String: previewPixelType,
+                             kCVPixelBufferWidthKey as String: 160, //no clue what these numbers mean
+            kCVPixelBufferHeightKey as String: 160,
+            ]
+        settings.previewPhotoFormat = previewFormat
+        self.cameraOutput.capturePhoto(with: settings, delegate: self)
+
+        hideCameraIcons()
+
+    }
+    
+
+    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+        if let error = error {
+            print(error.localizedDescription)
+        }
+
+        if let sampleBuffer = photoSampleBuffer,
+            let previewBuffer = previewPhotoSampleBuffer,
+            let dataImage = AVCapturePhotoOutput.jpegPhotoDataRepresentation(forJPEGSampleBuffer: sampleBuffer, previewPhotoSampleBuffer: previewBuffer) {
+            print("re-storing capturedImage")
+
+            let dataProvider = CGDataProvider(data: dataImage as CFData)
+            let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
+            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
+            
+            self.capturedImage = image
+            
+        }
+        
+        avImageView.image = capturedImage
+        
+        previewLayer.isHidden = true // for some reason these 2 statements don't execute until the end of this method
+        avImageView.isHidden = false
+    }
+    
+    
+    // gets rid of all the unnecessary buttons
+    // designed to be called after a photo is picked or taken
+    func hideCameraIcons() {
+        //hide the camera control buttons
+        photoLibraryButton.isHidden = true
+        takePhotoButton.isHidden = true
+        flashButton.isHidden = true
+        menuButton.isHidden = true
+        cameraFlipButton.isHidden = true
+        
+        //show the next set of processing buttons
+        cancelPhotoButton.isHidden = false
+    }
+    
+    func showCameraIcons() {
+        //hide the camera control buttons
+        photoLibraryButton.isHidden = false
+        takePhotoButton.isHidden = false
+        flashButton.isHidden = false
+        menuButton.isHidden = false
+        cameraFlipButton.isHidden = false
+        
+        //show the next set of processing buttons
+        cancelPhotoButton.isHidden = true
+    }
+    
+    
+    @IBAction func selectFromPhotoLibrary(_ sender: Any) {
+        imagePicker.allowsEditing = false
+        imagePicker.mediaTypes = [kUTTypeImage as String] //supposedly this prevents the user from taking videos
+        imagePicker.sourceType = .photoLibrary
+        present(imagePicker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            
+            justFinishedPicking = true
+            avImageView.contentMode = .scaleAspectFit
+            self.previewLayer?.isHidden = true
+            self.avImageView.isHidden = false
+            self.avImageView.image = pickedImage
+            hideCameraIcons()
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
+        dismiss(animated: true, completion: nil)
+    }
+    
+    
+    @IBAction func toggleFlash(_ sender: Any) {
+        for case let (device as AVCaptureDevice) in AVCaptureDevice.devices()  {
+            if device.hasFlash && device.isFlashAvailable {
+                if device.isFlashModeSupported(.on) {
+                    do {
+                        try device.lockForConfiguration()
+                        switch avCameraFlash {
+                        case .flashOff:
+                            turnFlashAuto()
+                        case .flashAuto:
+                            turnFlashOn()
+                        case .flashOn:
+                            turnFlashOff()
+                        }
+                        device.unlockForConfiguration()
+                        
+                    } catch {
+                        print("Error: Could not change flash mode.")
+                    }
+                }
+            }
+        }
+        
+    }
+    
+    func turnFlashAuto() {
+        avCameraFlash = .flashAuto
+        flashButton.setImage(#imageLiteral(resourceName: "auto-flash"), for: UIControlState.normal)
+        print("flash mode set to auto")
+    }
+    func turnFlashOn() {
+        avCameraFlash = .flashOn
+        flashButton.setImage(#imageLiteral(resourceName: "flash"), for: UIControlState.normal)
+        print("flash mode set to on")
+    }
+    func turnFlashOff() {
+        avCameraFlash = .flashOff
+        flashButton.setImage(#imageLiteral(resourceName: "no-flash"), for: UIControlState.normal)
+        print("flash mode set to off")
+    }
+    
+    @IBAction func menuButtonTapped(_ sender: Any) {
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
+        
+    }
+    @IBAction func cameraFlipButtonTapped(_ sender: Any) {
+        switch cameraPosition {
+        case .standard: // if it's standard SWITCH TO SELFIE (.front)
+            cameraPosition = .selfie
+            lastFlashSettingForBackCamera = avCameraFlash //stores the user's last setting for the flash
+            turnFlashOff() //disables the flash since the selfie cam doesn't have one
+            flashButton.isHidden = true
+            //device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front)
+        case .selfie: // if it's selfie SWITCH TO STANDARD (.back)
+            cameraPosition = .standard
+            
+            // Checks which setting the flash was before the user switched over to the selfie camera
+            //  and returns the flash to that state.
+            switch lastFlashSettingForBackCamera {
+            case .flashOff:
+                turnFlashOff()
+            case .flashAuto:
+                turnFlashAuto()
+            case .flashOn:
+                turnFlashOn()
+            }
+            flashButton.isHidden = false
+        }
+        
+        reloadCamera()
+    }
+    
+    @IBAction func cancelPhotoButtonTapped(_ sender: Any) {
+        previewLayer.isHidden = false
+        avImageView.isHidden = true
+        showCameraIcons()
+        reloadCamera()
+
+    }
+    
+}
+
+
+
+
+
+
+
+
+
+
+
+*/
+
+
+
+

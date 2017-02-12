@@ -27,6 +27,11 @@
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IFV-Kh-xCP">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="z5E-DG-jAy">
+                                        <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                        <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="blackView" label="Black View"/>
+                                    </view>
                                     <imageView hidden="YES" userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="zjE-YL-Q9g">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                                         <accessibility key="accessibilityConfiguration" identifier="avImageView"/>
@@ -56,7 +61,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YTv-pR-yjs">
-                                        <rect key="frame" x="8" y="533" width="45" height="45"/>
+                                        <rect key="frame" x="8" y="529" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="45" id="5fe-uo-oZ2"/>
                                             <constraint firstAttribute="width" secondItem="YTv-pR-yjs" secondAttribute="height" multiplier="1:1" id="yqv-WG-nFE"/>
@@ -77,17 +82,62 @@
                                             <action selector="menuButtonTapped:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="upJ-I2-FK5"/>
                                         </connections>
                                     </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iRL-4i-CfR">
+                                        <rect key="frame" x="322" y="529" width="45" height="45"/>
+                                        <accessibility key="accessibilityConfiguration" identifier="cameraFlipButton"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="iRL-4i-CfR" secondAttribute="height" multiplier="1:1" id="115-2H-HN3"/>
+                                            <constraint firstAttribute="width" constant="45" id="Kcn-bk-gVF"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="CameraFlip1"/>
+                                        <connections>
+                                            <action selector="cameraFlipButtonTapped:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="3Gx-5r-0Ya"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="qG1-ST-0vL">
+                                        <rect key="frame" x="8" y="606" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" secondItem="qG1-ST-0vL" secondAttribute="height" multiplier="1:1" id="ahm-zc-5aI"/>
+                                            <constraint firstAttribute="width" constant="45" id="u2f-nW-wTk"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="X"/>
+                                        <connections>
+                                            <action selector="cancelPhotoButtonTapped:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="XU9-Jm-feR"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7VM-T0-0eX">
+                                        <rect key="frame" x="322" y="606" width="45" height="45"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="45" id="CQ4-jG-yJo"/>
+                                            <constraint firstAttribute="width" secondItem="7VM-T0-0eX" secondAttribute="height" multiplier="1:1" id="OEK-4Q-iHV"/>
+                                        </constraints>
+                                        <state key="normal" title="Button" image="arrow"/>
+                                        <connections>
+                                            <action selector="continueButtonTapped:" destination="GWS-Lv-6ut" eventType="touchUpInside" id="Eeu-cl-TK7"/>
+                                            <segue destination="sJJ-as-S31" kind="show" id="nrP-s0-d60"/>
+                                        </connections>
+                                    </button>
                                 </subviews>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <accessibility key="accessibilityConfiguration" identifier="avCameraView"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="LYE-Vi-CwO" secondAttribute="bottom" constant="16" id="39J-4x-zu3"/>
-                                    <constraint firstItem="LYE-Vi-CwO" firstAttribute="top" secondItem="YTv-pR-yjs" secondAttribute="bottom" constant="28" id="BQ3-70-nkT"/>
+                                    <constraint firstItem="6cZ-hf-x0C" firstAttribute="top" secondItem="iRL-4i-CfR" secondAttribute="bottom" constant="32" id="3vO-MK-pic"/>
+                                    <constraint firstAttribute="bottom" secondItem="z5E-DG-jAy" secondAttribute="bottom" id="8b6-st-6Ct"/>
+                                    <constraint firstItem="LYE-Vi-CwO" firstAttribute="top" secondItem="YTv-pR-yjs" secondAttribute="bottom" constant="32" id="BQ3-70-nkT"/>
+                                    <constraint firstAttribute="trailing" secondItem="z5E-DG-jAy" secondAttribute="trailing" id="FYY-9I-LKJ"/>
+                                    <constraint firstAttribute="trailing" secondItem="7VM-T0-0eX" secondAttribute="trailing" constant="8" id="QOK-Iy-hlt"/>
                                     <constraint firstItem="zjE-YL-Q9g" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="top" id="UEr-dy-Vba"/>
                                     <constraint firstAttribute="trailing" secondItem="zjE-YL-Q9g" secondAttribute="trailing" id="Wqa-UG-6WI"/>
                                     <constraint firstItem="zjE-YL-Q9g" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" id="YCk-D8-Oqm"/>
+                                    <constraint firstAttribute="bottom" secondItem="7VM-T0-0eX" secondAttribute="bottom" constant="16" id="YrP-eO-Dml"/>
+                                    <constraint firstAttribute="bottom" secondItem="qG1-ST-0vL" secondAttribute="bottom" constant="16" id="ZXz-Cd-YW5"/>
+                                    <constraint firstItem="qG1-ST-0vL" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" constant="8" id="ejF-Uo-VEQ"/>
+                                    <constraint firstItem="z5E-DG-jAy" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="top" id="fCd-tb-tE8"/>
+                                    <constraint firstAttribute="trailing" secondItem="iRL-4i-CfR" secondAttribute="trailing" constant="8" id="pDL-2k-xE9"/>
                                     <constraint firstAttribute="trailing" secondItem="6cZ-hf-x0C" secondAttribute="trailing" constant="8" id="pKk-sR-uYT"/>
                                     <constraint firstAttribute="bottom" secondItem="zjE-YL-Q9g" secondAttribute="bottom" id="u20-mn-I9L"/>
+                                    <constraint firstItem="z5E-DG-jAy" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" id="uJn-gW-OwE"/>
                                     <constraint firstAttribute="bottom" secondItem="6cZ-hf-x0C" secondAttribute="bottom" constant="16" id="v1M-TL-4oP"/>
                                 </constraints>
                             </view>
@@ -108,6 +158,10 @@
                     <connections>
                         <outlet property="avCameraView" destination="IFV-Kh-xCP" id="CEn-bQ-Tui"/>
                         <outlet property="avImageView" destination="zjE-YL-Q9g" id="9IP-m3-Jk1"/>
+                        <outlet property="blackView" destination="z5E-DG-jAy" id="qWf-ko-fXz"/>
+                        <outlet property="cameraFlipButton" destination="iRL-4i-CfR" id="4pj-n9-sKB"/>
+                        <outlet property="cancelPhotoButton" destination="qG1-ST-0vL" id="zc1-45-fvy"/>
+                        <outlet property="continueButton" destination="7VM-T0-0eX" id="Rl2-Tl-W2F"/>
                         <outlet property="flashButton" destination="YTv-pR-yjs" id="PIa-EO-K2L"/>
                         <outlet property="menuButton" destination="6cZ-hf-x0C" id="by8-MP-UnC"/>
                         <outlet property="photoLibraryButton" destination="LYE-Vi-CwO" id="0D4-9d-sI9"/>
@@ -1499,7 +1553,10 @@
         </scene>
     </scenes>
     <resources>
+        <image name="CameraFlip1" width="200" height="200"/>
         <image name="TakePhoto1" width="200" height="200"/>
+        <image name="X" width="512" height="512"/>
+        <image name="arrow" width="512" height="512"/>
         <image name="defaultPhoto" width="138" height="91"/>
         <image name="menu" width="512" height="512"/>
         <image name="no-flash" width="512" height="512"/>
