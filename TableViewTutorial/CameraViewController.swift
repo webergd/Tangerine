@@ -15,7 +15,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var titleTextField: UITextField!
     @IBOutlet weak var captionTextField: UITextField!
-    @IBOutlet weak var mirrorSwitch: UISwitch!
     @IBOutlet weak var captionTextFieldTopConstraint: NSLayoutConstraint!
     
     @IBOutlet var longPressTap: UILongPressGestureRecognizer!
@@ -23,6 +22,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var enableBlurringButton: UIButton!
     @IBOutlet weak var returnToZoomButton: UIButton!
     @IBOutlet weak var blurringInProgressLabel: UILabel!
+    @IBOutlet weak var addCompareButton: UIButton!
+    @IBOutlet weak var mirrorCaptionButton: UIButton!
     
     
     
@@ -64,7 +65,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     enum CameraError: Swift.Error {
         case noName
     }
-    
+    /* enabled the old camera button on CameraViewController
     @IBAction func useCamera(_ sender: AnyObject) {
         // makes sure we have a camera, aka this is not the simulator
         if UIImagePickerController.isSourceTypeAvailable(.camera) {
@@ -74,8 +75,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
         present(imagePicker, animated: true, completion: nil)
     }
+    */
 
     //This happens when the user clicks on the use camera roll bar button
+    
+    /* enabled the old camera roll button on CameraViewController
     @IBAction func useCameraRoll(_ sender: AnyObject) {
         imagePicker.allowsEditing = false
         imagePicker.mediaTypes = [kUTTypeImage as String] //supposedly this prevents the user from taking videos
@@ -83,6 +87,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         present(imagePicker, animated: true, completion: nil)
         
     }
+    */
     
         // MARK: DELETE THIS this is just so that the sample image will keep loading for testing:
     override func viewDidAppear(_ animated: Bool) {
@@ -182,9 +187,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             self.captionTextFieldTopConstraint.constant = tappedLoc.y - self.topLayoutGuide.length - (0.5 * captionTextFieldHeight)
             captionTextField.becomeFirstResponder()
             //self.captionTextField.center.y = tappedLoc.y
+            if titleTextField.text == "Enter a Private Title for Your Photo Here" {
+                mirrorCaptionButton.isHidden = false
+            }
             
         } else {
             // if the caption is displayed and the user taps the image, dismiss the keyboard
+            if captionTextField.text == "" {
+                mirrorCaptionButton.isHidden = true
+            }
             view.endEditing(true)
             //print("back inside userTappedImage function")
             //print("captionTextField.center.y= \(self.captionTextField.center.y)")
@@ -246,6 +257,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         if self.captionTextField.text == "" {
             self.captionTextField.isHidden = true
+            mirrorCaptionButton.isHidden = true
         }
         
             //this makes the text box movement animated so it looks smoother:
@@ -259,6 +271,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             self.titleTextField.text = "Enter a Private Title for Your Photo Here"
             self.titleTextField.textColor = UIColor.gray
             self.titleHasBeenTapped = false
+            
+            if captionTextField.text != "" {
+                mirrorCaptionButton.isHidden = false
+            }
+        } else if titleTextField.text != "Enter a Private Title for Your Photo Here"  {
+            mirrorCaptionButton.isHidden = true
         }
             self.view.layoutIfNeeded()
     }
@@ -269,6 +287,14 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         return true
     }
     
+    
+    
+
+    @IBAction func mirrorCaptionButtonTapped(_ sender: Any) {
+        
+        // code in here should make the text in the caption equal the text in the title.
+        // if it's too long it should truncate and then pop up with a message that says "title text shortened" or something like that.
+    }
     
     
     
@@ -782,6 +808,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
         // MARK: - UIImagePickerControllerDelegate Methods
         
+        /* enabled the imagePicker in CameraViewController, this is now done in AVCameraViewController
         func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
             
             if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
@@ -798,6 +825,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             
             dismiss(animated: true, completion: nil)
         }
+        */
         
         func imagePickerControllerDidCancel(_ picker: UIImagePickerController) {
             dismiss(animated: true, completion: nil)
@@ -894,6 +922,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
         
     }
+    // This is similar to publish except it puts some data on hold and then takes the user back to the avCamera to add a second picture.
+    @IBAction func compareButtonTapped(_ sender: Any) {
+        
+        
+        
+        
+        
+    }
+    
     
     func backTwo() {
         

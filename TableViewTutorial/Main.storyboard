@@ -50,7 +50,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LYE-Vi-CwO">
-                                        <rect key="frame" x="8" y="606" width="45" height="45"/>
+                                        <rect key="frame" x="322" y="606" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" secondItem="LYE-Vi-CwO" secondAttribute="height" multiplier="1:1" id="H76-es-dcT"/>
                                             <constraint firstAttribute="width" constant="45" id="ekr-24-IfV"/>
@@ -72,7 +72,7 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6cZ-hf-x0C">
-                                        <rect key="frame" x="322" y="606" width="45" height="45"/>
+                                        <rect key="frame" x="8" y="606" width="45" height="45"/>
                                         <constraints>
                                             <constraint firstAttribute="width" constant="45" id="0yR-C3-rEs"/>
                                             <constraint firstAttribute="width" secondItem="6cZ-hf-x0C" secondAttribute="height" multiplier="1:1" id="pG3-cP-z5d"/>
@@ -122,9 +122,8 @@
                                 <accessibility key="accessibilityConfiguration" identifier="avCameraView"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="LYE-Vi-CwO" secondAttribute="bottom" constant="16" id="39J-4x-zu3"/>
-                                    <constraint firstItem="6cZ-hf-x0C" firstAttribute="top" secondItem="iRL-4i-CfR" secondAttribute="bottom" constant="32" id="3vO-MK-pic"/>
+                                    <constraint firstItem="6cZ-hf-x0C" firstAttribute="top" secondItem="YTv-pR-yjs" secondAttribute="bottom" constant="32" id="4Nd-BI-Uw4"/>
                                     <constraint firstAttribute="bottom" secondItem="z5E-DG-jAy" secondAttribute="bottom" id="8b6-st-6Ct"/>
-                                    <constraint firstItem="LYE-Vi-CwO" firstAttribute="top" secondItem="YTv-pR-yjs" secondAttribute="bottom" constant="32" id="BQ3-70-nkT"/>
                                     <constraint firstAttribute="trailing" secondItem="z5E-DG-jAy" secondAttribute="trailing" id="FYY-9I-LKJ"/>
                                     <constraint firstAttribute="trailing" secondItem="7VM-T0-0eX" secondAttribute="trailing" constant="8" id="QOK-Iy-hlt"/>
                                     <constraint firstItem="zjE-YL-Q9g" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="top" id="UEr-dy-Vba"/>
@@ -132,10 +131,10 @@
                                     <constraint firstItem="zjE-YL-Q9g" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" id="YCk-D8-Oqm"/>
                                     <constraint firstAttribute="bottom" secondItem="7VM-T0-0eX" secondAttribute="bottom" constant="16" id="YrP-eO-Dml"/>
                                     <constraint firstAttribute="bottom" secondItem="qG1-ST-0vL" secondAttribute="bottom" constant="16" id="ZXz-Cd-YW5"/>
+                                    <constraint firstItem="LYE-Vi-CwO" firstAttribute="top" secondItem="iRL-4i-CfR" secondAttribute="bottom" constant="32" id="a8a-UA-0zk"/>
                                     <constraint firstItem="qG1-ST-0vL" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" constant="8" id="ejF-Uo-VEQ"/>
                                     <constraint firstItem="z5E-DG-jAy" firstAttribute="top" secondItem="IFV-Kh-xCP" secondAttribute="top" id="fCd-tb-tE8"/>
                                     <constraint firstAttribute="trailing" secondItem="iRL-4i-CfR" secondAttribute="trailing" constant="8" id="pDL-2k-xE9"/>
-                                    <constraint firstAttribute="trailing" secondItem="6cZ-hf-x0C" secondAttribute="trailing" constant="8" id="pKk-sR-uYT"/>
                                     <constraint firstAttribute="bottom" secondItem="zjE-YL-Q9g" secondAttribute="bottom" id="u20-mn-I9L"/>
                                     <constraint firstItem="z5E-DG-jAy" firstAttribute="leading" secondItem="IFV-Kh-xCP" secondAttribute="leading" id="uJn-gW-OwE"/>
                                     <constraint firstAttribute="bottom" secondItem="6cZ-hf-x0C" secondAttribute="bottom" constant="16" id="v1M-TL-4oP"/>
@@ -145,13 +144,14 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="dfm-dT-IOw" firstAttribute="centerX" secondItem="3LS-bM-ZBx" secondAttribute="centerX" id="HnN-od-dKk"/>
-                            <constraint firstItem="LYE-Vi-CwO" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-8" id="ItA-Tq-ZPi"/>
                             <constraint firstAttribute="trailingMargin" secondItem="IFV-Kh-xCP" secondAttribute="trailing" constant="-16" id="Ks3-Vb-GPZ"/>
                             <constraint firstAttribute="bottom" secondItem="IFV-Kh-xCP" secondAttribute="bottom" id="YhU-NV-pJO"/>
                             <constraint firstItem="IFV-Kh-xCP" firstAttribute="top" secondItem="3LS-bM-ZBx" secondAttribute="top" id="cMT-Ie-2yN"/>
                             <constraint firstItem="1wz-MM-5Ph" firstAttribute="top" secondItem="dfm-dT-IOw" secondAttribute="bottom" constant="16" id="cyf-if-ugJ"/>
                             <constraint firstItem="YTv-pR-yjs" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-8" id="kcJ-ud-jFu"/>
                             <constraint firstItem="IFV-Kh-xCP" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-16" id="lIF-N6-rNg"/>
+                            <constraint firstAttribute="trailingMargin" secondItem="LYE-Vi-CwO" secondAttribute="trailing" constant="-8" id="s7w-DS-kw9"/>
+                            <constraint firstItem="6cZ-hf-x0C" firstAttribute="leading" secondItem="3LS-bM-ZBx" secondAttribute="leadingMargin" constant="-8" id="v4x-AO-b17"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="8or-7J-0t0"/>
@@ -185,7 +185,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" text="Enter a Private Title for Your Photo Here" borderStyle="roundedRect" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="GNG-qD-FV9" userLabel="titleTextField">
-                                <rect key="frame" x="0.0" y="20" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="64" width="375" height="30"/>
                                 <color key="textColor" red="0.49803921579999999" green="0.49803921579999999" blue="0.49803921579999999" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                 <textInputTraits key="textInputTraits"/>
@@ -198,7 +198,7 @@
                                 </connections>
                             </textField>
                             <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZdZ-14-emU">
-                                <rect key="frame" x="0.0" y="50" width="375" height="375"/>
+                                <rect key="frame" x="0.0" y="94" width="375" height="375"/>
                                 <subviews>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="nvC-VA-hLO">
                                         <rect key="frame" x="0.0" y="0.0" width="375" height="375"/>
@@ -241,7 +241,7 @@
                                 </connections>
                             </scrollView>
                             <textField hidden="YES" opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" textAlignment="center" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="0F6-95-USV">
-                                <rect key="frame" x="0.0" y="241" width="375" height="30"/>
+                                <rect key="frame" x="0.0" y="285" width="375" height="30"/>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="0.75137392241379308" colorSpace="calibratedWhite"/>
                                 <color key="tintColor" white="0.33333333329999998" alpha="0.7513739224" colorSpace="calibratedWhite"/>
                                 <constraints>
@@ -264,24 +264,26 @@
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="ZqT-a8-dwT">
                                 <rect key="frame" x="0.0" y="623" width="375" height="44"/>
                                 <items>
-                                    <barButtonItem title="Camera" id="hgd-7q-uIf" userLabel="useCamera">
-                                        <connections>
-                                            <action selector="useCamera:" destination="sJJ-as-S31" id="dSb-gL-7od"/>
-                                        </connections>
-                                    </barButtonItem>
-                                    <barButtonItem title="Camera Roll" id="VRh-l9-Ypx" userLabel="useCameraRoll">
-                                        <connections>
-                                            <action selector="useCameraRoll:" destination="sJJ-as-S31" id="0Vn-Ju-c9d"/>
-                                        </connections>
+                                    <barButtonItem style="plain" id="wfQ-pG-AM1">
+                                        <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="PXk-TD-Z0w">
+                                            <rect key="frame" x="16" y="7" width="30" height="30"/>
+                                            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                            <state key="normal" title="2"/>
+                                            <connections>
+                                                <action selector="compareButtonTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="lIP-LW-ZWQ"/>
+                                            </connections>
+                                        </button>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="HoZ-mp-qAw"/>
-                                    <barButtonItem title="Caption Mirrors Title:" id="LOR-ct-FH2"/>
-                                    <barButtonItem style="plain" id="Bu8-6I-5lU">
-                                        <switch key="customView" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" id="WDz-dI-ibQ">
-                                            <rect key="frame" x="254" y="6.5" width="51" height="31"/>
+                                    <barButtonItem style="plain" id="3fw-A3-caS">
+                                        <button key="customView" hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="dZ3-GC-sbj">
+                                            <rect key="frame" x="138" y="7" width="99" height="30"/>
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                            <accessibility key="accessibilityConfiguration" identifier="mirrorSwitch" label="mirrorSwitch"/>
-                                        </switch>
+                                            <state key="normal" title="Mirror Caption"/>
+                                            <connections>
+                                                <action selector="mirrorCaptionButtonTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="TTO-Zq-2Ya"/>
+                                            </connections>
+                                        </button>
                                     </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="NN7-dL-hLz"/>
                                     <barButtonItem title="Publish" id="wR4-ak-zQm" userLabel="publishButton">
@@ -292,21 +294,21 @@
                                 </items>
                             </toolbar>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="xHB-t2-Bcb">
-                                <rect key="frame" x="284" y="455" width="75" height="30"/>
+                                <rect key="frame" x="284" y="499" width="75" height="30"/>
                                 <state key="normal" title="Clear Blurs"/>
                                 <connections>
                                     <action selector="clearBlursTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="Qnl-Sy-Bei"/>
                                 </connections>
                             </button>
                             <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XOo-iF-27H">
-                                <rect key="frame" x="16" y="425" width="107" height="30"/>
+                                <rect key="frame" x="16" y="469" width="107" height="30"/>
                                 <state key="normal" title="Return to Zoom"/>
                                 <connections>
                                     <action selector="returnToZoom:" destination="sJJ-as-S31" eventType="touchUpInside" id="qHr-Bw-p9z"/>
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Bz-y1-TJt">
-                                <rect key="frame" x="252" y="425" width="107" height="30"/>
+                                <rect key="frame" x="252" y="469" width="107" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="enableBlurring"/>
                                 <state key="normal" title="Auto Blur Faces"/>
                                 <connections>
@@ -357,13 +359,14 @@
                     </view>
                     <navigationItem key="navigationItem" id="5p9-CJ-2Gp"/>
                     <connections>
+                        <outlet property="addCompareButton" destination="PXk-TD-Z0w" id="Mj8-rD-9vu"/>
                         <outlet property="blurringInProgressLabel" destination="YCX-1N-MAI" id="IJM-Gc-45q"/>
                         <outlet property="captionTextField" destination="0F6-95-USV" id="Wuy-W0-eIt"/>
                         <outlet property="captionTextFieldTopConstraint" destination="fJi-kk-pvb" id="Qur-eC-Ups"/>
                         <outlet property="clearBlursButton" destination="xHB-t2-Bcb" id="wL2-sp-hhv"/>
                         <outlet property="enableBlurringButton" destination="6Bz-y1-TJt" id="PYb-ey-cQy"/>
                         <outlet property="imageView" destination="nvC-VA-hLO" id="UhN-cg-7YC"/>
-                        <outlet property="mirrorSwitch" destination="WDz-dI-ibQ" id="iPh-8V-fc5"/>
+                        <outlet property="mirrorCaptionButton" destination="dZ3-GC-sbj" id="3Jk-2P-QE9"/>
                         <outlet property="returnToZoomButton" destination="XOo-iF-27H" id="wvs-bZ-jcl"/>
                         <outlet property="scrollView" destination="ZdZ-14-emU" id="1jy-F1-YA1"/>
                         <outlet property="titleTextField" destination="GNG-qD-FV9" id="Zwt-6d-QdE"/>
