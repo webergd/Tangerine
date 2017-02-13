@@ -209,6 +209,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         captionLocationToSet = tappedLoc.y - self.topLayoutGuide.length - (0.5 * captionTextFieldHeight)
         self.captionTextFieldTopConstraint.constant = setCaptionTopConstraint(captionLocationToSet)
         
+        // just added: 2/13/17
+        self.captionYValue = self.captionTextFieldTopConstraint.constant
+        
         //self.captionTextField.center.y = tappedLoc.y
         //This is more efficient: self.captionTextField.center.y = dragCaptionGesture.location(in: self.view).y
         //print("tappedLoc.y: \(tappedLoc.y)")
@@ -217,7 +220,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     // This determines whether the caption y value is within the prescribed limits within the bounds of the imageView and if it is not, returns the limit that it has crossed.
     func setCaptionTopConstraint(_ desiredLocation: CGFloat) -> CGFloat {
-        
+        // Calling this the "topConstraint" is actually a terrible name
+        // It should be called "captionPositionWithinConstraints" or something like that. 
+        // The method name and the variable name both refer to the top constraint but that's
+        //  not an accurate description of what it does. 
+        // The varible (declared at the top) captionTopConstraint basically just holds the caption's position.
         if desiredLocation < captionTopLimit {
             //print("returning captionTopLimit: \(captionTopLimit)")
             return captionTopLimit

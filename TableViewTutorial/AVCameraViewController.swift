@@ -422,9 +422,13 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         //hide the camera control buttons
         photoLibraryButton.isHidden = false
         takePhotoButton.isHidden = false
-        flashButton.isHidden = false
         menuButton.isHidden = false
         cameraFlipButton.isHidden = false
+        
+        // Don't show the flash if we're in selfie mode
+        if cameraPosition == .standard {
+            flashButton.isHidden = false
+        }
         
         //show the next set of processing buttons
         cancelPhotoButton.isHidden = true

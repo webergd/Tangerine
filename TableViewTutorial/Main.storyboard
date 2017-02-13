@@ -409,10 +409,10 @@
                                 </connections>
                             </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="lqV-wj-h7P">
-                                <rect key="frame" x="138" y="158.5" width="100" height="100"/>
+                                <rect key="frame" x="148" y="178.5" width="80" height="80"/>
                                 <constraints>
                                     <constraint firstAttribute="width" secondItem="lqV-wj-h7P" secondAttribute="height" multiplier="1:1" id="Prp-K4-YJo"/>
-                                    <constraint firstAttribute="width" constant="100" id="sCO-1f-bBl"/>
+                                    <constraint firstAttribute="width" constant="80" id="sCO-1f-bBl"/>
                                 </constraints>
                                 <state key="normal" title="Take Photo (camera icon)" image="CameraIcon"/>
                                 <connections>
