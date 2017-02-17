@@ -17,7 +17,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var captionTextField: UITextField!
     @IBOutlet weak var captionTextFieldTopConstraint: NSLayoutConstraint!
     
-    @IBOutlet var longPressTap: UILongPressGestureRecognizer!
+    @IBOutlet var longPressTap: UILongPressGestureRecognizer! //MARK: did this unlink itself?
     @IBOutlet weak var clearBlursButton: UIButton!
     @IBOutlet weak var enableBlurringButton: UIButton!
     @IBOutlet weak var returnToZoomButton: UIButton!
@@ -53,6 +53,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var captionTopLimit: CGFloat = 0.0
     var captionBottomLimit: CGFloat = 0.0
     var captionLocationToSet: CGFloat = 0.0
+    var imageScreenSize: CGFloat = 0.0 // this is the height of the image in terms of screen units (pixels or whatever they are)
     let blurColor = UIColor(red: 172/255, green: 132/255, blue: 76/255, alpha: 0.05)
     var blurringEnabled: Bool = false
     var blurFace: BlurFace = BlurFace(image: currentImage)
@@ -61,10 +62,17 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     var blurRadiusMultiplier: CGFloat = 0.0
     var unblurredImageSave: UIImage = currentImage
     
+    // These are modified later but needed a higher scope for finishEditing to work correctly
+    var actionYes = UIAlertAction(title: "", style: .default, handler: nil)
+    var actionNo = UIAlertAction(title: "", style: .default, handler: nil)
+    
+    
     
     enum CameraError: Swift.Error {
         case noName
     }
+    
+
     /* enabled the old camera button on CameraViewController
     @IBAction func useCamera(_ sender: AnyObject) {
         // makes sure we have a camera, aka this is not the simulator
@@ -92,10 +100,40 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // MARK: DELETE THIS this is just so that the sample image will keep loading for testing:
     override func viewDidAppear(_ animated: Bool) {
         //currentImage = UIImage(named: "NumberedColorGrid")!
+        
+
+        // the zoom needs to be set in here when reloading for editing
+        //scrollView.setZoomScale(6.0, animated: true)
+        //print("zoomScale is: \(scrollView.zoomScale)")
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        if currentCompare.isAsk == false {
+            addCompareButton.isHidden = true
+            print("ready to create the second half of the compare")
+        } else if currentCompare.isAsk == true {
+            addCompareButton.isHidden = false
+        }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        /*
+        print("Content Offset on load is: \(scrollView.contentOffset.y)")
+        
+        scrollView.setZoomScale(1.0, animated: true)
+        print("zoomScale is: \(scrollView.zoomScale)")
+        
+        let point = CGPoint(x: 100.0, y: 100.0)
+        scrollView.setContentOffset(point, animated: true)
+        print("Content Offset on load is: \(scrollView.contentOffset.y)")
+        */
+        
+        
+        //scrollView.zoomScale = 2.0
+        //print("zoomScale is: \(scrollView.zoomScale)")
         
         justFinishedPicking = true //prevents AVCameraViewController from reloading camera upon navigating back to it
         
@@ -152,6 +190,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         // This constrains the caption drag to stay above the bottom of the image
         self.captionBottomLimit = self.captionTopLimit + screenWidth - self.captionTextFieldHeight
+        
+        // calculates the height of the image in terms of screen units to be used for capturing the caption location
+        self.imageScreenSize = self.captionBottomLimit - self.captionTopLimit
 
         //Enables tap on image to show caption (1 of 2):
         let tapImageGesture = UITapGestureRecognizer(target: self, action: #selector(CameraViewController.userTappedImage(_:)))
@@ -214,7 +255,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         //self.captionTextField.center.y = tappedLoc.y
         //This is more efficient: self.captionTextField.center.y = dragCaptionGesture.location(in: self.view).y
-        //print("tappedLoc.y: \(tappedLoc.y)")
+        print("tappedLoc.y: \(tappedLoc.y)")
     }
     
     
@@ -229,7 +270,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             //print("returning captionTopLimit: \(captionTopLimit)")
             return captionTopLimit
         } else if desiredLocation > captionBottomLimit {
-            //print("returning captionBottomLimit: \(captionBottomLimit)")
+            print("returning captionBottomLimit: \(captionBottomLimit)")
             return captionBottomLimit
             
         } else {
@@ -302,6 +343,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // code in here should make the text in the caption equal the text in the title.
         // if it's too long it should truncate and then pop up with a message that says "title text shortened" or something like that.
     }
+    
     
     
     
@@ -511,6 +553,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     */
     
     // this is just here for testing purposes right now (to see where user tapped for blur)
+    // And it doesn't really even work. Can be deleted.
     func drawCircle(_ circleCenter: CGPoint) {
         let circlePath = UIBezierPath(arcCenter: circleCenter, radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
         
@@ -866,8 +909,13 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         return true
     }
     
-    func createAsk (){
+    func createAsk() {
         // create a new Ask using the photo, title, and timestamp
+        
+        currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage
+        currentImage = self.cropImage(currentImage)
+        
+        
 
         print("fixing image orientation inside createAsk() ")
         let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
@@ -886,6 +934,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         let testAsk = mainArray.last as! Ask
         print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
+        
+        self.backTwo() //back to main
      
         // The main array will be sorted by time stamp by the AskTableViewController prior to being displayed in the table view.
     }
@@ -894,49 +944,150 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBAction func publishButtonTapped(_ sender: AnyObject) {
         print("publish button tapped")
         // check to see if the text box is empty
-        do {
-            if let title = titleTextField.text {
-                if title == "" || titleHasBeenTapped == false {
-                    throw CameraError.noName
-                } else {
-                    currentTitle = title
-                    currentImage = imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
-                    currentImage = self.cropImage(currentImage)
-                    createAsk()
-                    backTwo() // should get us back to the menu by popping two ViewControllers at once
-                    //self.navigationController?.popViewController(animated: true) //rtn to main page
-                    //let arrayOfViewsToBeMerged: [UIView] = [currentImage]
-                }
-            }
-        } catch CameraError.noName {
-            let alertController = UIAlertController(title: "Title Not Provided", message: "Publish your photo without a title?", preferredStyle: .alert)
-            let actionYes = UIAlertAction(title: "Proceed With No Title", style: .default) {
+        
+        if whatToCreate == .ask {
+            
+            actionYes = UIAlertAction(title: "Proceed With No Title", style: .default) {
                 UIAlertAction in
-                print("Proceed with no title clicked")
+                print("Proceed with no title tapped")
                 currentTitle = "(no title)"
-                currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring
-                currentImage = self.cropImage(currentImage)
                 self.createAsk()
-                self.backTwo()
                 //self.navigationController?.popViewController(animated: true)
                 }
-            alertController.addAction(actionYes)
-            let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .default, handler: nil) //no handler closure req'd bc we just go right back to the original view
-            alertController.addAction(actionNo)
-            
-            present(alertController, animated: true, completion: nil)
-        } catch let error {
-            fatalError("\(error)")
+            finishEditing()
+
+            //self.navigationController?.popViewController(animated: true) //rtn to main page
+            //let arrayOfViewsToBeMerged: [UIView] = [currentImage]
+        } else if whatToCreate == .compare2 {
+            actionYes = UIAlertAction(title: "Proceed With No Title", style: .default) {
+                UIAlertAction in
+                print("Proceed with no title tapped")
+                currentTitle = "(no title)"
+
+                self.createHalfOfCompare()
+                // need code to push compare editor (Pic2) onto the stack and show it
+
+            }
+            finishEditing()
         }
-        
     }
     // This is similar to publish except it puts some data on hold and then takes the user back to the avCamera to add a second picture.
     @IBAction func compareButtonTapped(_ sender: Any) {
         
+        currentCompare.isAsk = false
+        whatToCreate = .compare1
+        
+        actionYes = UIAlertAction(title: "Proceed With No Title", style: .default) {
+            UIAlertAction in
+            print("Proceed with no title tapped")
+            currentTitle = "(no title)"
+            
+            self.createHalfOfCompare()
+            // need code to push compare editor (Pic2) onto the stack and show it
+            
+        }
+        finishEditing()
+
         
         
         
         
+        self.navigationController?.popViewController(animated: true) //rtn to avCameraViewController
+        ////////MARK: NEED MORE CODE HERE TO RESET THE CAMERA TO NORMAL
+    }
+    
+    func createHalfOfCompare() {
+        // Create a new caption object first, to be passed into img
+        let captionLocationToSet: CGFloat = captionYValue/imageScreenSize
+        print("captionLocationToSet is: \(captionLocationToSet)")
+        var captionToBePassed: Caption
+        if let captionText = captionTextField.text {
+            // recall that if captionText is "", the .exists Bool will return false,
+            //   which is functionality that could be replaced by making the caption an optional value.
+            captionToBePassed = Caption(text: captionText, yLocation: captionLocationToSet)
+        } else { // Occurs if caption text is nil for some reason. This really should never happen.
+            captionToBePassed = Caption(text: "", yLocation: captionLocationToSet)
+        }
+        
+
+        let unblurredImageToBePassed: UIImage = self.sFunc_imageFixOrientation(img: unblurredImageSave)
+        currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage, it still hasn't been cropped at this point yet though
+        let blurredUncroppedToBePassed: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
+        currentImage = self.cropImage(currentImage) // now we crop it
+        let blurredCroppedToBePassed = currentImage // no we store the blured cropped current image here so we can pass it ino the iBE
+        
+        // the purpose of savng these values is so that if the user decides to edit one of the compares
+        //  after they have been created, we can display the image in CameraViewController as it would have looked right before
+        //  cropping, without actually cropping it.
+        let contentOffsetToBePassed: CGPoint = scrollView.contentOffset
+        let zoomScaleToBePassed: CGFloat = scrollView.zoomScale
+        
+        // Create a new imageBeingEdited:
+            
+        let iBE = imageBeingEdited(iBEtitle: currentTitle, iBEcaption: captionToBePassed, iBEimageCleanUncropped: unblurredImageToBePassed, iBEimageBlurredUncropped: blurredUncroppedToBePassed, iBEimageBlurredCropped: blurredCroppedToBePassed, iBEContentOffset: contentOffsetToBePassed, iBEZoomScale: zoomScaleToBePassed, isNew: false)
+            
+        if whatToCreate == .compare1 {
+        currentCompare.imageBeingEdited1 = iBE // Stores the imageBeingEdited (iBE) to the first half of the public value known as currentCompare
+            whatToCreate = .compare2 // The next time CameraViewController loads, it will be ready to create the second half of the compare
+            self.navigationController?.popViewController(animated: true) // go back to avCameraViewController
+            print("stored iBE to currentCompare.imageBeingEdited1")
+        } else if whatToCreate == .compare2 {
+            currentCompare.imageBeingEdited2 = iBE
+            whatToCreate = .ask // The next time CameraViewController loads, it will be ready to create an ask unless user taps compareButton
+            print("stored iBE to currentCompare.imageBeingEdited2")
+            
+            // MARK: Need segue to Pic2 compare VC
+            
+            
+            
+        }
+        
+
+    }
+    
+    func finishEditing() {
+        
+        print("inside finishEditing()")
+        
+
+            if let title = titleTextField.text {
+                if title == "" || titleHasBeenTapped == false {
+                    let alertController = UIAlertController(title: "Title Not Provided", message: "Publish your photo without a title?", preferredStyle: .alert)
+                    
+                    alertController.addAction(actionYes)
+                    let actionNo = UIAlertAction(title: "Whoops Let Me Enter One", style: .default) {
+                        UIAlertAction in
+                        
+                        //return //skips the rest of the code here and goes back to the image editor
+                        // this is kind of a pointless line since the alertView presents and then the code marches on before getting any YES / NO input
+                    }
+                    alertController.addAction(actionNo)
+                    
+                    present(alertController, animated: true, completion: nil)
+                } else {
+                    currentTitle = title
+                    if whatToCreate == .ask {
+                        createAsk()
+                    } else if whatToCreate == . compare2 {
+                        createHalfOfCompare()
+                    }
+                    
+                }
+            }
+
+
+
+        
+        
+        
+    
+        ///////////////////////////////////
+        /************* MARK: NEED TO PAUSE CODE UNTIL USER MAKES A SELECTION ****/
+        
+        
+        
+        
+
     }
     
     

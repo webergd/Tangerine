@@ -29,6 +29,10 @@ public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
+// this object holds a max of 2 images that are currently being edited
+// It stores the first image in, then if the user creates a second image, isAsk is set to false
+public var currentCompare = compareBeingEdited(isAsk: true, imageBeingEdited1: nil, imageBeingEdited2: nil)
+
 
 //this allows for hard dates to be created for test examples
 public let formatter = DateFormatter()
@@ -37,6 +41,14 @@ public let formatter = DateFormatter()
 // It's a var so that we can change it at runtime in the future if we need to.
 // 5 hours is 5 * 3600 => 18,000 seconds
 public var displayTime: TimeInterval = 18000.0
+
+public var whatToCreate: objectToCreate = .ask
+
+public enum objectToCreate: String {
+    case ask
+    case compare1
+    case compare2
+}
 
 
 // I'm supposed to change this to round(to places: Int) but to make that work I will also have to change all the places where it is implemented.
@@ -353,17 +365,33 @@ public struct Caption {
         else { return true }
     }
 
-    var yLocation: Double
+    var yLocation: CGFloat //a number <= 1 and >= 0 that specifies where on the image the caption y value should be in terms of a ratio. 0.0 is the top and 1.0 is the bottom, 0.5 is the center. We must convert to this number when setting it and convert from it to use it to position the caption correctly.
     
-    init(txt: String) {
+    /*init(txt: String) {
         text = ""
         //exists = false
         //need to initialize yLocation, this is a placeholder:
         yLocation = 0.1
-    }
+    }*/
 }
 
+public struct imageBeingEdited {
+    var iBEtitle: String
+    var iBEcaption: Caption
+    var iBEimageCleanUncropped: UIImage
+    var iBEimageBlurredUncropped: UIImage
+    var iBEimageBlurredCropped: UIImage
+    var iBEContentOffset: CGPoint
+    var iBEZoomScale: CGFloat
+    var isNew: Bool // I'm not sure if this is necessary
+    
+}
 
+public struct compareBeingEdited {
+    var isAsk: Bool
+    var imageBeingEdited1: imageBeingEdited?
+    var imageBeingEdited2: imageBeingEdited?
+}
 
 
 

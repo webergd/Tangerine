@@ -13,6 +13,8 @@ class MainController: UIViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("prepareForSegue in MAIN controller called")
         justFinishedPicking = false // This lets the avCameraViewController call reloadCamera(() as soon as the view is loaded.
+        currentCompare.isAsk = true // This lets CameraViewController know to treat the image and associated information as part of a new Ask until the user taps the addCompareButton
+        whatToCreate = .ask
     }
 
 }

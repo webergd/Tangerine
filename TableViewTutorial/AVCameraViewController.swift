@@ -72,6 +72,10 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
+        print("avCameraViewController viewDidLoad executed")
+
+        
+        
         //blackView.isHidden = true
         //print("viewDidLoad, blackView is hidden")
     }
@@ -107,7 +111,14 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         previewLayer?.isHidden = true
         blackView.isHidden = false
         //avImageView.isHidden = false
-
+        
+        // this happens if we are returning to the camera to take a second photo for the compare
+        // we want the camera to display
+        if whatToCreate == .compare2 {
+            clearCapturedImagePreview()
+        }
+        
+        // when we show the view again after opening the image library, we just want to show the picture selected, not the camera
         if justFinishedPicking == true { // not sure if this should go here or in reload camera
             print("inside view will appear,  returning without reloading camera")
             justFinishedPicking = false
@@ -599,18 +610,28 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     @IBAction func cancelPhotoButtonTapped(_ sender: Any) {
+        clearCapturedImagePreview()
+        //viewWillAppear(true)
+        print("inside cancelPhotoButtonTapped, avImageView.image is: \(avImageView.image)")
+    
+    }
+    
+    func clearCapturedImagePreview() {
         previewLayer.isHidden = false
         avImageView.isHidden = true
-        print("inside cancelPhotoButtonTapped, avImageView.image is: \(avImageView.image)")
         showCameraIcons()
         reloadCamera()
-        //viewWillAppear(true)
-    
     }
     
 
     @IBAction func continueButtonTapped(_ sender: Any) {
         currentImage = capturedImage
+        
+
+        
+        
+        // Tapping this button also segues to CameraViewController
+        
     }
     
  
