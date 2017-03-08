@@ -21,6 +21,11 @@ class AskBreakDownViewController: UIViewController {
     @IBOutlet weak var gayWomenVotesLabel: UILabel!
     @IBOutlet weak var gayMenVotesLabel: UILabel!
     
+    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()

@@ -26,6 +26,7 @@
 		2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
 		2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */; };
 		2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
+		2AF4D5161E58D29C000B958C /* ComparePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */; };
 		2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -72,6 +73,7 @@
 		2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareTableViewCell.swift; sourceTree = "<group>"; };
 		2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareViewController.swift; sourceTree = "<group>"; };
 		2AECD6CD1D42938A00AAB743 /* DataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
+		2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComparePreviewViewController.swift; path = ../ComparePreviewViewController.swift; sourceTree = "<group>"; };
 		2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCameraViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -131,17 +133,18 @@
 				2AEBBD951D35E175001F7388 /* Info.plist */,
 				2AEBBDB91D36018E001F7388 /* MainController.swift */,
 				2AECD6CD1D42938A00AAB743 /* DataModels.swift */,
+				2ACDFA031E2008A600471E3D /* ImageMethods.swift */,
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
-				2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */,
-				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
-				2ACDFA031E2008A600471E3D /* ImageMethods.swift */,
 				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
 				2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */,
+				2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */,
+				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
+				2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */,
 			);
 			path = TableViewTutorial;
 			sourceTree = "<group>";
@@ -308,6 +311,7 @@
 				2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */,
 				2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */,
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
+				2AF4D5161E58D29C000B958C /* ComparePreviewViewController.swift in Sources */,
 				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
 				2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */,
 				2A06C36A1E024D08000F21AC /* TestFileLinkedToNothing.swift in Sources */,

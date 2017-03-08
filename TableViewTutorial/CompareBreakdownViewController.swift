@@ -35,7 +35,9 @@ class CompareBreakdownViewController: UIViewController {
     
     
     
-    
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     
     override func viewDidLoad() {

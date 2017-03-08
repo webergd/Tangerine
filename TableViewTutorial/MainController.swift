@@ -10,6 +10,7 @@ import UIKit
 
 class MainController: UIViewController {
     
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("prepareForSegue in MAIN controller called")
         justFinishedPicking = false // This lets the avCameraViewController call reloadCamera(() as soon as the view is loaded.

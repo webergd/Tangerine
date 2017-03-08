@@ -626,7 +626,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
 
     @IBAction func continueButtonTapped(_ sender: Any) {
         currentImage = capturedImage
-        
+        // sets the default zoomScale of CameraViewController's scrollview to fill the whole square of the UIImageView
+        initialZoomScale = currentImage.size.height / currentImage.size.width
 
         
         

@@ -8,27 +8,39 @@
 
 import UIKit
 
-class CompareViewController: UIViewController {
+class CompareViewController: UIViewController, UIScrollViewDelegate {
+    @IBOutlet weak var topView: UIView!
     
+    @IBOutlet weak var topScrollView: UIScrollView!
     @IBOutlet weak var topImageView: UIImageView!
+    @IBOutlet weak var topCaptionTextField: UITextField!
+    @IBOutlet weak var topCaptionTextFieldTopConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var bottomScrollView: UIScrollView!
     @IBOutlet weak var bottomImageView: UIImageView!
+    @IBOutlet weak var bottomCaptionTextField: UITextField!
+    @IBOutlet weak var bottomCaptionTextFieldTopConstraint: NSLayoutConstraint!
+    
     @IBOutlet weak var votes1Label: UILabel!
     @IBOutlet weak var votes2Label: UILabel!
+    
     @IBOutlet weak var timeRemainingLabel: UILabel!
-    @IBOutlet weak var breakdown1Button: UIButton!
-    @IBOutlet weak var edit1Button: UIButton!
+  
     @IBOutlet weak var breakdown2Button: UIButton!
-    @IBOutlet weak var edit2Button: UIButton!
+
     @IBOutlet weak var winnerImageTop: UIImageView!
     @IBOutlet weak var winnerImageBottom: UIImageView!
     
     
-
+    override var prefersStatusBarHidden: Bool {
+        return true
+    }
     
     var compare: Compare? {
         didSet {
             // Update the view.
             self.configureView()
+            print("configureView called in var compare")
         }
     }
 
@@ -56,7 +68,12 @@ class CompareViewController: UIViewController {
             if let thisLabel = self.timeRemainingLabel {
                 thisLabel.text = "\(thisCompare.timePosted)"
             }
-            // For some reason, I had to unwrap the tangerine images from this same ViewController in order to 
+    
+    
+
+    
+    
+            // For some reason, I had to unwrap the tangerine images from this same ViewController in order to
             // modify thier attributes inside an if-then or switch-case:
             if let topFruitFlag = winnerImageTop, let bottomFruitFlag = winnerImageBottom {
                 switch thisCompare.winner {
@@ -79,14 +96,78 @@ class CompareViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
-        // Do any additional setup after loading the view.
+        topScrollView.delegate = self
+        bottomScrollView.delegate = self
+
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(true)
+        // If we show the captions in an earlier method like viewDidLoad, autolayout has not yet modfied the size of the imageViews
+        //  to work without the status bar or something, so the captions get placed in the wrong spot.
+        // It is still a little choppy with the captions appearing a split second after so we probably should either fade them in
+        //  or get to the bottom of why the image size is changing when the view loads, or at the very least being able to predict the 
+        //  size that the images will be once they load so that we can calculate an accurate caption location.
+        
+        guard let thisCompare = self.compare else {
+            print("the compare is nil")
+            return
+        }
+        
+        
+
+        
+        if let thisCaptionTopConstraint = self.topCaptionTextFieldTopConstraint {
+            thisCaptionTopConstraint.constant = topImageView.frame.height * thisCompare.compareCaption1.yLocation
+            print("topView frame height: \(topView.frame.height), topScrollView frame height: \(topScrollView.frame.height)")
+            print("topImage frame height: \(topImageView.frame.height), caption y Loc is: \(thisCompare.compareCaption1.yLocation)")
+            print("top caption top constraint set to: \(topCaptionTextFieldTopConstraint.constant)")
+        }
+        
+  
+        
+        if let thisCaptionTextField = self.topCaptionTextField {
+            
+            thisCaptionTextField.text = thisCompare.compareCaption1.text
+            thisCaptionTextField.isHidden = !thisCompare.compareCaption1.exists
+            
+        }
+        
+        
+        if let thisCaptionTopConstraint = self.bottomCaptionTextFieldTopConstraint {
+            thisCaptionTopConstraint.constant = bottomImageView.frame.height * thisCompare.compareCaption2.yLocation
+            print("bottomImage frame height: \(bottomImageView.frame.height), caption y Loc is: \(thisCompare.compareCaption2.yLocation)")
+            print("bottom caption top constraint set to: \(bottomCaptionTextFieldTopConstraint.constant)")
+        }
+        
+        if let thisCaptionTextField = self.bottomCaptionTextField {
+            thisCaptionTextField.isHidden = !thisCompare.compareCaption2.exists
+            thisCaptionTextField.text = thisCompare.compareCaption2.text
+        }
+
+    }
+
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
     
+    // Allows the user to zoom within the scrollView that the user is manipulating at the time.
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        if scrollView == topScrollView {
+            return self.topImageView
+        } else {
+            return self.bottomImageView
+        }
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        topScrollView.setZoomScale(1.0, animated: true)
+        bottomScrollView.setZoomScale(1.0, animated: true)
+    }
+ 
+ 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! CompareBreakdownViewController
         // Pass the selected object to the new view controller:

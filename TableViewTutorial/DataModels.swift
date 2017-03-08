@@ -37,6 +37,8 @@ public var currentCompare = compareBeingEdited(isAsk: true, imageBeingEdited1: n
 //this allows for hard dates to be created for test examples
 public let formatter = DateFormatter()
 
+
+// MARK: Set this to set time Ask will post
 // This determines how long the compares and asks will be displayed before they expire.
 // It's a var so that we can change it at runtime in the future if we need to.
 // 5 hours is 5 * 3600 => 18,000 seconds
@@ -50,6 +52,9 @@ public enum objectToCreate: String {
     case compare2
 }
 
+// This is what CameraViewController will check to zoom the scrollView when loading at first.
+// Normally it will be set to about 1.333 for the image's aspect ratio. 1.0 is just a place holder.
+public var initialZoomScale: CGFloat = 1.0
 
 // I'm supposed to change this to round(to places: Int) but to make that work I will also have to change all the places where it is implemented.
 public extension Double {
@@ -93,6 +98,12 @@ extension TimeInterval { //got this off the internet to convert an NSTimeInterva
     }
 }
 
+// calculates the caption's autolayout constraint for its distance from the top of the imageView it is being displayed over.
+// Normally this constraint will actually be within a View that is acting as a container for the imageView, scrollView, and captionTextField
+public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, captionYLocation: CGFloat) -> CGFloat {
+    return imageViewFrameHeight * captionYLocation
+}
+
 
 
 public protocol Query {
@@ -116,11 +127,15 @@ open class Ask: Query {
     let askPhoto: UIImage
     open var rowType: String = "\(RowType.isSingle)"
     open var timePosted: Date
-    //let askCaption: Caption?
+    let askCaption: Caption
     
     // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
     let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
     
+    // uses the timePosted to return a string of the timeRemaining
+    var timeRemaining: String {
+        return calcTimeRemaining(timePosted)
+    }
     
     var askRating: Double {
         
@@ -155,14 +170,14 @@ open class Ask: Query {
     }
     
 
-    init(title: String, photo: UIImage, timePosted time: Date/*,caption: Caption?*/) {
+    init(title: String, photo: UIImage,caption: Caption, timePosted time: Date) {
         askTitle = title
         askPhoto = photo
         timePosted = time
+        askCaption = caption
         print("inside the Ask initializer method")
         print("currentImage orientation is upright \(currentImage.imageOrientation == UIImageOrientation.up)")
         print("newAsk.image orientation is upright \(askPhoto.imageOrientation == UIImageOrientation.up)")
-        //askCaption = caption
     }
 }
 
@@ -198,14 +213,21 @@ open class Compare: Query {
     //first image (displayed on top or left)
     var compareTitle1: String
     let comparePhoto1: UIImage
+    let compareCaption1: Caption
 
     
     //second image (displayed on bottom or right)
     var compareTitle2: String
     let comparePhoto2: UIImage
+    let compareCaption2: Caption
     
     open var timePosted: Date
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
+    
+    // uses the timePosted to return a string of the timeRemaining
+    var timeRemaining: String {
+        return calcTimeRemaining(timePosted)
+    }
     
     var compareVotes1: Int {
         let sW = breakdown.straightWomen as! CompareDemo
@@ -257,12 +279,14 @@ open class Compare: Query {
     // MARK: Also need to implement a timePosted value *********************
     // Maybe even a computed value that returns the time remaining using the timePosted
     
-    init(title1: String, photo1: UIImage, title2: String, photo2: UIImage, timePosted time: Date) {
+    init(title1: String, photo1: UIImage, caption1: Caption, title2: String, photo2: UIImage, caption2: Caption, timePosted time: Date) {
         
         compareTitle1 = title1
         comparePhoto1 = photo1
+        compareCaption1 = caption1
         compareTitle2 = title2
         comparePhoto2 = photo2
+        compareCaption2 = caption2
         timePosted = time
     }
 }

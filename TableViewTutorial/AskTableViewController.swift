@@ -31,7 +31,6 @@ class AskTableViewController: UITableViewController {
     }
     
     
-    
     func loadSampleAsks() {
         
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
@@ -41,8 +40,9 @@ class AskTableViewController: UITableViewController {
         //except it is most definitely temporary code
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
+        let caption1 = Caption(text: "", yLocation: 0.0)
         let time1 = formatter.date(from: "2016/08/09 00:01")! //force unwrap bc it's temp anyway
-        let ask1 = Ask(title: "Red Reeboks", photo: photo1, timePosted: time1)
+        let ask1 = Ask(title: "Red Reeboks", photo: photo1, caption: caption1, timePosted: time1)
         let ask1SW = ask1.breakdown.straightWomen as! AskDemo
         let ask1GM = ask1.breakdown.gayMen as! AskDemo
         ask1SW.rating = 5
@@ -51,15 +51,17 @@ class AskTableViewController: UITableViewController {
         ask1GM.numVotes = 10
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
+        let caption2 = Caption(text: "", yLocation: 0.0)
         let time2 = formatter.date(from: "2016/08/09 00:11")!
-        let ask2 = Ask(title: "White Converse", photo: photo2, timePosted: time2)
+        let ask2 = Ask(title: "White Converse", photo: photo2,caption: caption2, timePosted: time2)
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
  
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
+        let caption3 = Caption(text: "", yLocation: 0.0)
         let time3 = formatter.date(from: "2016/08/09 00:06")!
-        let ask3 = Ask(title: "Violet Vans", photo: photo3, timePosted: time3)
+        let ask3 = Ask(title: "Violet Vans", photo: photo3, caption: caption3, timePosted: time3)
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
         ask3SM.numVotes = 90
@@ -76,15 +78,17 @@ class AskTableViewController: UITableViewController {
         //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
         
         //create a sample Jeans compare object
-        let photo1 = UIImage(named: "\(Jeans.carmenJeansLight)")!
         let title1 = "Light Carmens"
+        let photo1 = UIImage(named: "\(Jeans.carmenJeansLight)")!
+        let caption1 = Caption(text: "", yLocation: 0.0)
         
-        let photo2 = UIImage(named: "\(Jeans.carmenJeansDark)")!
         let title2 = "Dark Carmens"
+        let photo2 = UIImage(named: "\(Jeans.carmenJeansDark)")!
+        let caption2 = Caption(text: "", yLocation: 0.0)
         
         let time1 = formatter.date(from: "2016/08/09 00:04")!
         
-        let compare1 = Compare(title1: title1, photo1: photo1, title2: title2, photo2: photo2, timePosted: time1)
+        let compare1 = Compare(title1: title1, photo1: photo1, caption1: caption1, title2: title2, photo2: photo2, caption2: caption2, timePosted: time1)
         let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
         let compare1SM = compare1.breakdown.straightMen as! CompareDemo
         let compare1GW = compare1.breakdown.gayWomen as! CompareDemo
@@ -100,15 +104,18 @@ class AskTableViewController: UITableViewController {
         compare1GM.votesForTwo = 77
         
         //create another sample Shoes compare object
-        let photo1a = UIImage(named: "\(Shoes.brownShiny)")!
+        
         let title1a = "Brown Shiny"
+        let photo1a = UIImage(named: "\(Shoes.brownShiny)")!
+        let caption1a = Caption(text: "", yLocation: 0.0)
 
-        let photo2a = UIImage(named: "\(Shoes.brownTooled)")!
         let title2a = "Brown Tooled"
+        let photo2a = UIImage(named: "\(Shoes.brownTooled)")!
+        let caption2a = Caption(text: "", yLocation: 0.0)
         
         let time2 = formatter.date(from: "2016/08/09 00:08")!
         
-        let compare2 = Compare(title1: title1a, photo1: photo1a, title2: title2a, photo2: photo2a, timePosted: time2)
+        let compare2 = Compare(title1: title1a, photo1: photo1a, caption1: caption1a, title2: title2a, photo2: photo2a, caption2: caption2a, timePosted: time2)
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
         let compare2SM = compare2.breakdown.straightMen as! CompareDemo
         
