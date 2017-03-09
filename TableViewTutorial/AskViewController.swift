@@ -19,6 +19,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var askCaptionTextField: UITextField!
     @IBOutlet weak var askCaptionTopConstraint: NSLayoutConstraint!
+    @IBOutlet var askView: UIView!
 
     
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
@@ -97,6 +98,20 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         scrollView.delegate = self
         self.configureView()
         
+        //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
+        //askView.addGestureRecognizer(swipeViewGesture)
+        
+        
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.view.addGestureRecognizer(swipeLeft)
+        
+        
         
     }
     
@@ -115,8 +130,25 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
+    func userSwiped(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                self.navigationController?.popViewController(animated: true)
+            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+                // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
+                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askBreakdownViewController") as! AskBreakdownViewController
+                // pushes askBreakdownViewController onto the nav stack
+                nextVC.ask = self.ask
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            }
+            
+            
+        }
+        
+    }
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let controller = segue.destination as! AskBreakDownViewController
+        let controller = segue.destination as! AskBreakdownViewController
         // Pass the selected object to the new view controller:
         controller.ask = self.ask
     }

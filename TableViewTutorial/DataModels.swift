@@ -106,6 +106,7 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 
 
 
+
 public protocol Query {
     var rowType: String {get set}
     var timePosted: Date {get set}
@@ -416,6 +417,10 @@ public struct compareBeingEdited {
     var imageBeingEdited1: imageBeingEdited?
     var imageBeingEdited2: imageBeingEdited?
 }
+
+
+
+
 
 
 

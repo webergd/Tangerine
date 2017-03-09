@@ -9,6 +9,7 @@
 import UIKit
 
 class CompareViewController: UIViewController, UIScrollViewDelegate {
+    @IBOutlet weak var compareView: UIView!
     @IBOutlet weak var topView: UIView!
     
     @IBOutlet weak var topScrollView: UIScrollView!
@@ -98,6 +99,18 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         self.configureView()
         topScrollView.delegate = self
         bottomScrollView.delegate = self
+        
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareViewController.userSwiped))
+        compareView.addGestureRecognizer(swipeViewGesture)
+        
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(CompareViewController.userSwiped))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(CompareViewController.userSwiped))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.view.addGestureRecognizer(swipeLeft)
 
     }
     
@@ -167,6 +180,22 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         bottomScrollView.setZoomScale(1.0, animated: true)
     }
  
+    func userSwiped(gesture: UIGestureRecognizer) {
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                self.navigationController?.popViewController(animated: true)
+            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+                // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
+                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareBreakdownViewController") as! CompareBreakdownViewController
+                // pushes askBreakdownViewController onto the nav stack
+                nextVC.compare = self.compare
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            }
+            
+            
+        }
+        
+    }
  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! CompareBreakdownViewController

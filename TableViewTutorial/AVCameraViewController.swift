@@ -72,6 +72,12 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
+        
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.returnToMenu))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        
         print("avCameraViewController viewDidLoad executed")
 
         
@@ -566,11 +572,23 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
      */
  
     @IBAction func menuButtonTapped(_ sender: Any) {
+        returnToMenu()
+        
+        /*
         if let navController = self.navigationController {
             navController.popViewController(animated: true)
         }
-        
+        */
     }
+    
+    func returnToMenu() {
+        if let navController = self.navigationController {
+            navController.popViewController(animated: true)
+        }
+    }
+
+    
+    
     @IBAction func cameraFlipButtonTapped(_ sender: Any) {
         // just switches the value to the opposite of what it was
         
@@ -634,6 +652,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         // Tapping this button also segues to CameraViewController
         
     }
+    
+
     
  
 }

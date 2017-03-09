@@ -8,7 +8,8 @@
 
 import UIKit
 
-class AskBreakDownViewController: UIViewController {
+class AskBreakdownViewController: UIViewController, UINavigationControllerDelegate {
+    @IBOutlet weak var askBreakdownView: UIView!
     @IBOutlet weak var askImage: UIImageView!
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var straightWomenRatingLabel: UILabel!
@@ -29,6 +30,8 @@ class AskBreakDownViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskBreakdownViewController.userSwiped))
+        askBreakdownView.addGestureRecognizer(swipeViewGesture)
     }
 
     var ask: Ask? {
@@ -104,6 +107,12 @@ class AskBreakDownViewController: UIViewController {
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func userSwiped() {
+        print("user swiped**********")
+        self.navigationController?.popViewController(animated: true)
+        
     }
     
 

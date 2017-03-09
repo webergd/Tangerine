@@ -11,6 +11,7 @@ import UIKit
 class CompareBreakdownViewController: UIViewController {
 
     //IBOutlets go here
+    @IBOutlet weak var compareBreakdownView: UIView!
     
     @IBOutlet weak var imageView1: UIImageView!
     @IBOutlet weak var imageView2: UIImageView!
@@ -43,6 +44,8 @@ class CompareBreakdownViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
+        compareBreakdownView.addGestureRecognizer(swipeViewGesture)
     }
     
     var compare: Compare? {
@@ -134,6 +137,13 @@ class CompareBreakdownViewController: UIViewController {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
     }
+    
+    func userSwiped() {
+        print("user swiped**********")
+        self.navigationController?.popViewController(animated: true)
+        
+    }
+
 
     
 }

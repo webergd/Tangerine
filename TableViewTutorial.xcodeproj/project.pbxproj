@@ -8,7 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		2A06C36A1E024D08000F21AC /* TestFileLinkedToNothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */; };
-		2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */; };
+		2AA514761D3B3EE700B1ABF8 /* AskBreakdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */; };
+		2AB0EF7B1E707C5100ADAB68 /* SwipeSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */; };
 		2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACDFA031E2008A600471E3D /* ImageMethods.swift */; };
 		2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */; };
 		2AE338C11D44502C00B32C03 /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C01D44502C00B32C03 /* TestViewController.swift */; };
@@ -49,7 +50,8 @@
 
 /* Begin PBXFileReference section */
 		2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestFileLinkedToNothing.swift; sourceTree = "<group>"; };
-		2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskBreakDownViewController.swift; sourceTree = "<group>"; };
+		2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskBreakdownViewController.swift; sourceTree = "<group>"; };
+		2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeSegue.swift; sourceTree = "<group>"; };
 		2ACDFA031E2008A600471E3D /* ImageMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMethods.swift; sourceTree = "<group>"; };
 		2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraViewController.swift; sourceTree = "<group>"; };
 		2AE338C01D44502C00B32C03 /* TestViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestViewController.swift; sourceTree = "<group>"; };
@@ -126,6 +128,7 @@
 			isa = PBXGroup;
 			children = (
 				2AEBBDC51D3A04D2001F7388 /* Main.storyboard */,
+				2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */,
 				2AE338C01D44502C00B32C03 /* TestViewController.swift */,
 				2AEBBD921D35E175001F7388 /* LaunchScreen.storyboard */,
 				2AEBBD891D35E175001F7388 /* AppDelegate.swift */,
@@ -137,7 +140,7 @@
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
-				2AA514751D3B3EE700B1ABF8 /* AskBreakDownViewController.swift */,
+				2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */,
 				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
@@ -313,9 +316,10 @@
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,
 				2AF4D5161E58D29C000B958C /* ComparePreviewViewController.swift in Sources */,
 				2AEBBDC21D3891B9001F7388 /* AskTableViewCell.swift in Sources */,
+				2AB0EF7B1E707C5100ADAB68 /* SwipeSegue.swift in Sources */,
 				2AECD6CC1D4291DF00AAB743 /* CompareViewController.swift in Sources */,
 				2A06C36A1E024D08000F21AC /* TestFileLinkedToNothing.swift in Sources */,
-				2AA514761D3B3EE700B1ABF8 /* AskBreakDownViewController.swift in Sources */,
+				2AA514761D3B3EE700B1ABF8 /* AskBreakdownViewController.swift in Sources */,
 				2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */,
 				2AEBBDBC1D36111F001F7388 /* AskViewController.swift in Sources */,
 			);

@@ -12,6 +12,12 @@ class AskTableViewController: UITableViewController {
     
     // MARK: Properties
     
+    
+    @IBOutlet var askTableView: UITableView!
+
+    
+    
+    
     //var asks = [Ask]()
     //var compares = [Compare]()
     var queries: [Query] = mainArray // this is an array that will hold Asks and Compares
@@ -146,6 +152,9 @@ class AskTableViewController: UITableViewController {
         tableView.rowHeight = UITableViewAutomaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
+        
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskTableViewController.userSwiped))
+        askTableView.addGestureRecognizer(swipeViewGesture)
         
         
         
@@ -348,8 +357,13 @@ class AskTableViewController: UITableViewController {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     
     // MARK: NEEDS TO BE UNCOMMENTED AND WORKED ON:
+    
+    func userSwiped() {
+        print("user swiped**********")
+        self.navigationController?.popViewController(animated: true)
+        
+    }
 
-   
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         
         // Get the new view controller using segue.destinationViewController.
