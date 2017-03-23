@@ -271,13 +271,6 @@
                                     <action selector="clearBlursTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="Qnl-Sy-Bei"/>
                                 </connections>
                             </button>
-                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="XOo-iF-27H">
-                                <rect key="frame" x="16" y="433" width="107" height="30"/>
-                                <state key="normal" title="Return to Zoom"/>
-                                <connections>
-                                    <action selector="returnToZoom:" destination="sJJ-as-S31" eventType="touchUpInside" id="qHr-Bw-p9z"/>
-                                </connections>
-                            </button>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Bz-y1-TJt">
                                 <rect key="frame" x="252" y="433" width="107" height="30"/>
                                 <accessibility key="accessibilityConfiguration" identifier="enableBlurring"/>
@@ -328,18 +321,27 @@
                                             <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                             <state key="normal" title="Publish" image="square-arrow"/>
                                             <connections>
-                                                <action selector="mirrorCaptionButtonTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="kea-Pc-6jx"/>
                                                 <action selector="publishButtonTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="cH2-jL-RgX"/>
                                             </connections>
                                         </button>
                                     </barButtonItem>
                                 </items>
                             </toolbar>
+                            <button hidden="YES" opaque="NO" contentMode="scaleAspectFit" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="stg-Ry-Atc">
+                                <rect key="frame" x="16" y="433" width="75" height="75"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" secondItem="stg-Ry-Atc" secondAttribute="height" multiplier="1:1" id="W2O-TF-s5h"/>
+                                </constraints>
+                                <state key="normal" title="Button" image="tangerineImage2"/>
+                                <connections>
+                                    <action selector="otherImageThumbnailTapped:" destination="sJJ-as-S31" eventType="touchUpInside" id="L9p-Hj-23t"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="2IU-TT-2e9"/>
-                            <constraint firstItem="XOo-iF-27H" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" constant="8" id="4do-kO-nVH"/>
+                            <constraint firstItem="stg-Ry-Atc" firstAttribute="width" secondItem="ZdZ-14-emU" secondAttribute="width" multiplier="0.2" id="4De-1H-vQ5"/>
                             <constraint firstItem="xHB-t2-Bcb" firstAttribute="top" secondItem="6Bz-y1-TJt" secondAttribute="bottom" id="4vD-nU-o7e"/>
                             <constraint firstItem="YCX-1N-MAI" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="6c6-Ac-0tc"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="6zg-hf-fSR"/>
@@ -350,14 +352,15 @@
                             <constraint firstAttribute="trailingMargin" secondItem="ZdZ-14-emU" secondAttribute="trailing" id="HcL-aM-RP9"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="Hl1-Ya-O0V"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leading" id="I2D-R1-6oH"/>
-                            <constraint firstAttribute="leadingMargin" secondItem="XOo-iF-27H" secondAttribute="leading" id="JLQ-Of-UQp"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="leading" secondItem="s4g-4i-nXH" secondAttribute="leadingMargin" id="MHc-yf-CFZ"/>
+                            <constraint firstAttribute="leadingMargin" secondItem="stg-Ry-Atc" secondAttribute="leading" id="MbT-h4-Qzn"/>
                             <constraint firstItem="nvC-VA-hLO" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Pv3-gH-Z1J"/>
                             <constraint firstItem="ZdZ-14-emU" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="Qd8-M0-ir0"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="VAE-Kr-Nay"/>
                             <constraint firstItem="GNG-qD-FV9" firstAttribute="top" secondItem="ZdZ-14-emU" secondAttribute="bottom" id="aKX-Fn-13U"/>
                             <constraint firstAttribute="trailingMargin" secondItem="6Bz-y1-TJt" secondAttribute="trailing" id="bCI-20-LKY"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="centerX" secondItem="s4g-4i-nXH" secondAttribute="centerX" id="bXj-rj-FWZ"/>
+                            <constraint firstItem="stg-Ry-Atc" firstAttribute="top" secondItem="GNG-qD-FV9" secondAttribute="bottom" constant="8" id="dFq-cr-P0r"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="top" secondItem="a0Q-sj-lPX" secondAttribute="bottom" constant="221" id="fJi-kk-pvb"/>
                             <constraint firstItem="ZqT-a8-dwT" firstAttribute="top" secondItem="YCX-1N-MAI" secondAttribute="bottom" constant="10" id="gGw-C2-eP3"/>
                             <constraint firstItem="0F6-95-USV" firstAttribute="width" secondItem="s4g-4i-nXH" secondAttribute="width" id="kgm-vH-vH4"/>
@@ -388,14 +391,14 @@
                         <outlet property="enableBlurringButton" destination="6Bz-y1-TJt" id="PYb-ey-cQy"/>
                         <outlet property="imageView" destination="nvC-VA-hLO" id="UhN-cg-7YC"/>
                         <outlet property="mirrorCaptionButton" destination="dZ3-GC-sbj" id="3Jk-2P-QE9"/>
-                        <outlet property="returnToZoomButton" destination="XOo-iF-27H" id="wvs-bZ-jcl"/>
+                        <outlet property="otherImageThumbnail" destination="stg-Ry-Atc" id="h54-kL-bu4"/>
                         <outlet property="scrollView" destination="ZdZ-14-emU" id="1jy-F1-YA1"/>
                         <outlet property="titleTextField" destination="GNG-qD-FV9" id="Zwt-6d-QdE"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="yvz-5d-3rd" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="584" y="-307"/>
+            <point key="canvasLocation" x="583.20000000000005" y="-307.1964017991005"/>
         </scene>
         <!--Compare Preview View Controller-->
         <scene sceneID="prs-yC-gbK">
@@ -415,7 +418,7 @@
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="6" translatesAutoresizingMaskIntoConstraints="NO" id="ojA-7Z-O3o" userLabel="Top Scroll View">
                                         <rect key="frame" x="0.0" y="0.0" width="323.5" height="323.5"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oNA-Yb-sod">
+                                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="oNA-Yb-sod">
                                                 <rect key="frame" x="0.0" y="0.0" width="323.5" height="323.5"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="oNA-Yb-sod" secondAttribute="height" multiplier="1:1" id="BsT-Eb-rZn"/>
@@ -473,7 +476,7 @@
                                     <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" maximumZoomScale="6" translatesAutoresizingMaskIntoConstraints="NO" id="R1f-Uo-9cH" userLabel="Bottom Scroll View">
                                         <rect key="frame" x="0.0" y="0.0" width="323.5" height="323.5"/>
                                         <subviews>
-                                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xl9-3b-f2T">
+                                            <imageView contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="xl9-3b-f2T">
                                                 <rect key="frame" x="0.0" y="0.0" width="323.5" height="323.5"/>
                                                 <constraints>
                                                     <constraint firstAttribute="width" secondItem="xl9-3b-f2T" secondAttribute="height" multiplier="1:1" id="k0E-mo-HBK"/>
@@ -682,7 +685,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="YcZ-D7-5xI" id="TVy-cc-Oaf">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="99"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="100"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="defaultPhoto" translatesAutoresizingMaskIntoConstraints="NO" id="iDs-jd-WVE">
@@ -817,7 +820,7 @@
                                 <rect key="frame" x="0.0" y="128" width="375" height="150"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="Bwm-rb-oas" id="klb-YM-rv3">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="149"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="150"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="sax-RC-Ivt" userLabel="winnerOutline1">

@@ -25,13 +25,14 @@ public enum ImageAspectType: String {
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
+public var currentCaption: Caption = Caption(text: "", yLocation: 0.0)
 public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks and compares
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
 // this object holds a max of 2 images that are currently being edited
 // It stores the first image in, then if the user creates a second image, isAsk is set to false
-public var currentCompare = compareBeingEdited(isAsk: true, imageBeingEdited1: nil, imageBeingEdited2: nil)
+public var currentCompare = compareBeingEdited(isAsk: true, imageBeingEdited1: nil, imageBeingEdited2: nil, creationPhase: .noPhotoTaken)
 
 
 //this allows for hard dates to be created for test examples
@@ -44,17 +45,27 @@ public let formatter = DateFormatter()
 // 5 hours is 5 * 3600 => 18,000 seconds
 public var displayTime: TimeInterval = 18000.0
 
-public var whatToCreate: objectToCreate = .ask
+// These are in here so that the properties are only created once, as opposed to every time a new photo is created.
+public var initialZoomScale: CGFloat {
+    return currentImage.size.height / currentImage.size.width // recomputes in case image is different size than the last one
+}
+
+public var initialContentOffset: CGPoint {
+    // 47.25 is the ratio of contentOffset/zoomScale when the image is zoomed in enough to make it a square and the contentOffset is centered.
+    return CGPoint(x: (47.25 * initialZoomScale), y: 47.25 * (initialZoomScale))
+}
+
+
+//public var whatToCreate: objectToCreate = .ask
 
 public enum objectToCreate: String {
     case ask
-    case compare1
-    case compare2
+    case compare
+
 }
 
-// This is what CameraViewController will check to zoom the scrollView when loading at first.
-// Normally it will be set to about 1.333 for the image's aspect ratio. 1.0 is just a place holder.
-public var initialZoomScale: CGFloat = 1.0
+
+
 
 // I'm supposed to change this to round(to places: Int) but to make that work I will also have to change all the places where it is implemented.
 public extension Double {
@@ -81,6 +92,14 @@ public extension UIViewController {
     }
 }
 
+public func clearOutCurrentCompare() {
+    currentCompare.creationPhase = .noPhotoTaken
+    currentCompare.imageBeingEdited1 = nil
+    currentCompare.imageBeingEdited2 = nil
+    //whatToCreate = .ask //hopefully we can get rid of this property also
+}
+
+
 
 // MARK: TIME REMAINING
 
@@ -91,7 +110,7 @@ public func calcTimeRemaining(_ timePosted: Date) -> String {
 }
 
 extension TimeInterval { //got this off the internet to convert an NSTimeInterval into a readable time String. NSTI is just a Double.
-    var time:String {
+    var time: String {
         return String(format:"%02d:%02d", Int((self/3600.0).truncatingRemainder(dividingBy: 24)), Int((self/60.0).truncatingRemainder(dividingBy: 60)))
         //use this way if I want seconds to display also:
         //return String(format:"%02d:%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60), Int((self)%60))
@@ -408,15 +427,27 @@ public struct imageBeingEdited {
     var iBEimageBlurredCropped: UIImage
     var iBEContentOffset: CGPoint
     var iBEZoomScale: CGFloat
-    var isNew: Bool // I'm not sure if this is necessary
+    var blursAdded: Bool = false
     
 }
+
+public enum compareImageState: String {
+    case noPhotoTaken          // state 0
+    case firstPhotoTaken       // state 1
+    case secondPhotoTaken      // state 2
+    case reEditingFirstPhoto   // state 3
+    case reEditingSecondPhoto  // state 4
+}
+
+
 
 public struct compareBeingEdited {
     var isAsk: Bool
     var imageBeingEdited1: imageBeingEdited?
     var imageBeingEdited2: imageBeingEdited?
+    var creationPhase: compareImageState = .noPhotoTaken //intializing here is kind of pointless, the auto generated intialiizer method forces us to store something new again to it anyway
 }
+
 
 
 

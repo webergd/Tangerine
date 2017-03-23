@@ -72,10 +72,28 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     override func viewDidLoad() {
         super.viewDidLoad()
         imagePicker.delegate = self
-        
+        print("justFinsihedPicking is \(justFinishedPicking) (inside AVCameraViewController.ViewDidLoad)")
+        //Enabes user to swipe right to return to main menu
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.returnToMenu))
         swipeRight.direction = UISwipeGestureRecognizerDirection.right
         self.view.addGestureRecognizer(swipeRight)
+
+        //Switch that determines where we are at in the compare or ask creation process:
+        switch currentCompare.creationPhase {
+        case .noPhotoTaken:
+            // This seems redundant but what this does is to ensure the images are cleared out so we can start fresh
+            currentCompare = compareBeingEdited(isAsk: true, imageBeingEdited1: nil, imageBeingEdited2: nil, creationPhase: .noPhotoTaken)
+        case .firstPhotoTaken:
+            currentCompare.isAsk = false
+        default:
+            print("Error occurred. currentCompare.creationPhase was something other than .noImageTaken or .firstPhotoTaken")
+            print("currentCompare.creationPhase should've been changed before we got here, ...or we shouldn't be here right now")
+            print(" ** setting .creationPhase to state 0, .noImageTaken and reloading the VC ** ")
+            currentCompare.creationPhase = .noPhotoTaken
+            self.viewDidLoad()
+        }
+        
+        
         
         
         print("avCameraViewController viewDidLoad executed")
@@ -111,6 +129,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         super.viewWillAppear(animated)
         
         print("at the beginning of viewWillAppear, avImageView.image is: \(avImageView.image)")
+        print("justFinsihedPicking is \(justFinishedPicking) (inside ViewWillAppear)")
         
         // Hide the navigation bar on the this view controller
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
@@ -120,12 +139,14 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         
         // this happens if we are returning to the camera to take a second photo for the compare
         // we want the camera to display
-        if whatToCreate == .compare2 {
-            clearCapturedImagePreview()
-        }
+        //if whatToCreate == .compare2 {
+        //    clearCapturedImagePreview()
+        //}
+        
         
         // when we show the view again after opening the image library, we just want to show the picture selected, not the camera
         if justFinishedPicking == true { // not sure if this should go here or in reload camera
+            print("justFinishedPicking is \(justFinishedPicking) (inside if statement)")
             print("inside view will appear,  returning without reloading camera")
             justFinishedPicking = false
             return
@@ -188,7 +209,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         }
         */
         
-        
+        self.viewDidLoad()
     }
     
     override func viewDidLayoutSubviews() {
@@ -263,6 +284,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
                     //previewLayerAlreadyLoadedOnce = true
                     //}
                     captureSession.startRunning()
+                    print("capture session started")
                 }
             } else {
                 print("Issue encountered inside captureSession.canAddInput")
@@ -272,7 +294,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             print("Issue encountered when reloading camera.")
         }
         
-        print("at the beginning of reloadCamera, avImageView.image is: \(avImageView.image)")
+        print("at the end of reloadCamera, avImageView.image is: \(avImageView.image)")
     }
 
     
@@ -472,7 +494,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             
             print("insideImagePickerController, pickedImage is: \(pickedImage)")
             
-            
+            print("Setting justFinishedPicking to true")
             justFinishedPicking = true
             avImageView.contentMode = .scaleAspectFit
             print("just picked the image")
@@ -582,6 +604,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     func returnToMenu() {
+        print("returnToMenu() called")
         if let navController = self.navigationController {
             navController.popViewController(animated: true)
         }
@@ -643,14 +666,45 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     
 
     @IBAction func continueButtonTapped(_ sender: Any) {
+        clearCapturedImagePreview()
         currentImage = capturedImage
         // sets the default zoomScale of CameraViewController's scrollview to fill the whole square of the UIImageView
-        initialZoomScale = currentImage.size.height / currentImage.size.width
+        // is this still a valid comment? ^^^^
+        
+        print("justFinishedPicking is \(justFinishedPicking) (inside of continueButtonTapped)")
+
+        let blankCaption = Caption(text: "", yLocation: 0.0)
+        
+        let iBE = imageBeingEdited(iBEtitle: "", iBEcaption: blankCaption, iBEimageCleanUncropped: capturedImage, iBEimageBlurredUncropped: currentImage, iBEimageBlurredCropped: currentImage, iBEContentOffset: initialContentOffset, iBEZoomScale: initialZoomScale, blursAdded: false)
+        
+
+        print("iBE created in AVViewController.continueButtonTapped")
+        print("iBE.title is: \(iBE.iBEtitle)")
+        print("iBE.caption text is: \(iBE.iBEcaption.text)")
 
         
+        switch currentCompare.creationPhase {
+        case .firstPhotoTaken: //Store image2
+            //first photo was already taken so we will store this one as the second image
+            currentCompare.imageBeingEdited2 = iBE
+            
+            currentCompare.creationPhase = .secondPhotoTaken //update the creationPhase flag se we know the 2nd image has also been taken
+            //whatToCreate = .ask // The next time CameraViewController loads, it will be ready to create an ask unless user taps compareButton
+            print("stored iBE to currentCompare.imageBeingEdited2")
+        case .noPhotoTaken: //Store image1
+            //we haven't stored any image yet so we'll store this one to image1
+            currentCompare.imageBeingEdited1 = iBE // Stores the imageBeingEdited (iBE) to the first half of the public value known as currentCompare
+            
+            currentCompare.creationPhase = .firstPhotoTaken //update the creationPhase flag se we know the first image has been taken
+            //whatToCreate = .ask // The next time CameraViewController loads, it will be ready to create the second half of the compare
+            print("stored iBE to currentCompare.imageBeingEdited1")
+        default:
+            print("Encountered an unexpected .creationPhase value inside compareButtonTapped")
+        }
         
-        // Tapping this button also segues to CameraViewController
-        
+        /* ********************     ******************************         *************************
+         * Tapping this button also segues to CameraViewController (it's an interface builder segue not pictured in the source code)
+         * ********************     ******************************         ************************* */
     }
     
 

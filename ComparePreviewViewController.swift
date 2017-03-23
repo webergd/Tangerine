@@ -46,11 +46,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
     
     
     override func viewDidLoad() {
-        /*
-        print("On load, top caption top constraint is: \(topCaptionTextFieldTopConstraint.constant)")
-        print("On load, bottom caption top constraint is: \(bottomCaptionTextFieldTopConstraint.constant)")
-        */
-        
+        print("ComparePreviewViewController.viewDidLoad called")
         super.viewDidLoad()
         topScrollView.delegate = self
         bottomScrollView.delegate = self
@@ -68,6 +64,13 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
             print("Could not unwrap one or both images in ComparePreviewViewController")
         }
         
+        topCaptionTextField.isHidden = !topCaption.exists
+        topCaptionTextField.text = topCaption.text
+        
+        bottomCaptionTextField.isHidden = !bottomCaption.exists
+        bottomCaptionTextField.text = bottomCaption.text
+        
+        /*
         if topCaption.exists == false {
             topCaptionTextField.isHidden = true
         } else {
@@ -81,31 +84,48 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
             bottomCaptionTextField.isHidden = false
             bottomCaptionTextField.text = bottomCaption.text
         }
-    
-        
-
-        //print("topImage frame height: \(topImageView.frame.height), caption y Loc is: \(currentCompare.imageBeingEdited1?.iBEcaption.yLocation)")
-        
-        
+        */
        
         // do some math to place each caption in the right spot
         
-        topCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: topImageView.frame.height, captionYLocation: topCaption.yLocation)  //topImageView.frame.height * topCaption.yLocation
-
-        bottomCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: bottomImageView.frame.height, captionYLocation: bottomCaption.yLocation) //bottomImageView.frame.height * bottomCaption.yLocation
-        
-        
-        
-        /*
-        print("top caption top constraint set to: \(topCaptionTextFieldTopConstraint.constant)")
-        print("bottom caption top constraint set to: \(bottomCaptionTextFieldTopConstraint.constant)")
-        print("bottomImage frame height: \(bottomImageView.frame.height), caption y Loc is: \(currentCompare.imageBeingEdited2?.iBEcaption.yLocation)")
-        */
+        topCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: topImageView.frame.height, captionYLocation: topCaption.yLocation)
  
+        bottomCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: bottomImageView.frame.height, captionYLocation: bottomCaption.yLocation)
+   
+        let swipeTopImageGesture = UISwipeGestureRecognizer(target: self, action: #selector(ComparePreviewViewController.userSwipedTop(_:) ))
+        topImageView.addGestureRecognizer(swipeTopImageGesture)
         
-        
-        
+        let swipeBottomImageGesture = UISwipeGestureRecognizer(target: self, action: #selector(ComparePreviewViewController.userSwipedBottom(_:) ))
+        bottomImageView.addGestureRecognizer(swipeBottomImageGesture)
 
+  
+    }
+    
+    func userSwipedTop(_ pressImageGesture: UILongPressGestureRecognizer){
+        returnForEditing(editTopImage: true)
+    }
+    
+    func userSwipedBottom(_ pressImageGesture: UILongPressGestureRecognizer){
+        returnForEditing(editTopImage: false)
+    }
+
+    
+    func returnForEditing(editTopImage: Bool) {
+        
+        print("return for editing called")
+        
+        // set the flag so we know which image to display in CameraViewController
+        if editTopImage == true {
+            print("flag switched to edit 1st photo")
+            currentCompare.creationPhase = .reEditingFirstPhoto
+        } else {
+            print("flag switched to edit 2nd photo")
+            currentCompare.creationPhase = .reEditingSecondPhoto
+        }
+        
+        print("outside if-statement. Should pop viewcontroller now")
+        
+        self.navigationController?.popViewController(animated: true) //return to CameraViewController
     }
  
     // Allows the user to zoom within the scrollView that the user is manipulating at the time.
@@ -165,30 +185,13 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                     print("new compare created. Title 1 is: \(iBE1.iBEtitle)")
                     
                 mainArray.append(newCompare)
+                clearOutCurrentCompare() // this is a method is DataModels and will set the flag to .noImageTaken
                     
                 }
-                print("pop the view controller")
-                //self.navigationController?.popViewController(animated: true)
+                print("pop the view controller back to the menu")
+
                 self.navigationController?.popToRootViewController(animated: true)
                 
-                //let viewControllers: [UIViewController] = self.navigationController!.viewControllers as [UIViewController]
-                //self.navigationController!.popToViewController(viewControllers[viewControllers.count - 3], animated: true)
-                
-                //make the compare
-                //append it to the array
-                //go back to main page
-                
-                
-                // create a compare and publish
-                //let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, timePosted: Date())
-                
-                // Once the Ask is created it is appended to the main array:
-                //mainArray.append(newAsk)
-                
-                //let testAsk = mainArray.last as! Ask
-                //print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
-                
-                //self.backTwo() //back to main
 
             }
             
@@ -204,6 +207,9 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
             alertController.addAction(actionNo)
             alertController.addAction(actionYes)
             
+            
+            // This alert view should probably just be replaced with an arrow that appears and lights up or something
+            //  Then if the user unlocks one of the locks, the arrow goes away until they lock both again
             present(alertController, animated: true, completion: nil)
             
             
