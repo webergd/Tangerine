@@ -24,7 +24,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     @IBOutlet weak var enableBlurringButton: UIButton!
     //@IBOutlet weak var returnToZoomButton: UIButton!
     @IBOutlet weak var blurringInProgressLabel: UILabel!
-    @IBOutlet weak var addCompareButton: UIButton!
+    @IBOutlet weak var addCompareButton: UIButton! // appears as 2
+    @IBOutlet weak var reduceToAskButton: UIButton! // appears as a 1
     @IBOutlet weak var mirrorCaptionButton: UIButton!
     @IBOutlet weak var centerFlexibleSpace: UIBarButtonItem!
     
@@ -164,6 +165,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             resetTitleTextField()
             titleHasBeenTapped = false
             addCompareButton.isHidden = false // give the user the option to create a compare
+            reduceToAskButton.isHidden = true
             otherImageThumbnail.isHidden = true //if it's a single image, there will be no other image to show a thumbnail of
             
             print("inside case .firstPhotoTaken")
@@ -174,6 +176,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             resetTitleTextField()
             titleHasBeenTapped = false
             addCompareButton.isHidden = true
+            reduceToAskButton.isHidden = false
             otherImageThumbnail.isHidden = true //we want them to focus on making image2 right now, no thumbnail
             print("ready to create the second half of the compare")
             
@@ -183,6 +186,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         case .reEditingFirstPhoto:
             load(image: .one)
             addCompareButton.isHidden = true
+            reduceToAskButton.isHidden = false
             otherImageThumbnail.isHidden = false //displays the thumbnail
             
             print("inside case .reEditingFirstPhoto")
@@ -191,6 +195,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         case .reEditingSecondPhoto:
             load(image: .two)
             addCompareButton.isHidden = true
+            reduceToAskButton.isHidden = false
             otherImageThumbnail.isHidden = false //displays the thumbnail
             
             print("inside case .reEditingSecondPhoto")
@@ -422,12 +427,14 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             //self.captionTextField.center.y = tappedLoc.y
             if titleTextField.text == enterTitleConstant {
                 mirrorCaptionButton.isHidden = false
+                centerFlexibleSpace.isEnabled = true
             }
             
         } else {
             // if the caption is displayed and the user taps the image, dismiss the keyboard
             if captionTextField.text == "" {
                 mirrorCaptionButton.isHidden = true
+                centerFlexibleSpace.isEnabled = false
             }
             view.endEditing(true)
             //print("back inside userTappedImage function")
@@ -505,6 +512,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         if self.captionTextField.text == "" {
             self.captionTextField.isHidden = true
             mirrorCaptionButton.isHidden = true
+            centerFlexibleSpace.isEnabled = false
         }
         
             //this makes the text box movement animated so it looks smoother:
@@ -522,9 +530,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             
             if captionTextField.text != "" {
                 mirrorCaptionButton.isHidden = false
+                centerFlexibleSpace.isEnabled = true
             }
         } else if titleTextField.text != enterTitleConstant  {
             mirrorCaptionButton.isHidden = true
+            centerFlexibleSpace.isEnabled = false
         }
             self.view.layoutIfNeeded()
         
@@ -1283,6 +1293,38 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     
+    @IBAction func reduceToAskButtonTapped(_ sender: Any) {
+        //This button should be hidden at the onset and unhidden when 2 is hidden.
+        //Any time the 2 is unhidden, this should be hidden again.
+        //Tapping this button should do these things:
+        
+        
+        //-Store the current iBE to currentCompare.imageBeingEdited1
+        currentCompare.imageBeingEdited1 = createImageBeingEdited()
+        //-Store nil to currentCompare.ImageBeingEdited2
+        currentCompare.imageBeingEdited2 = nil
+        //-Change the flag to .firstPhotoTaken
+        currentCompare.creationPhase = .firstPhotoTaken
+        //-Set isAsk to true
+        currentCompare.isAsk = true
+        //-Reload all three view methods
+        viewWillAppear(false)
+        viewDidLoad()
+        viewDidAppear(false)
+        
+        
+        
+        
+    }
+    
+
+
+        
+        
+   
+    
+    
+    
     func createCaption() -> Caption {
         // Create a new caption object from what the user has entered at present
         let captionLocationToSet: CGFloat = captionTextFieldTopConstraint.constant/screenWidth
@@ -1410,7 +1452,11 @@ else that means we're in case 3 or 4
     }
     
     
-    // I'm not sure if I still need this method since I'm using an AV camera now
+    // Keep in mind, this only fixes an image if the image knows that it is not upright
+    // If I store a sideways to another image variable, the new image variable believes that it is upright already and this
+    //  method will not work on it. 
+    // The key to making this work is to apply it as early on in the data chain as possible.
+    // In other words, as close to the raw image either coming in from the camera or photo libary as possible.
     public func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
         
         // No-op if the orientation is already correct
