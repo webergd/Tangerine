@@ -1157,10 +1157,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             currentTitle = title
         }
         
-        
         let unblurredImageToBePassed: UIImage = self.sFunc_imageFixOrientation(img: unblurredImageSave)
-        currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage, it still hasn't been cropped at this point yet though
-        let blurredUncroppedToBePassed: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
+        currentImage = self.sFunc_imageFixOrientation(img: self.imageView.image!) //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage, it still hasn't been cropped at this point yet though
+        let blurredUncroppedToBePassed: UIImage = currentImage
         currentImage = self.cropImage(currentImage) // now we crop it
         let blurredCroppedToBePassed = currentImage // now we store the blurred cropped current image here so we can pass it ino the iBE
         
@@ -1169,19 +1168,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //  cropping, without actually cropping it.
         let contentOffsetToBePassed: CGPoint = scrollView.contentOffset
         let zoomScaleToBePassed: CGFloat = scrollView.zoomScale
-        
-        print("-------------------------------------------------")
-        print("* createImageBeingEdited() *")
-        print("creation phase is: \(currentCompare.creationPhase) PHASE")
-        
-        print("scrollView.contentOffset is: \(scrollView.contentOffset)")
-        print("contentOffsetToBePassed is: \(contentOffsetToBePassed)")
-        
-        print("scrollView.zoomScale is: \(scrollView.zoomScale) = ")
-        print("zoomScaleToBePassed is: \(zoomScaleToBePassed) = ")
-        
-        print("-------------------------------------------------")
-        
+
         // Create a new imageBeingEdited:
         let iBE = imageBeingEdited(iBEtitle: currentTitle, iBEcaption: captionToBePassed, iBEimageCleanUncropped: unblurredImageToBePassed, iBEimageBlurredUncropped: blurredUncroppedToBePassed, iBEimageBlurredCropped: blurredCroppedToBePassed, iBEContentOffset: contentOffsetToBePassed, iBEZoomScale: zoomScaleToBePassed, blursAdded: blursAddedByEditor)
         
@@ -1192,15 +1179,13 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         print("titleTextField.text at the beginning of createAsk() is: \(titleTextField.text!)")
         // create a new Ask using the photo, title, and timestamp
         
-        currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage
+        currentImage = self.sFunc_imageFixOrientation(img:self.imageView.image!) //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage
         currentImage = self.cropImage(currentImage)
         
         
 
         print("fixing image orientation inside createAsk() ")
-        let imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
-        
-        currentImage = imageToCreateAskWith
+        var imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
         
         let captionToCreateAskWith = createCaption()
 
@@ -1251,13 +1236,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                 UIAlertAction in
                 print("Proceed with no title tapped")
                 currentTitle = "(no title)"
-                ////////////////
-                //  I am strongly considering just eliminating this pop up alert view. If they don't enter a title, screw it
-                ////////////////
-                // The biggest thing the title will be valuable for is advertising - so I know what it is the user is looking at
-                ////////////////
                 self.createHalfOfCompare()
-                // need code to push compare editor (Pic2) onto the stack and show it
 
             }
             finishEditing(whatToCreate: .compare)
@@ -1323,25 +1302,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     
     func createHalfOfCompare() {
-        /*
-        let captionToBePassed = createCaption()
-
-        let unblurredImageToBePassed: UIImage = self.sFunc_imageFixOrientation(img: unblurredImageSave)
-        currentImage = self.imageView.image! //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage, it still hasn't been cropped at this point yet though
-        let blurredUncroppedToBePassed: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
-        currentImage = self.cropImage(currentImage) // now we crop it
-        let blurredCroppedToBePassed = currentImage // no we store the blured cropped current image here so we can pass it ino the iBE
-        
-        // the purpose of savng these values is so that if the user decides to edit one of the compares
-        //  after they have been created, we can display the image in CameraViewController as it would have looked right before
-        //  cropping, without actually cropping it.
-        let contentOffsetToBePassed: CGPoint = scrollView.contentOffset
-        let zoomScaleToBePassed: CGFloat = scrollView.zoomScale
-        
-        // Create a new imageBeingEdited:
-            
-        let iBE = imageBeingEdited(iBEtitle: currentTitle, iBEcaption: captionToBePassed, iBEimageCleanUncropped: unblurredImageToBePassed, iBEimageBlurredUncropped: blurredUncroppedToBePassed, iBEimageBlurredCropped: blurredCroppedToBePassed, iBEContentOffset: contentOffsetToBePassed, iBEZoomScale: zoomScaleToBePassed, blursAdded: blursAddedByEditor)
-         */
  
         let iBE = createImageBeingEdited()
         
