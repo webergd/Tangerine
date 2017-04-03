@@ -72,7 +72,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     var titleTextFieldIsBlank: Bool {
         print("Checking to see if the user entered a title")
-        if titleTextField.text == "Enter a Private Title for Your Photo Here"
+        if titleTextField.text == enterTitleConstant
             || titleTextField.text == "(no title)"
             || titleTextField.text == "" {
             print("title is blank")
@@ -558,6 +558,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // if it's too long it should truncate and then pop up with a message that says "title text shortened" or something like that.
         
         titleTextField.text = captionTextField.text
+        titleTextField.textColor = UIColor.black
         
     }
     
@@ -1312,8 +1313,19 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         viewDidLoad()
         viewDidAppear(false)
         
-        
-        
+        // Without this the title text field just resets because 
+        //  we called ViewDidAppear after switching the flag to .firstPhotoTaken
+        if let iBE = currentCompare.imageBeingEdited1 {
+            titleTextField.text = iBE.iBEtitle
+            if titleTextFieldIsBlank == false {
+                // if the title is not blank, then:
+                titleTextField.textColor = .black
+            } else { //aka if tTF is one of the 3 blank conditions:
+                titleTextField.text = enterTitleConstant
+                //titleTextField.textColor should already be gray
+            }
+            
+        }
         
     }
     
