@@ -34,15 +34,15 @@ class AskTableViewCell: UITableViewCell {
             print("prepareForSegue")
             
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                let passedQuery = sortedQueries[indexPath.row]
-                if passedQuery.rowType == RowType.isSingle.rawValue {
+                let passedQuestion = sortedQueries[indexPath.row]
+                if passedQuestion.rowType == RowType.isSingle.rawValue {
                     let controller = segue.destinationViewController as! AskViewController
                     // Pass the selected object to the new view controller:
-                    controller.ask = passedQuery as! Ask
-                } else if passedQuery.rowType == RowType.isDual.rawValue {
+                    controller.ask = passedQuestion as! Ask
+                } else if passedQuestion.rowType == RowType.isDual.rawValue {
                     let controller = segue.destinationViewController as! CompareViewController
                     // Pass the selected object to the new view controller:
-                    controller.compare = passedQuery as! Compare
+                    controller.compare = passedQuestion as! Compare
                 }
                 
             }

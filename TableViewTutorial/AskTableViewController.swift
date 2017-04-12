@@ -20,8 +20,8 @@ class AskTableViewController: UITableViewController {
     
     //var asks = [Ask]()
     //var compares = [Compare]()
-    var queries: [Query] = mainArray // this is an array that will hold Asks and Compares
-    var sortedQueries = [Query]()
+    var queries: [Question] = mainArray // this is an array that will hold Asks and Compares
+    var sortedQueries = [Question]()
     
     enum Shoes: String {
         case redReeboks
@@ -186,9 +186,9 @@ class AskTableViewController: UITableViewController {
       
         
         var index = 0
-        for query in sortedQueries {
+        for Question in sortedQueries {
             let indexPath = IndexPath(row: index, section: 0)
-            if query.rowType == RowType.isSingle.rawValue {
+            if Question.rowType == RowType.isSingle.rawValue {
                 // cellForRowAtIndexPath returns an optional cell so we use if let and then cast it as an optional ask cell
                 // one of the times it returns nil is when the cell isn't visible
                 if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {
@@ -196,7 +196,7 @@ class AskTableViewController: UITableViewController {
                     let timeRemaining = calcTimeRemaining(ask.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
-            } else if query.rowType == RowType.isDual.rawValue {
+            } else if Question.rowType == RowType.isDual.rawValue {
                 if let cell = tableView.cellForRow(at: indexPath) as! CompareTableViewCell? {
                     let compare = sortedQueries[indexPath.row] as! Compare
                     let timeRemaining = calcTimeRemaining(compare.timePosted)
@@ -372,15 +372,15 @@ class AskTableViewController: UITableViewController {
         print("prepareForSegue")
     
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            let passedQuery = sortedQueries[indexPath.row]
-            if passedQuery.rowType == RowType.isSingle.rawValue {
+            let passedQuestion = sortedQueries[indexPath.row]
+            if passedQuestion.rowType == RowType.isSingle.rawValue {
                 let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
-                controller.ask = passedQuery as! Ask
-            } else if passedQuery.rowType == RowType.isDual.rawValue {
+                controller.ask = passedQuestion as! Ask
+            } else if passedQuestion.rowType == RowType.isDual.rawValue {
                 let controller = segue.destination as! CompareViewController
                 // Pass the selected object to the new view controller:
-                controller.compare = passedQuery as! Compare
+                controller.compare = passedQuestion as! Compare
             }
 
             }

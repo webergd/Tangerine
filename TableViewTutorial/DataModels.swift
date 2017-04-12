@@ -36,7 +36,7 @@ public enum topOrBottom: String {
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
 public var currentCaption: Caption = Caption(text: "", yLocation: 0.0)
-public var mainArray: [Query] = [] // an array of 'Queries' aka it can hold asks and compares
+public var mainArray: [Question] = [] // an array of 'Queries' aka it can hold asks and compares
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
@@ -136,7 +136,7 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 
 
 
-public protocol Query {
+public protocol Question {
     var rowType: String {get set}
     var timePosted: Date {get set}
     var numVotes: Int {get}
@@ -144,13 +144,13 @@ public protocol Query {
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
 }
 
-// The Container holds the Ask or Compare (aka Query) as well as the associated ReviewCollection
-// The reason for not just adding the ReviewCollection as a property of the Query is so that 
-//   on the reviewing side, we can send the reviewer Query's without also forcing the device
+// The Container holds the Ask or Compare (aka Question) as well as the associated ReviewCollection
+// The reason for not just adding the ReviewCollection as a property of the Question is so that 
+//   on the reviewing side, we can send the reviewer Question's without also forcing the device
 //   to download all associated reviews in the ReviewCollection, which they will never see or use.
 // Essentially, it's an effort to save bandwidth / transmitted data.
 public struct Container {
-    var query: Query
+    var Question: Question
     var reviewCollection: ReviewCollection
 }
 
@@ -162,7 +162,7 @@ public struct ReviewCollection {
 // an "Ask" is an object containing a single image to be rated
 // (and its associated values)
 
-open class Ask: Query {
+open class Ask: Question {
     
     var askTitle: String
     //var askRating: Double
@@ -252,7 +252,7 @@ public func createAsk (){
 }
 */ //Should be deleted in later versions. Doesn't seem to do anything at all.
 
-open class Compare: Query {
+open class Compare: Question {
     //first image (displayed on top or left)
     var compareTitle1: String
     let comparePhoto1: UIImage
