@@ -24,7 +24,12 @@ class MainController: UIViewController {
         whatToCreate = .ask
         */
     }
-
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(false)
+        // hides the nav bar
+        self.navigationController?.setNavigationBarHidden(true, animated: animated)
+    }
 }
 
  

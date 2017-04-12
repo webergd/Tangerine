@@ -91,15 +91,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
         topCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: topImageView.frame.height, captionYLocation: topCaption.yLocation)
  
         bottomCaptionTextFieldTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: bottomImageView.frame.height, captionYLocation: bottomCaption.yLocation)
-   
-        /*
-        let swipeTopImageGesture = UISwipeGestureRecognizer(target: self, action: #selector(ComparePreviewViewController.userSwipedTop(_:) ))
-        topImageView.addGestureRecognizer(swipeTopImageGesture)
-        
-        let swipeBottomImageGesture = UISwipeGestureRecognizer(target: self, action: #selector(ComparePreviewViewController.userSwipedBottom(_:) ))
-        bottomImageView.addGestureRecognizer(swipeBottomImageGesture)
-        */
-        
+
         
         // For tapping the images to edit:
         let tapTopImageGesture = UITapGestureRecognizer(target: self, action: #selector(ComparePreviewViewController.userTappedTop(_:) ))
@@ -111,19 +103,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
         
   
     }
-    
-    /*
-    func userSwipedTop(_ pressImageGesture: UILongPressGestureRecognizer){
-        returnForEditing(editTopImage: true)
-    }
-    
-    func userSwipedBottom(_ pressImageGesture: UILongPressGestureRecognizer){
-        returnForEditing(editTopImage: false)
-    }
-    */
-    
-    
-    
+
     func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
         returnForEditing(editTopImage: true)
     }
@@ -131,11 +111,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
     func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
         returnForEditing(editTopImage: false)
     }
-    
-    
-    
-    
-
+  
     
     func returnForEditing(editTopImage: Bool) {
         

@@ -22,6 +22,16 @@ public enum ImageAspectType: String {
     case isSquare
 }
 
+public enum yesOrNo: String {
+    case yes
+    case no
+}
+
+public enum topOrBottom: String {
+    case top
+    case bottom
+}
+
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
@@ -134,7 +144,19 @@ public protocol Query {
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
 }
 
+// The Container holds the Ask or Compare (aka Query) as well as the associated ReviewCollection
+// The reason for not just adding the ReviewCollection as a property of the Query is so that 
+//   on the reviewing side, we can send the reviewer Query's without also forcing the device
+//   to download all associated reviews in the ReviewCollection, which they will never see or use.
+// Essentially, it's an effort to save bandwidth / transmitted data.
+public struct Container {
+    var query: Query
+    var reviewCollection: ReviewCollection
+}
 
+public struct ReviewCollection {
+    var reviews: [isAReview]
+}
 
 
 // an "Ask" is an object containing a single image to be rated
@@ -200,6 +222,7 @@ open class Ask: Query {
         print("newAsk.image orientation is upright \(askPhoto.imageOrientation == UIImageOrientation.up)")
     }
 }
+
 
 //  a "Compare" is an object holding the two images to compare
 //  (and its associated values)
@@ -311,9 +334,19 @@ open class Compare: Query {
     }
 }
 
+
+
+
+
 // MARK: BREAKDOWN
 // Here we set up the necessary structure to organize and store
 // information about the breakdown of votes from various demographics
+
+/////
+//////
+/* I'm trying to remember why the heck I did it this way rather than just having one demo for both Ask's and Compare's */
+//////
+/////
 
 protocol hasOrientation {
     //  avgAge might not exist if there are no votes from that category yet
@@ -418,6 +451,46 @@ public struct Caption {
         yLocation = 0.1
     }*/
 }
+
+
+// a "Review" is a protocol that governs AskReview's and CompareReview's
+
+protocol isAReview {
+    var userName: String {get set}
+    var reviewerDemo: hasOrientation {get set}
+    var comments: String {get set}
+}
+
+
+
+// an "AskReview" is a review of an Ask from a single individual
+// AskReviews are held in an array of AskReviews that is part of the Ask.
+// This array is known as the Ask's "reviewCollection"
+
+public struct AskReview: isAReview {
+    var selection: yesOrNo
+    var userName: String
+    var reviewerDemo: hasOrientation
+    var comments: String
+    var strong: yesOrNo?
+}
+
+// a "CompareReview" is a review of an Compare from a single individual
+// CompareReviews are held in an array of CompareReviews that is part of the Compare.
+// This array is known as the Compare's "reviewCollection"
+
+public struct CompareReview: isAReview {
+    var selection: topOrBottom
+    var userName: String
+    var reviewerDemo: hasOrientation
+    var comments: String
+    var strongYes: Bool
+    var strongNo: Bool
+}
+
+
+
+
 
 public struct imageBeingEdited {
     var iBEtitle: String
