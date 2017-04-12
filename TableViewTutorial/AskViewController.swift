@@ -32,7 +32,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     }
     
     
-    var ask: Ask? {
+    var container: Container? {
         didSet {
             // Update the view.
             self.configureView()
@@ -45,7 +45,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         
 
         // unwraps the ask that the tableView sent over:
-        if let thisAsk = self.ask {
+        if let thisAsk = self.container?.question as! Ask? {
             
             // unwraps the ratingLabel from the IBOutlet
             if let thisLabel = self.askRatingLabel {
@@ -138,7 +138,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                 // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
                 let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askBreakdownViewController") as! AskBreakdownViewController
                 // pushes askBreakdownViewController onto the nav stack
-                nextVC.ask = self.ask
+                nextVC.container = self.container
                 self.navigationController?.pushViewController(nextVC, animated: true)
             }
             
@@ -150,7 +150,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! AskBreakdownViewController
         // Pass the selected object to the new view controller:
-        controller.ask = self.ask
+        controller.container = self.container
     }
     
     

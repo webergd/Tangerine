@@ -34,7 +34,7 @@ class AskTableViewCell: UITableViewCell {
             print("prepareForSegue")
             
             if let indexPath = self.tableView.indexPathForSelectedRow {
-                let passedQuestion = sortedQueries[indexPath.row]
+                let passedQuestion = sortedContainers[indexPath.row]
                 if passedQuestion.rowType == RowType.isSingle.rawValue {
                     let controller = segue.destinationViewController as! AskViewController
                     // Pass the selected object to the new view controller:

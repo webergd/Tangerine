@@ -48,7 +48,7 @@ class CompareBreakdownViewController: UIViewController {
         compareBreakdownView.addGestureRecognizer(swipeViewGesture)
     }
     
-    var compare: Compare? {
+    var container: Container? {
         didSet {
             // Update the view.
             self.configureView()
@@ -59,7 +59,7 @@ class CompareBreakdownViewController: UIViewController {
         print("configuring ask view")
         
         // unwraps the ask that the tableView sent over:
-        if let thisCompare = self.compare {
+        if let thisCompare = self.container?.question as! Compare? {
             let compareSW = thisCompare.breakdown.straightWomen as! CompareDemo
             let compareSM = thisCompare.breakdown.straightMen as! CompareDemo
             let compareGW = thisCompare.breakdown.gayWomen as! CompareDemo

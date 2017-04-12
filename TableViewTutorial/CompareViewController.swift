@@ -37,18 +37,18 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         return true
     }
     
-    var compare: Compare? {
+    var container: Container? {
         didSet {
             // Update the view.
             self.configureView()
-            print("configureView called in var compare")
+            print("configureView called in var container")
         }
     }
 
    func configureView() -> Void {
         print("configuring compare view")
         // unwraps the compare that the tableView sent over:
-        guard let thisCompare = self.compare else {
+        guard let thisCompare = self.container?.question as! Compare? else {
             print("the compare is nil")
             return
         }
@@ -122,7 +122,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         //  or get to the bottom of why the image size is changing when the view loads, or at the very least being able to predict the 
         //  size that the images will be once they load so that we can calculate an accurate caption location.
         
-        guard let thisCompare = self.compare else {
+        guard let thisCompare = self.container?.question as! Compare? else {
             print("the compare is nil")
             return
         }
@@ -188,7 +188,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
                 // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
                 let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareBreakdownViewController") as! CompareBreakdownViewController
                 // pushes askBreakdownViewController onto the nav stack
-                nextVC.compare = self.compare
+                nextVC.container = self.container
                 self.navigationController?.pushViewController(nextVC, animated: true)
             }
             
@@ -200,7 +200,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let controller = segue.destination as! CompareBreakdownViewController
         // Pass the selected object to the new view controller:
-        controller.compare = self.compare
+        controller.container = self.container
     }
 
     /*

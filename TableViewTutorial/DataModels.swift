@@ -32,11 +32,16 @@ public enum topOrBottom: String {
     case bottom
 }
 
+public enum askOrCompare: String {
+    case ask
+    case compare
+}
+
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
 public var currentCaption: Caption = Caption(text: "", yLocation: 0.0)
-public var mainArray: [Question] = [] // an array of 'Queries' aka it can hold asks and compares
+public var mainArray: [Container] = [] // an array of 'Containers' aka it can hold asks and compares
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
@@ -150,13 +155,21 @@ public protocol Question {
 //   to download all associated reviews in the ReviewCollection, which they will never see or use.
 // Essentially, it's an effort to save bandwidth / transmitted data.
 public struct Container {
-    var Question: Question
+    var containerType: askOrCompare
+    var question: Question
     var reviewCollection: ReviewCollection
 }
 
 public struct ReviewCollection {
+    var reviewCollectionType: askOrCompare
     var reviews: [isAReview]
+    
+    init(type: askOrCompare) {
+        reviews = [] //keep in mind, this is empty, not optional
+        reviewCollectionType = type
+    }
 }
+
 
 
 // an "Ask" is an object containing a single image to be rated

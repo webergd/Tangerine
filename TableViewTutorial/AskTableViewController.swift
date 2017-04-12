@@ -20,8 +20,8 @@ class AskTableViewController: UITableViewController {
     
     //var asks = [Ask]()
     //var compares = [Compare]()
-    var queries: [Question] = mainArray // this is an array that will hold Asks and Compares
-    var sortedQueries = [Question]()
+    var containers: [Container] = mainArray // this is an array that will hold Asks and Compares
+    var sortedContainers = [Container]()
     
     enum Shoes: String {
         case redReeboks
@@ -36,7 +36,7 @@ class AskTableViewController: UITableViewController {
         case carmenJeansDark
     }
     
-    
+    /*
     func loadSampleAsks() {
         
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
@@ -75,9 +75,9 @@ class AskTableViewController: UITableViewController {
         //I think this is a pointless line of code:
         //asks += [ask1,ask2,ask3]  //+= just appends them, I believe
         //print("Asks: \(asks)")
-        queries.append(ask1)
-        queries.append(ask2)
-        queries.append(ask3)
+        questions.append(ask1)
+        questions.append(ask2)
+        questions.append(ask3)
     }
     
     func loadSampleCompares() {
@@ -132,21 +132,21 @@ class AskTableViewController: UITableViewController {
         
         
         //compares = [compare1, compare2]
-        queries.append(compare1)
-        queries.append(compare2)
+        containers.append(compare1)
+        containers.append(compare2)
 
         
     }
-    
+    */
 
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         //load the sample data
-        loadSampleAsks()
-        loadSampleCompares()
-        sortedQueries = queries.sorted { $0.timePosted.timeIntervalSince1970 < $1.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        //loadSampleAsks()
+        //loadSampleCompares()
+        sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -160,8 +160,8 @@ class AskTableViewController: UITableViewController {
         
         
         
-        //print("Queries: \(queries)")
-        //print("SortedQueries: \(sortedQueries)")
+        //print("Questions: \(questions)")
+        //print("SortedQuestions: \(sortedContainers)")
         
         
         // Uncomment the following line to preserve selection between presentations
@@ -178,7 +178,7 @@ class AskTableViewController: UITableViewController {
         // the way that the table is reloading after we introduce
         // a cell from an ask that was made by the CameraViewController
         // It may have something to do with the way that we are 
-        // loading up the queries array (local) from the main array (public)
+        // loading up the questions array (local) from the main array (public)
         // ###################################################
         
         // This refreshes the time remaining labels in the cells every time we come back to the main tableView
@@ -186,19 +186,19 @@ class AskTableViewController: UITableViewController {
       
         
         var index = 0
-        for Question in sortedQueries {
+        for container in sortedContainers {
             let indexPath = IndexPath(row: index, section: 0)
-            if Question.rowType == RowType.isSingle.rawValue {
-                // cellForRowAtIndexPath returns an optional cell so we use if let and then cast it as an optional ask cell
+            if container.containerType == .ask {
+                // cellForRowAtIndexPath returns an optional cell so we use 'if let' and then cast it as an optional ask cell
                 // one of the times it returns nil is when the cell isn't visible
                 if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {
-                    let ask = sortedQueries[indexPath.row] as! Ask
+                    let ask = sortedContainers[indexPath.row].question as! Ask
                     let timeRemaining = calcTimeRemaining(ask.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
-            } else if Question.rowType == RowType.isDual.rawValue {
+            } else if container.containerType == .compare {
                 if let cell = tableView.cellForRow(at: indexPath) as! CompareTableViewCell? {
-                    let compare = sortedQueries[indexPath.row] as! Compare
+                    let compare = sortedContainers[indexPath.row].question as! Compare
                     let timeRemaining = calcTimeRemaining(compare.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
@@ -222,31 +222,32 @@ class AskTableViewController: UITableViewController {
 
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return sortedQueries.count
+        return sortedContainers.count
     }
 
 
-    //I believe this is setting up the cell row in the table
+    //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         // here we build a single ask cell:
-        if sortedQueries[indexPath.row].rowType == RowType.isSingle.rawValue {
+        if sortedContainers[indexPath.row].containerType == .ask {
             
             let cellIdentifier: String = "AskTableViewCell"
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskTableViewCell
-            let ask = sortedQueries[indexPath.row] as! Ask
+            let ask = sortedContainers[indexPath.row].question as! Ask
             print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
             print("Cell title: \(cell.titleLabel.text)")
                 
             print("Photo orientation is up? (in the ask itself): \(ask.askPhoto.imageOrientation == UIImageOrientation.up)")
             
+            /*
             if let rowImage = cell.photoImageView.image {
                 print("Photo orientation is up? (in the row): \(rowImage.imageOrientation == UIImageOrientation.up)")
             } else {
                 print("row image was nil - unable to determine orientation")
             }
-                
+            */
                 
             // MARK: need to send value to the numVotesLabel
             cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
@@ -262,11 +263,11 @@ class AskTableViewController: UITableViewController {
             return cell
             
         // here we build a dual compare cell:
-        } else  if sortedQueries[indexPath.row].rowType == RowType.isDual.rawValue {
+        } else  if sortedContainers[indexPath.row].containerType == .compare {
             
             let cellIdentifier: String = "CompareTableViewCell"
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareTableViewCell
-            let compare = sortedQueries[indexPath.row] as! Compare
+            let compare = sortedContainers[indexPath.row].question as! Compare
             
             cell.image1.image = compare.comparePhoto1
             cell.image2.image = compare.comparePhoto2
@@ -372,15 +373,15 @@ class AskTableViewController: UITableViewController {
         print("prepareForSegue")
     
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            let passedQuestion = sortedQueries[indexPath.row]
-            if passedQuestion.rowType == RowType.isSingle.rawValue {
+            let passedContainer = sortedContainers[indexPath.row]
+            if passedContainer.containerType == .ask {
                 let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
-                controller.ask = passedQuestion as! Ask
-            } else if passedQuestion.rowType == RowType.isDual.rawValue {
+                controller.container = passedContainer as! Container // may not need the force casting
+            } else if passedContainer.containerType == .compare {
                 let controller = segue.destination as! CompareViewController
                 // Pass the selected object to the new view controller:
-                controller.compare = passedQuestion as! Compare
+                controller.container = passedContainer as! Container
             }
 
             }

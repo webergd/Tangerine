@@ -1164,9 +1164,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     func createImageBeingEdited() -> imageBeingEdited {
         
         let captionToBePassed = createCaption()
-        if let title = titleTextField.text {
-            currentTitle = title
-        }
         
         let unblurredImageToBePassed: UIImage = self.sFunc_imageFixOrientation(img: unblurredImageSave)
         currentImage = self.sFunc_imageFixOrientation(img: self.imageView.image!) //sets the current image to the one we're seeing and essentially saves the blurring to the currentImage, it still hasn't been cropped at this point yet though
@@ -1207,11 +1204,15 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
 
-        // Once the Ask is created it is appended to the main array:
-        mainArray.append(newAsk)
+        // Once the Ask is created it is appended to the main array within a Container:
         
-        let testAsk = mainArray.last as! Ask
-        print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
+        // Creates a new container containing the newAsk and a flag that tells the container it is holding an Ask, as well as a new ReviewCollection that is initialized.
+        let containerToBeAppended = Container(containerType: .ask, question: newAsk, reviewCollection: ReviewCollection(type: .ask))
+        
+        mainArray.append(containerToBeAppended)
+        
+        //let testAsk = mainArray.last as! Ask
+        //print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
         clearOutCurrentCompare()
         self.backTwo() //back to main
      
