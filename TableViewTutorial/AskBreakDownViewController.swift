@@ -34,7 +34,7 @@ class AskBreakdownViewController: UIViewController, UINavigationControllerDelega
         askBreakdownView.addGestureRecognizer(swipeViewGesture)
     }
 
-    var ask: Ask? {
+    var container: Container? {
         didSet {
             // Update the view.
             self.configureView()
@@ -45,7 +45,7 @@ class AskBreakdownViewController: UIViewController, UINavigationControllerDelega
         print("configuring ask view")
         
         // unwraps the ask that the tableView sent over:
-        if let thisAsk = self.ask {
+        if let thisAsk = self.container?.question as! Ask? {
             let askSW = thisAsk.breakdown.straightWomen as! AskDemo
             let askSM = thisAsk.breakdown.straightMen as! AskDemo
             let askGW = thisAsk.breakdown.gayWomen as! AskDemo

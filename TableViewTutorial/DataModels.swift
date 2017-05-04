@@ -37,6 +37,13 @@ public enum askOrCompare: String {
     case compare
 }
 
+public enum demo: String {
+    case straightWoman
+    case straightMan
+    case gayWoman
+    case gayMan
+}
+
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
@@ -160,7 +167,7 @@ public struct Container {
     var reviewCollection: ReviewCollection
 }
 
-public struct ReviewCollection {
+public class ReviewCollection {
     var reviewCollectionType: askOrCompare
     var reviews: [isAReview]
     
@@ -168,9 +175,201 @@ public struct ReviewCollection {
         reviews = [] //keep in mind, this is empty, not optional
         reviewCollectionType = type
     }
+    
+    //Things I want in a consolidated review page:
+    // % yes and % no
+    // % strong yes, % strong no
+    // Average age
+    // % of each orientation
+    // Can I pull all of these on just one trip through the loop?
+    // Can I create a method that will pull this info from the RC within specific constraints?
+    
+    // Returns aggregated data within the age and demographic specified in the arguments:
+    func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, including straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool)-> ConsolidatedAskDataSet {
+        var countYes: Int = 0
+        var countNo: Int = 0
+        
+        var countStrongYes: Int = 0
+        var countStrongNo: Int = 0
+        
+        var countAge: Int = 0
+        
+        var countSW: Int = 0
+        var countSM: Int = 0
+        var countGW: Int = 0
+        var countGM: Int = 0
+        
+        reviewLoop: for r in reviews {
+            let review = r as! AskReview //this way we can access all properties of an AskReview
+            
+            // This guard statement skips this iteration if review is outside the selected age
+            guard review.reviewerAge <= lowestAge || review.reviewerAge >= highestAge else {
+                continue reviewLoop // sends us back to the top of the loop
+            }
+            
+            
+            // This switch statement checks which demo the reviewer was, and if we aren't
+            //  trying to pull from that demo, we go back to the beginning of the for loop.
+            // If we are trying to pull from that demo, we increment that demo's count and move on.
+            switch review.reviewerDemo {
+            case .straightWoman:
+                if straightWomen == false {continue reviewLoop}
+                countSW += 1
+            case .straightMan:
+                if straightMen == false {continue reviewLoop}
+                countSM += 1
+            case .gayWoman:
+                if gayWomen == false {continue reviewLoop}
+                countGW += 1
+            case .gayMan:
+                if gayMen == false {continue reviewLoop}
+                countGM += 1
+            }
+            
+
+            countAge += review.reviewerAge // we just add up all the ages for now, divide them out later
+            
+            switch review.selection {
+            case .yes: countYes += 1
+            case .no: countNo += 1
+            }
+            
+            // We need this because the strong property is optional.
+            // Basically, if strong is nil, we'll increment neither.
+            if let strong = review.strong {
+               switch strong {
+               case .yes: countStrongYes += 1
+               case .no: countStrongNo += 1
+               }
+            }
+            
+        }
+        
+        let countReviews = countYes + countNo
+        
+        return ConsolidatedAskDataSet(percentYes: (countYes / countReviews),
+                                   percentStrongYes: (countStrongYes / countReviews),
+                                   percentStrongNo: (countStrongNo / countReviews),
+                                   averageAge: (Double(countAge / countReviews)),
+                                   percentSW: (countSW / countReviews),
+                                   percentSM: (countSM / countReviews),
+                                   percentGW: (countGW / countReviews),
+                                   percentGM: (countGM / countReviews))
+    }
+    
+    
+    // create a function in here that returns the selection. There will need to be two types, one for ask and one for compare.
+    // There should probably also be one for desired demo and one for undesired demo.
+    // Therefore, we need a way to sort the reviews into those two catgories
+    // We also need a way to return the total selection (desired and undesired)
+    // Actually we will need to be able to return a ton of different stuff:
+    //   value by demo, value by age, etc; a bunch of stuff for graphs and displays
+    // What we do with this data is the meat of the entire app. It's why people are using it. For this data.
+    // Also, though outside of the scope of the above comments, we need a way to save Containers for offline use on a local file. 
+    
+    func pullConsolidatedCompareData(from lowestAge: Int, to highestAge: Int, including straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool)-> ConsolidatedCompareDataSet {
+        var countTop: Int = 0
+        var countBottom: Int = 0
+        
+        var countStrongYesTop: Int = 0
+        var countStrongYesBottom: Int = 0
+        var countStrongNoTop: Int = 0
+        var countStrongNoBottom: Int = 0
+        
+        var countAge: Int = 0
+        
+        var countSW: Int = 0
+        var countSM: Int = 0
+        var countGW: Int = 0
+        var countGM: Int = 0
+        
+        reviewLoop: for r in reviews {
+            let review = r as! CompareReview //this way we can access all properties of an AskReview
+            
+            // This guard statement skips this iteration if review is outside the selected age
+            guard review.reviewerAge <= lowestAge || review.reviewerAge >= highestAge else {
+                continue reviewLoop // sends us back to the top of the loop
+            }
+            
+            
+            // This switch statement checks which demo the reviewer was, and if we aren't
+            //  trying to pull from that demo, we go back to the beginning of the for loop.
+            // If we are trying to pull from that demo, we increment that demo's count and move on.
+            switch review.reviewerDemo {
+            case .straightWoman:
+                if straightWomen == false {continue reviewLoop}
+                countSW += 1
+            case .straightMan:
+                if straightMen == false {continue reviewLoop}
+                countSM += 1
+            case .gayWoman:
+                if gayWomen == false {continue reviewLoop}
+                countGW += 1
+            case .gayMan:
+                if gayMen == false {continue reviewLoop}
+                countGM += 1
+            }
+            
+            
+            countAge += review.reviewerAge // we just add up all the ages for now, divide them out later
+            
+            switch review.selection {
+            case .top:
+                countTop += 1
+                if review.strongYes == true {countStrongYesTop += 1}
+                if review.strongNo == true {countStrongNoBottom += 1}
+            case .bottom:
+                countBottom += 1
+                if review.strongYes == true {countStrongYesBottom += 1}
+                if review.strongNo == true {countStrongNoTop += 1}
+            }
+
+        }
+        
+        let countReviews = countTop + countBottom
+        
+        return ConsolidatedCompareDataSet(percentTop: (countTop / countReviews),
+                                          percentStrongYesTop: (countStrongYesTop / countReviews),
+                                          percentStrongYesBottom: (countStrongYesBottom / countReviews),
+                                          percentStrongNoTop: (countStrongNoTop / countReviews),
+                                          percentStrongNoBottom: (countStrongNoBottom / countReviews),
+                                          averageAge: (Double(countAge / countReviews)),
+                                          percentSW: (countSW / countReviews),
+                                          percentSM: (countSM / countReviews),
+                                          percentGW: (countGW / countReviews),
+                                          percentGM: (countGM / countReviews))
+
+    }
+}
+
+public struct ConsolidatedAskDataSet {
+    let percentYes: Int
+    var percentNo: Int { return 100 - percentYes }
+    let percentStrongYes: Int
+    let percentStrongNo: Int
+    let averageAge: Double
+    let percentSW: Int
+    let percentSM: Int
+    let percentGW: Int
+    let percentGM: Int
 }
 
 
+
+
+public struct ConsolidatedCompareDataSet {
+    let percentTop: Int
+    var percentBottom: Int { return 100 - percentTop }
+    let percentStrongYesTop: Int
+    let percentStrongYesBottom: Int
+    let percentStrongNoTop: Int
+    let percentStrongNoBottom: Int
+    let averageAge: Double
+    let percentSW: Int
+    let percentSM: Int
+    let percentGW: Int
+    let percentGM: Int
+}
 
 // an "Ask" is an object containing a single image to be rated
 // (and its associated values)
@@ -470,9 +669,12 @@ public struct Caption {
 
 protocol isAReview {
     var userName: String {get set}
-    var reviewerDemo: hasOrientation {get set}
+    var reviewerDemo: demo {get set}
+    var reviewerAge: Int {get set}
     var comments: String {get set}
 }
+
+
 
 
 
@@ -482,10 +684,12 @@ protocol isAReview {
 
 public struct AskReview: isAReview {
     var selection: yesOrNo
-    var userName: String
-    var reviewerDemo: hasOrientation
-    var comments: String
     var strong: yesOrNo?
+    var userName: String
+    var reviewerDemo: demo
+    var reviewerAge: Int
+    var comments: String
+    
 }
 
 // a "CompareReview" is a review of an Compare from a single individual
@@ -494,11 +698,13 @@ public struct AskReview: isAReview {
 
 public struct CompareReview: isAReview {
     var selection: topOrBottom
-    var userName: String
-    var reviewerDemo: hasOrientation
-    var comments: String
     var strongYes: Bool
     var strongNo: Bool
+    var userName: String
+    var reviewerDemo: demo
+    var reviewerAge: Int
+    var comments: String
+    
 }
 
 
