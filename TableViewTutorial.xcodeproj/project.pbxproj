@@ -141,13 +141,13 @@
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */,
-				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
 				2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */,
 				2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */,
 				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
 				2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */,
+				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
 			);
 			path = TableViewTutorial;
 			sourceTree = "<group>";
