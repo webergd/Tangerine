@@ -36,14 +36,18 @@ class AskTableViewController: UITableViewController {
         case carmenJeansDark
     }
     
-    /*
+    
+    /* to load dummy values for the new data model, I need dummy asks and compares, as well as sample reviews.
+        I should be able to modfiy the loadSampleAsks and loadSampleCompares methods to work within the Container paradigm.
+        At that point I then just need to create the sample reviews from scratch and then load them into the ReviewCollection for the specific Questions */
+    
+    
+    
+
+    // this is temporary code
     func loadSampleAsks() {
         
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
-        
-        
-        //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
-        //except it is most definitely temporary code
         
         let photo1 = UIImage(named: "\(Shoes.redReeboks)")!
         let caption1 = Caption(text: "", yLocation: 0.0)
@@ -55,6 +59,7 @@ class AskTableViewController: UITableViewController {
         ask1SW.numVotes = 1
         ask1GM.rating = 6
         ask1GM.numVotes = 10
+        let container1 = Container(containerType: .ask, question: ask1, reviewCollection: ReviewCollection(type: .ask))
 
         let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
         let caption2 = Caption(text: "", yLocation: 0.0)
@@ -63,6 +68,7 @@ class AskTableViewController: UITableViewController {
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
+        let container2 = Container(containerType: .ask, question: ask2, reviewCollection: ReviewCollection(type: .ask))
  
         let photo3 = UIImage(named: "\(Shoes.violetVans)")!
         let caption3 = Caption(text: "", yLocation: 0.0)
@@ -71,17 +77,18 @@ class AskTableViewController: UITableViewController {
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
         ask3SM.numVotes = 90
+        let container3 = Container(containerType: .ask, question: ask3, reviewCollection: ReviewCollection(type: .ask))
         
         //I think this is a pointless line of code:
         //asks += [ask1,ask2,ask3]  //+= just appends them, I believe
         //print("Asks: \(asks)")
-        questions.append(ask1)
-        questions.append(ask2)
-        questions.append(ask3)
+        containers.append(container1)
+        containers.append(container2)
+        containers.append(container3)
     }
     
+    
     func loadSampleCompares() {
-        //this is sloppy force unwrapping. Needs to be readdressed if this isn't temporary code:
         
         //create a sample Jeans compare object
         let title1 = "Light Carmens"
@@ -109,6 +116,9 @@ class AskTableViewController: UITableViewController {
         compare1GM.votesForOne = 60
         compare1GM.votesForTwo = 77
         
+        let container4 = Container(containerType: .compare, question: compare1, reviewCollection: ReviewCollection(type: .compare))
+        
+        
         //create another sample Shoes compare object
         
         let title1a = "Brown Shiny"
@@ -130,15 +140,72 @@ class AskTableViewController: UITableViewController {
         compare2SM.votesForOne = 550
         compare2SM.votesForTwo = 550
         
+        let container5 = Container(containerType: .compare, question: compare2, reviewCollection: ReviewCollection(type: .compare))
         
-        //compares = [compare1, compare2]
-        containers.append(compare1)
-        containers.append(compare2)
+
+        
+        containers.append(container4)
+        containers.append(container5)
+
 
         
     }
-    */
+    
+    // requires loadSampleAsks() to be called first in order to work.
+    func loadSampleAskReviews() {
 
+        let askReview1 = AskReview(selection: .yes, strong: nil, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
+        
+        let askReview2 = AskReview(selection: .yes, strong: .yes, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        
+        let askReview3 = AskReview(selection: .no, strong: nil, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Goooooooo")
+        
+        let askReview4 = AskReview(selection: .yes, strong: .yes, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        
+        let askReview5 = AskReview(selection: .no, strong: nil, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
+        
+        let askReview6 = AskReview(selection: .yes, strong: nil, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        
+        // this loop adds all the reviews to each ask container since 0 through 2 are Asks 
+        //  we only know this because we loaded 0 through 2 as asks
+        for x in 0...2  {
+            containers[x].reviewCollection.reviews.append(askReview1)
+            containers[x].reviewCollection.reviews.append(askReview2)
+            containers[x].reviewCollection.reviews.append(askReview3)
+            containers[x].reviewCollection.reviews.append(askReview4)
+            containers[x].reviewCollection.reviews.append(askReview5)
+            containers[x].reviewCollection.reviews.append(askReview6)
+        }
+        
+        
+    }
+    
+    // requires loadSampleCompares() to be called first in order to work.
+    
+    func loadSampleCompareReviews() {
+        let compareReview1 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
+        
+        let compareReview2 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        
+        let compareReview3 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Gooooooo")
+        
+        let compareReview4 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        
+        let compareReview5 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
+        
+        let compareReview6 = CompareReview(selection: .bottom, strongYes: false, strongNo: false, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        
+        // this loop adds all the reviews to each compare container since 3 through 4 are Compares
+        for x in 3...4  {
+            containers[x].reviewCollection.reviews.append(compareReview1)
+            containers[x].reviewCollection.reviews.append(compareReview2)
+            containers[x].reviewCollection.reviews.append(compareReview3)
+            containers[x].reviewCollection.reviews.append(compareReview4)
+            containers[x].reviewCollection.reviews.append(compareReview5)
+            containers[x].reviewCollection.reviews.append(compareReview6)
+        }
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
