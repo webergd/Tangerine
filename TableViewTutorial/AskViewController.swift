@@ -13,14 +13,35 @@ import UIKit
 class AskViewController: UIViewController, UIScrollViewDelegate {
     
     
-    @IBOutlet weak var askRatingLabel: UILabel!
+
     @IBOutlet weak var askImageView: UIImageView!
-    @IBOutlet weak var askTimeRemainingLabel: UILabel!
+    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var askCaptionTextField: UITextField!
     @IBOutlet weak var askCaptionTopConstraint: NSLayoutConstraint!
     @IBOutlet var askView: UIView!
+    @IBOutlet weak var askTimeRemainingLabel: UILabel!
+    
 
+    @IBOutlet weak var targetDemoTotalReviewsLabel: UILabel!
+    @IBOutlet weak var targetDemoYesPercentage: UILabel!
+    @IBOutlet weak var targetDemoStrongYesPercentage: UILabel!
+    @IBOutlet weak var targetDemoYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoStrongYesTrailingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var friendsTotalReviewsLabel: UILabel!
+    @IBOutlet weak var friendsYesPercentage: UILabel!
+    @IBOutlet weak var friendsStrongYesPercentage: UILabel!
+    @IBOutlet weak var friendsYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsStrongYesTrailingConstraint: NSLayoutConstraint!
+    
+    @IBOutlet weak var allReviewsTotalReviewsLabel: UILabel!
+    @IBOutlet weak var allReviewsYesPercentage: UILabel!
+    @IBOutlet weak var allReviewsStrongYesPercentage: UILabel!
+    @IBOutlet weak var allReviewsYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsStrongYesTrailingConstraint: NSLayoutConstraint!
+    
+    
     
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
     
@@ -47,8 +68,8 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         // unwraps the ask that the tableView sent over:
         if let thisAsk = self.container?.question as! Ask? {
             
-            // unwraps the ratingLabel from the IBOutlet
-            if let thisLabel = self.askRatingLabel {
+            // unwraps the ratingLabel from the IBOutlet:
+            /* if let thisLabel = self.askRatingLabel {
                 
                 
                 if thisAsk.askRating > -1 {
@@ -58,18 +79,24 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                     //thisLabel.font.fontWithSize(20)
                     thisLabel.text = "No Votes Yet"
                 }
-                
+ 
                 
                 
                 //thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
+            } 
+            */
+            
+            if let thisLabel = self.titleLabel {
+                thisLabel.text = thisAsk.askTitle
             }
+            
             // unwraps the imageView from the IBOutlet
             if let thisImageView = self.askImageView {
                 thisImageView.image = thisAsk.askPhoto
             }
             // unwraps the timeRemaining from the IBOutlet
             if let thisTimeRemaining = self.askTimeRemainingLabel {
-                thisTimeRemaining.text = "\(thisAsk.timeRemaining)"
+                thisTimeRemaining.text = "TIME REMAINING: \(thisAsk.timeRemaining)"
             }
             
             if let thisCaptionTextField = self.askCaptionTextField {
@@ -80,6 +107,30 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             if let thisCaptionTopConstraint = self.askCaptionTopConstraint {
                 thisCaptionTopConstraint.constant = askImageView.frame.height * thisAsk.askCaption.yLocation
             }
+            
+            
+            // configure the friend data display: (as of now without friend filtering this just shows all reviews
+            let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false)
+            
+            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsYesTrailingConstraint, let thisStrongYesTrailingConstraint = friendsStrongYesTrailingConstraint   {
+                displayData(dataSet: thisDataSet,
+                            totalReviewsLabel: thisTotalReviewsLabel,
+                            yesPercentageLabel: thisYesPercentageLabel,
+                            strongYesPercentageLabel: thisStrongYesPercentageLabel,
+                            yesTrailingConstraint: thisYesTrailingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+            }
+            // pull review data for the 3 bar graph displays and display it in the view controller
+            
+            // I need to create a consolidatedAskDataSet for each of the 3 reviewer types (TD, Friends, All)
+            //  and then use the information in those data sets to populate the labels and bar graphs.
+            // I'm not sure whether to write out the code for each of the 3 or if there's a way I can 
+            //  run a loop and do each one, or have a functon that sets up each one.
+            // Maybe a function that takes in the label and bar graph IBOutlets as arguments and automatically assigns new values to those arguments?
+            // I'm unsure whether this will work based on scope. Inside a function, swift may not recognize
+            //  the stored IBOutlets as the same ones I passed in. It may be different than the if let statements.
+
+            
 
             
         } else {
@@ -88,6 +139,24 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
 
             
     }
+    
+    func displayData(dataSet: ConsolidatedAskDataSet, totalReviewsLabel: UILabel, yesPercentageLabel: UILabel, strongYesPercentageLabel: UILabel, yesTrailingConstraint: NSLayoutConstraint, strongYesTrailingConstraint: NSLayoutConstraint){
+        totalReviewsLabel.text = String(dataSet.numReviews)
+        yesPercentageLabel.text = String(dataSet.percentYes) + "%"
+        strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
+        
+        //still need code for settign constraints
+        
+    }
+    
+
+ 
+ 
+    
+    
+    
+    
+    
     
         
 
@@ -133,14 +202,17 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     func userSwiped(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                // go back to previous view by swiping right
                 self.navigationController?.popViewController(animated: true)
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+            } /* /////////    uncomment this in order to regain left swipe nav capability:   ///////////
+                        ///////////////////////////////////////////////////////////////////
+                else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
                 // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
                 let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askBreakdownViewController") as! AskBreakdownViewController
                 // pushes askBreakdownViewController onto the nav stack
                 nextVC.container = self.container
                 self.navigationController?.pushViewController(nextVC, animated: true)
-            }
+            } */
             
             
         }

@@ -1209,10 +1209,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // Creates a new container containing the newAsk and a flag that tells the container it is holding an Ask, as well as a new ReviewCollection that is initialized.
         let containerToBeAppended = Container(containerType: .ask, question: newAsk, reviewCollection: ReviewCollection(type: .ask))
         
-        mainArray.append(containerToBeAppended)
+        questionCollection.append(containerToBeAppended)
         
-        //let testAsk = mainArray.last as! Ask
-        //print("New Ask now appended to mainArray. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
+        //let testAsk = questionCollection.last as! Ask
+        //print("New Ask now appended to questionCollection. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
         clearOutCurrentCompare()
         self.backTwo() //back to main
      

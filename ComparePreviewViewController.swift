@@ -190,7 +190,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
                 let containerToBeAppended = Container(containerType: .compare, question: newCompare, reviewCollection: ReviewCollection(type: .compare))
                     
-                mainArray.append(containerToBeAppended)
+                questionCollection.append(containerToBeAppended)
                     
                 clearOutCurrentCompare() // this is a method is DataModels and will set the flag to .noImageTaken
                     

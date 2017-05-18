@@ -20,7 +20,7 @@ class AskTableViewController: UITableViewController {
     
     //var asks = [Ask]()
     //var compares = [Compare]()
-    var containers: [Container] = mainArray // this is an array that will hold Asks and Compares
+    var containers: [Container] = questionCollection // this is an array that will hold Asks and Compares
     var sortedContainers = [Container]()
     
     enum Shoes: String {
@@ -211,8 +211,10 @@ class AskTableViewController: UITableViewController {
         super.viewDidLoad()
         
         //load the sample data
-        //loadSampleAsks()
-        //loadSampleCompares()
+        loadSampleAsks()
+        loadSampleCompares()
+        loadSampleAskReviews()
+        loadSampleCompareReviews()
         sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
@@ -224,11 +226,8 @@ class AskTableViewController: UITableViewController {
         askTableView.addGestureRecognizer(swipeViewGesture)
         
         
-        
-        
-        
         //print("Questions: \(questions)")
-        //print("SortedQuestions: \(sortedContainers)")
+        print("SortedContainers: \(sortedContainers)")
         
         
         // Uncomment the following line to preserve selection between presentations
@@ -250,8 +249,7 @@ class AskTableViewController: UITableViewController {
         
         // This refreshes the time remaining labels in the cells every time we come back to the main tableView
         
-      
-        
+
         var index = 0
         for container in sortedContainers {
             let indexPath = IndexPath(row: index, section: 0)
@@ -272,6 +270,8 @@ class AskTableViewController: UITableViewController {
             }
             index += 1
         }
+        
+        
 
     }
 
@@ -305,8 +305,7 @@ class AskTableViewController: UITableViewController {
             print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
             print("Cell title: \(cell.titleLabel.text)")
-                
-            print("Photo orientation is up? (in the ask itself): \(ask.askPhoto.imageOrientation == UIImageOrientation.up)")
+            
             
             /*
             if let rowImage = cell.photoImageView.image {

@@ -48,7 +48,7 @@ public enum demo: String {
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
 public var currentCaption: Caption = Caption(text: "", yLocation: 0.0)
-public var mainArray: [Container] = [] // an array of 'Containers' aka it can hold asks and compares
+public var questionCollection: [Container] = [] // an array of 'Containers' aka it can hold asks and compares
 // when this is true, we will use the photo info taken in from user to create a compare instead of a simple ask. The default, as you can see, is false, meaning we default to creating an Ask
 public var isCompare: Bool = false
 
@@ -185,25 +185,38 @@ public class ReviewCollection {
     // Can I create a method that will pull this info from the RC within specific constraints?
     
     // Returns aggregated data within the age and demographic specified in the arguments:
-    func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, including straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool)-> ConsolidatedAskDataSet {
-        var countYes: Int = 0
-        var countNo: Int = 0
+    func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedAskDataSet {
         
-        var countStrongYes: Int = 0
-        var countStrongNo: Int = 0
+        //  Friends Only filter not yet implemented //
+        // What I forsee for this is to outsource a function that checks to see if a review is from a friend
+        //  (likely by searching a friend list for this specific user name)
+        //  and then in the loop where we look at each review, if friendsOnly is true, 
+        //  call the friend search function on each review to decide whether we should count it or not
+        // It will be similar to the Demo switch but will have to either be encompassing it, or 
+        //  bypassing it separately. Because if I want all my friends, I don't care if they are straight or 
+        //  female or whatever so what's the point in checking if they are.
         
-        var countAge: Int = 0
         
-        var countSW: Int = 0
-        var countSM: Int = 0
-        var countGW: Int = 0
-        var countGM: Int = 0
+        // These are doubles so we can do fraction math on them without them rounding automatically to zero
+        var countYes: Double = 0.0
+        var countNo: Double = 0.0
+        
+        var countStrongYes: Double = 0.0
+        var countStrongNo: Double = 0.0
+        
+        var countAge: Double = 0.0
+        
+        var countSW: Double = 0.0
+        var countSM: Double = 0.0
+        var countGW: Double = 0.0
+        var countGM: Double = 0.0
         
         reviewLoop: for r in reviews {
             let review = r as! AskReview //this way we can access all properties of an AskReview
             
             // This guard statement skips this iteration if review is outside the selected age
-            guard review.reviewerAge <= lowestAge || review.reviewerAge >= highestAge else {
+            guard review.reviewerAge >= lowestAge || review.reviewerAge <= highestAge else {
+                print("continuing review loop")
                 continue reviewLoop // sends us back to the top of the loop
             }
             
@@ -227,11 +240,11 @@ public class ReviewCollection {
             }
             
 
-            countAge += review.reviewerAge // we just add up all the ages for now, divide them out later
+            countAge += Double(review.reviewerAge) // we just add up all the ages for now, divide them out later
             
             switch review.selection {
-            case .yes: countYes += 1
-            case .no: countNo += 1
+            case .yes: countYes += 1; print("counted a yes")
+            case .no: countNo += 1; print("counted a no")
             }
             
             // We need this because the strong property is optional.
@@ -245,16 +258,32 @@ public class ReviewCollection {
             
         }
         
+        
+        print("countYes= \(countYes), countNo= \(countNo)")
         let countReviews = countYes + countNo
         
-        return ConsolidatedAskDataSet(percentYes: (countYes / countReviews),
-                                   percentStrongYes: (countStrongYes / countReviews),
-                                   percentStrongNo: (countStrongNo / countReviews),
-                                   averageAge: (Double(countAge / countReviews)),
-                                   percentSW: (countSW / countReviews),
-                                   percentSM: (countSM / countReviews),
-                                   percentGW: (countGW / countReviews),
-                                   percentGM: (countGM / countReviews))
+        
+        if countReviews > 0 {
+            return ConsolidatedAskDataSet(percentYes: Int(100 * (countYes / countReviews)),
+                                          percentStrongYes: Int(100 * countStrongYes / countReviews),
+                                          percentStrongNo: Int(100 * countStrongNo / countReviews),
+                                          averageAge: (countAge / countReviews),
+                                          percentSW: Int(100 * countSW / countReviews),
+                                          percentSM: Int(100 * countSM / countReviews),
+                                          percentGW: Int(100 * countGW / countReviews),
+                                          percentGM: Int(100 * countGM / countReviews),
+                                          numReviews: Int(countReviews))
+        } else {
+            return ConsolidatedAskDataSet(percentYes: 0,
+                                          percentStrongYes: 0,
+                                          percentStrongNo: 0,
+                                          averageAge: 0.0,
+                                          percentSW: 0,
+                                          percentSM: 0,
+                                          percentGW: 0,
+                                          percentGM: 0,
+                                          numReviews: 0)
+        }
     }
     
     
@@ -267,21 +296,27 @@ public class ReviewCollection {
     // What we do with this data is the meat of the entire app. It's why people are using it. For this data.
     // Also, though outside of the scope of the above comments, we need a way to save Containers for offline use on a local file. 
     
-    func pullConsolidatedCompareData(from lowestAge: Int, to highestAge: Int, including straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool)-> ConsolidatedCompareDataSet {
-        var countTop: Int = 0
-        var countBottom: Int = 0
+    func pullConsolidatedCompareData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedCompareDataSet {
         
-        var countStrongYesTop: Int = 0
-        var countStrongYesBottom: Int = 0
-        var countStrongNoTop: Int = 0
-        var countStrongNoBottom: Int = 0
+        //  Friends Only filter not yet implemented //
+        //  See pullConsolidatedAskData method for lengthier comment on this //
         
-        var countAge: Int = 0
         
-        var countSW: Int = 0
-        var countSM: Int = 0
-        var countGW: Int = 0
-        var countGM: Int = 0
+        
+        var countTop: Double = 0.0
+        var countBottom: Double = 0.0
+        
+        var countStrongYesTop: Double = 0.0
+        var countStrongYesBottom: Double = 0.0
+        var countStrongNoTop: Double = 0.0
+        var countStrongNoBottom: Double = 0.0
+        
+        var countAge: Double = 0.0
+        
+        var countSW: Double = 0.0
+        var countSM: Double = 0.0
+        var countGW: Double = 0.0
+        var countGM: Double = 0.0
         
         reviewLoop: for r in reviews {
             let review = r as! CompareReview //this way we can access all properties of an AskReview
@@ -311,7 +346,7 @@ public class ReviewCollection {
             }
             
             
-            countAge += review.reviewerAge // we just add up all the ages for now, divide them out later
+            countAge += Double(review.reviewerAge) // we just add up all the ages for now, divide them out later
             
             switch review.selection {
             case .top:
@@ -328,16 +363,33 @@ public class ReviewCollection {
         
         let countReviews = countTop + countBottom
         
-        return ConsolidatedCompareDataSet(percentTop: (countTop / countReviews),
-                                          percentStrongYesTop: (countStrongYesTop / countReviews),
-                                          percentStrongYesBottom: (countStrongYesBottom / countReviews),
-                                          percentStrongNoTop: (countStrongNoTop / countReviews),
-                                          percentStrongNoBottom: (countStrongNoBottom / countReviews),
+        
+        if countReviews > 0 {
+            
+            return ConsolidatedCompareDataSet(percentTop: Int(100 * countTop / countReviews),
+                                          percentStrongYesTop: Int(100 * countStrongYesTop / countReviews),
+                                          percentStrongYesBottom: Int(100 * countStrongYesBottom / countReviews),
+                                          percentStrongNoTop: Int(100 * countStrongNoTop / countReviews),
+                                          percentStrongNoBottom: Int(100 * countStrongNoBottom / countReviews),
                                           averageAge: (Double(countAge / countReviews)),
-                                          percentSW: (countSW / countReviews),
-                                          percentSM: (countSM / countReviews),
-                                          percentGW: (countGW / countReviews),
-                                          percentGM: (countGM / countReviews))
+                                          percentSW: Int(100 * countSW / countReviews),
+                                          percentSM: Int(100 * countSM / countReviews),
+                                          percentGW: Int(100 * countGW / countReviews),
+                                          percentGM: Int(100 * countGM / countReviews),
+                                          numReviews: Int(countReviews))
+        } else {
+            return ConsolidatedCompareDataSet(percentTop: 0,
+                                              percentStrongYesTop: 0,
+                                              percentStrongYesBottom: 0,
+                                              percentStrongNoTop: 0,
+                                              percentStrongNoBottom: 0,
+                                              averageAge: 0,// consider returning -1 or some indicator for label to display NA
+                                              percentSW: 0,
+                                              percentSM: 0,
+                                              percentGW: 0,
+                                              percentGM: 0,
+                                              numReviews: 0)
+        }
 
     }
 }
@@ -352,6 +404,7 @@ public struct ConsolidatedAskDataSet {
     let percentSM: Int
     let percentGW: Int
     let percentGM: Int
+    let numReviews: Int
 }
 
 
@@ -369,6 +422,7 @@ public struct ConsolidatedCompareDataSet {
     let percentSM: Int
     let percentGW: Int
     let percentGM: Int
+    let numReviews: Int
 }
 
 // an "Ask" is an object containing a single image to be rated
