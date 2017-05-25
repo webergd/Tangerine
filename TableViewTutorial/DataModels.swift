@@ -146,6 +146,46 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 }
 
 
+// Should this just be in the AskVC since Compare bars are calc'd slightly differently?
+/////// Here we need a funcion into which we can pass the screenwidth, ////////////////
+///////  size of the width constraint of whatever is to the left of it (reviews label or image), and percent yes      ////////////////
+///////  that returns the value that the trailing constraint should be ////////////////
+///////  in order for the graphical white bar to be proportionate      ////////////////
+///////  to the percent of yes votes, without squishing the numerical label. //////////
+
+
+
+// This is different now since I added the 100 bars in IB. It will be much simpler,
+// Basically we will just multiply (one minus the percentage) times the 100 bar width in order to get the trailing constraint of'
+//   whichever view we are dealing with. This will work in Compare VC and AskVC and for normal and strong bars alike. 
+public func calcTrailingConstraint(percentYes: Int, widthOfLeadingItem: Double, screenwidth: Double, widthOfTrailingItem: Double) -> Double {
+    // Space from bar to left item is 5, space from left item to view edge is -8. Based on IB constraints I created.
+    // Trailing space from bar to label is 0.5, width of label is 35 in Compare and 36.5 in Ask.
+    let arbitraryPaddingConstant: Double = 10.0
+    
+    // Calculate what 100% would be:
+    let oneHundredPercent: Double = screenwidth - (widthOfLeadingItem + widthOfTrailingItem + arbitraryPaddingConstant)
+    
+    //Calculate the constraint at 100%
+    
+    
+    // *** Fuck it I think I'm just going to throw in an extra transparent view behind the bars to serve as the 100% benchmark.
+    // **  This will enable me to have less outlets as well as to only use one method for both white and blue bars.
+    // *   Method should take the outer bar, inner bar, and percent to be conveyed.
+    
+    
+    //return the constraint value here//
+}
+
+// There also needs to be a second method to calc the blue bar.                      //
+// This will probably just require the white bar's width and percent strong yes.     //
+
+
+
+
+
+
+
 
 
 public protocol Question {

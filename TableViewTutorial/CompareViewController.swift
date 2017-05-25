@@ -9,6 +9,12 @@
 import UIKit
 
 class CompareViewController: UIViewController, UIScrollViewDelegate {
+    
+    
+    /////////////////
+    // Outlets still needed for status bars
+    /////////////////
+    
     @IBOutlet weak var compareView: UIView!
     @IBOutlet weak var topView: UIView!
     

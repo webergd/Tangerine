@@ -26,21 +26,30 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var targetDemoTotalReviewsLabel: UILabel!
     @IBOutlet weak var targetDemoYesPercentage: UILabel!
     @IBOutlet weak var targetDemoStrongYesPercentage: UILabel!
-    @IBOutlet weak var targetDemoYesTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var targetDemoStrongYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemo100Bar: UIView! // use this to pull the current width of the 100Bar
+    @IBOutlet weak var targetDemoBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoStrongBarTrailingConstraint: NSLayoutConstraint!
+    
     
     @IBOutlet weak var friendsTotalReviewsLabel: UILabel!
     @IBOutlet weak var friendsYesPercentage: UILabel!
     @IBOutlet weak var friendsStrongYesPercentage: UILabel!
-    @IBOutlet weak var friendsYesTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var friendsStrongYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friends100Bar: UIView! // use this to pull the current width of the 100Bar
+    @IBOutlet weak var friendsBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsStrongBarTrailingConstraint: NSLayoutConstraint!
+
     
     @IBOutlet weak var allReviewsTotalReviewsLabel: UILabel!
     @IBOutlet weak var allReviewsYesPercentage: UILabel!
     @IBOutlet weak var allReviewsStrongYesPercentage: UILabel!
-    @IBOutlet weak var allReviewsYesTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var allReviewsStrongYesTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviews100Bar: UIView! // use this to pull the current width of the 100Bar
+    @IBOutlet weak var allReviewsBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsStrongBarTrailingConstraint: NSLayoutConstraint!
+ 
+ 
+
     
+    @IBOutlet weak var reviewsLabelWidthConstraint: UILabel!
     
     
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
@@ -80,7 +89,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                     thisLabel.text = "No Votes Yet"
                 }
  
-                
+             
                 
                 //thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
             } 
@@ -129,6 +138,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             // Maybe a function that takes in the label and bar graph IBOutlets as arguments and automatically assigns new values to those arguments?
             // I'm unsure whether this will work based on scope. Inside a function, swift may not recognize
             //  the stored IBOutlets as the same ones I passed in. It may be different than the if let statements.
+            //   ^^^^^^^^^^^^^^ I'm almost certain this works and is already functioning, just double check ^^^^^
 
             
 
@@ -145,7 +155,8 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         yesPercentageLabel.text = String(dataSet.percentYes) + "%"
         strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
         
-        //still need code for settign constraints
+        //still need code for setting constraints
+        // set them in a separate generic method that will be called here
         
     }
     
