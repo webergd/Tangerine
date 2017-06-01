@@ -73,12 +73,24 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
                 thisLabel.text = "\(thisCompare.compareVotes2)"
             }
             if let thisLabel = self.timeRemainingLabel {
-                thisLabel.text = "\(thisCompare.timePosted)"
+                thisLabel.text = "\(thisCompare.timeRemaining)"
             }
     
-    
+            // In the future, there will need to be a way to tell this method which data to pull based on 
+            //  the user's preferred display type, be it target demo or friend, or maybe even all.
+            // For now, we will use target demo.
+            // It should be just a simple if statement or two to set values that go into this.
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
 
     
+    
+            if let thisDataSet = targetDemoDataSet,
+                let thisTopScoreLabel = self.votes1Label,
+                let thisBottomScoreLabel = self.votes2Label {
+                    thisTopScoreLabel.text = "\(thisDataSet.percentTop) %"
+                    thisBottomScoreLabel.text = "\(thisDataSet.percentBottom) %"
+            }
+
     
             // For some reason, I had to unwrap the tangerine images from this same ViewController in order to
             // modify thier attributes inside an if-then or switch-case:

@@ -29,6 +29,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var targetDemo100Bar: UIView! // use this to pull the current width of the 100Bar
     @IBOutlet weak var targetDemoBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var targetDemoStrongBarTrailingConstraint: NSLayoutConstraint!
+
     
     
     @IBOutlet weak var friendsTotalReviewsLabel: UILabel!
@@ -79,8 +80,6 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
             // unwraps the ratingLabel from the IBOutlet:
             /* if let thisLabel = self.askRatingLabel {
-                
-                
                 if thisAsk.askRating > -1 {
                     //thisLabel.font.fontWithSize(50)
                     thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
@@ -88,9 +87,6 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                     //thisLabel.font.fontWithSize(20)
                     thisLabel.text = "No Votes Yet"
                 }
- 
-             
-                
                 //thisLabel.text = "\(thisAsk.askRating.roundToPlaces(1))"
             } 
             */
@@ -117,18 +113,60 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                 thisCaptionTopConstraint.constant = askImageView.frame.height * thisAsk.askCaption.yLocation
             }
             
+            // configure the target demo data display:
+            print("configuring TARGET DEMO display **********")
             
-            // configure the friend data display: (as of now without friend filtering this just shows all reviews
-            let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false)
             
-            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsYesTrailingConstraint, let thisStrongYesTrailingConstraint = friendsStrongYesTrailingConstraint   {
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+            
+            
+            if let thisDataSet = targetDemoDataSet, let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint   {
                 displayData(dataSet: thisDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
+                            hundredBarView: this100Bar,
                             yesTrailingConstraint: thisYesTrailingConstraint,
                             strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
             }
+
+            print("configuring FRIEND display **********")
+            
+            // configure the friend data display: (as of now without friend filtering this just shows all reviews)
+            let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true) //friendsOnly value doesn't do anything yet - need to add this functionality to the pullConsolidatedAskData method
+
+            
+            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let this100Bar = friends100Bar, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsBarTrailingConstraint, let thisStrongYesTrailingConstraint = friendsStrongBarTrailingConstraint   {
+                displayData(dataSet: thisDataSet,
+                            totalReviewsLabel: thisTotalReviewsLabel,
+                            yesPercentageLabel: thisYesPercentageLabel,
+                            strongYesPercentageLabel: thisStrongYesPercentageLabel,
+                            hundredBarView: this100Bar,
+                            yesTrailingConstraint: thisYesTrailingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+            }
+            
+            
+            // configure the allReviews data display:
+            
+            print("configuring ALL REVIEWS display **********")
+            
+            let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false) // the only difference between this and the above is the friendsOnly Bool setting
+            
+            
+            if let thisDataSet = allReviewsDataSet, let thisTotalReviewsLabel = allReviewsTotalReviewsLabel, let thisYesPercentageLabel = allReviewsYesPercentage, let this100Bar = allReviews100Bar, let thisStrongYesPercentageLabel = allReviewsStrongYesPercentage, let thisYesTrailingConstraint = allReviewsBarTrailingConstraint, let thisStrongYesTrailingConstraint = allReviewsStrongBarTrailingConstraint   {
+                displayData(dataSet: thisDataSet,
+                            totalReviewsLabel: thisTotalReviewsLabel,
+                            yesPercentageLabel: thisYesPercentageLabel,
+                            strongYesPercentageLabel: thisStrongYesPercentageLabel,
+                            hundredBarView: this100Bar,
+                            yesTrailingConstraint: thisYesTrailingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+            }
+            
+            
+            
+            
             // pull review data for the 3 bar graph displays and display it in the view controller
             
             // I need to create a consolidatedAskDataSet for each of the 3 reviewer types (TD, Friends, All)
@@ -150,13 +188,23 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
     }
     
-    func displayData(dataSet: ConsolidatedAskDataSet, totalReviewsLabel: UILabel, yesPercentageLabel: UILabel, strongYesPercentageLabel: UILabel, yesTrailingConstraint: NSLayoutConstraint, strongYesTrailingConstraint: NSLayoutConstraint){
+    func displayData(dataSet: ConsolidatedAskDataSet, totalReviewsLabel: UILabel, yesPercentageLabel: UILabel, strongYesPercentageLabel: UILabel, hundredBarView: UIView, yesTrailingConstraint: NSLayoutConstraint, strongYesTrailingConstraint: NSLayoutConstraint){
+        
         totalReviewsLabel.text = String(dataSet.numReviews)
         yesPercentageLabel.text = String(dataSet.percentYes) + "%"
         strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
         
+        print("strong yes percentage: \(dataSet.percentStrongYes)")
+        
+        let hundredBarWidth = hundredBarView.frame.size.width
+        
+        yesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentYes, hundredBarWidth: hundredBarWidth)
+        
+        strongYesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYes, hundredBarWidth: hundredBarWidth)
+        
+        
         //still need code for setting constraints
-        // set them in a separate generic method that will be called here
+        // set them in a separate generic method that will be called here: inside DataModels
         
     }
     

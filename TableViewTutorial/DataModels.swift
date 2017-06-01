@@ -158,34 +158,38 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 // This is different now since I added the 100 bars in IB. It will be much simpler,
 // Basically we will just multiply (one minus the percentage) times the 100 bar width in order to get the trailing constraint of'
 //   whichever view we are dealing with. This will work in Compare VC and AskVC and for normal and strong bars alike. 
-public func calcTrailingConstraint(percentYes: Int, widthOfLeadingItem: Double, screenwidth: Double, widthOfTrailingItem: Double) -> Double {
-    // Space from bar to left item is 5, space from left item to view edge is -8. Based on IB constraints I created.
-    // Trailing space from bar to label is 0.5, width of label is 35 in Compare and 36.5 in Ask.
-    let arbitraryPaddingConstant: Double = 10.0
+public func calcTrailingConstraint(percentYes: Int, hundredBarWidth: CGFloat) -> CGFloat {
     
-    // Calculate what 100% would be:
-    let oneHundredPercent: Double = screenwidth - (widthOfLeadingItem + widthOfTrailingItem + arbitraryPaddingConstant)
+    //Converts the percentage Int value into a decimal CGFloat that is < 1:
+    let decimalPercentYes: CGFloat = CGFloat(percentYes) / 100.0
     
-    //Calculate the constraint at 100%
+    print("decimalPercentYes: \(decimalPercentYes)")
     
+    //Calculates how wide we need the bar we are setting up to be:
+    let neededBarWidth = hundredBarWidth * decimalPercentYes
     
-    // *** Fuck it I think I'm just going to throw in an extra transparent view behind the bars to serve as the 100% benchmark.
-    // **  This will enable me to have less outlets as well as to only use one method for both white and blue bars.
-    // *   Method should take the outer bar, inner bar, and percent to be conveyed.
-    
-    
-    //return the constraint value here//
+    //Calculates the size of the trailing constraint of the bar being set up:
+    let constraintSize = hundredBarWidth - neededBarWidth
+
+    return constraintSize
+
 }
 
 // There also needs to be a second method to calc the blue bar.                      //
 // This will probably just require the white bar's width and percent strong yes.     //
+// Actually we can use the same method. We just set the strong bar using the 100 bar width also. Just use this method once for the blue and once for the white.
 
+public struct DemoPreferences {
+    var minAge: Int
+    var maxAge: Int
+    var straightWomenPreferred: Bool
+    var straightMenPreferred: Bool
+    var gayWomenPreferred: Bool
+    var gayMenPreferred: Bool
+}
 
-
-
-
-
-
+// These settings will be toggled by the user, eventually
+public let userDemoPreferences = DemoPreferences(minAge: 0, maxAge: 100, straightWomenPreferred: true, straightMenPreferred: false, gayWomenPreferred: false, gayMenPreferred: true)
 
 
 public protocol Question {
@@ -359,10 +363,12 @@ public class ReviewCollection {
         var countGM: Double = 0.0
         
         reviewLoop: for r in reviews {
-            let review = r as! CompareReview //this way we can access all properties of an AskReview
+            print("inside reviewLoop while pulling Compare Data")
+            let review = r as! CompareReview //this way we can access all properties of a CompareReview
             
             // This guard statement skips this iteration if review is outside the selected age
-            guard review.reviewerAge <= lowestAge || review.reviewerAge >= highestAge else {
+            guard review.reviewerAge >= lowestAge || review.reviewerAge <= highestAge else {
+                print("too old or young. skipping to next review")
                 continue reviewLoop // sends us back to the top of the loop
             }
             
@@ -387,20 +393,22 @@ public class ReviewCollection {
             
             
             countAge += Double(review.reviewerAge) // we just add up all the ages for now, divide them out later
-            
+
             switch review.selection {
             case .top:
-                countTop += 1
+                countTop += 1; print("counted a top")
                 if review.strongYes == true {countStrongYesTop += 1}
                 if review.strongNo == true {countStrongNoBottom += 1}
             case .bottom:
-                countBottom += 1
+                countBottom += 1; print("counted a bottom")
                 if review.strongYes == true {countStrongYesBottom += 1}
                 if review.strongNo == true {countStrongNoTop += 1}
             }
 
         }
         
+        
+        print("countTop: \(countTop), countBottom: \(countBottom)")
         let countReviews = countTop + countBottom
         
         

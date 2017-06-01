@@ -40,10 +40,7 @@ class AskTableViewController: UITableViewController {
     /* to load dummy values for the new data model, I need dummy asks and compares, as well as sample reviews.
         I should be able to modfiy the loadSampleAsks and loadSampleCompares methods to work within the Container paradigm.
         At that point I then just need to create the sample reviews from scratch and then load them into the ReviewCollection for the specific Questions */
-    
-    
-    
-
+  
     // this is temporary code
     func loadSampleAsks() {
         
@@ -166,6 +163,8 @@ class AskTableViewController: UITableViewController {
         
         let askReview6 = AskReview(selection: .yes, strong: nil, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
         
+        let askReview7 = AskReview(selection: .yes, strong: nil, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        
         // this loop adds all the reviews to each ask container since 0 through 2 are Asks 
         //  we only know this because we loaded 0 through 2 as asks
         for x in 0...2  {
@@ -175,6 +174,7 @@ class AskTableViewController: UITableViewController {
             containers[x].reviewCollection.reviews.append(askReview4)
             containers[x].reviewCollection.reviews.append(askReview5)
             containers[x].reviewCollection.reviews.append(askReview6)
+            containers[x].reviewCollection.reviews.append(askReview7)
         }
         
         
@@ -195,6 +195,8 @@ class AskTableViewController: UITableViewController {
         
         let compareReview6 = CompareReview(selection: .bottom, strongYes: false, strongNo: false, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
         
+        let compareReview7 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        
         // this loop adds all the reviews to each compare container since 3 through 4 are Compares
         for x in 3...4  {
             containers[x].reviewCollection.reviews.append(compareReview1)
@@ -203,6 +205,7 @@ class AskTableViewController: UITableViewController {
             containers[x].reviewCollection.reviews.append(compareReview4)
             containers[x].reviewCollection.reviews.append(compareReview5)
             containers[x].reviewCollection.reviews.append(compareReview6)
+            containers[x].reviewCollection.reviews.append(compareReview7)
         }
     }
     

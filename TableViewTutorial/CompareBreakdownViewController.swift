@@ -33,8 +33,11 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var gayWomenAvgAgeLabel: UILabel!
     @IBOutlet weak var gayMenAvgAgeLabel: UILabel!
     
+    /////////////////
     
+    // NEED CONSTRAINTS TO MAKE THE BARS WORK
     
+    /////////////////
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -120,6 +123,28 @@ class CompareBreakdownViewController: UIViewController {
             if let thisLabel = self.gayMenAvgAgeLabel {
                 thisLabel.text = "\(compareGM.avgAge)"
             }
+            
+            // After linking constraints to this code using outlets,
+            //  set this side by side with the AskViewController code
+            //  and set up the equivalent for the CompareBreakdown bars
+            // There should be more code in this one since there are 2x the bars.
+            
+            
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+            
+            
+            /*
+            if let thisDataSet = targetDemoDataSet,
+                let thisTopScoreLabel = self.votes1Label,
+                let thisBottomScoreLabel = self.votes2Label {
+                thisTopScoreLabel.text = "\(thisDataSet.percentTop) %"
+                thisBottomScoreLabel.text = "\(thisDataSet.percentBottom) %"
+            }
+            
+            */
+            
+            
+            
             
             
         } else {

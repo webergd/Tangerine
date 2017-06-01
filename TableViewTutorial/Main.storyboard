@@ -1107,8 +1107,8 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="C92-h1-wrc" userLabel="TDStrongBar">
                                                 <rect key="frame" x="0.0" y="0.0" width="59" height="24"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="Qas-yW-aVb">
-                                                        <rect key="frame" x="9" y="2" width="41" height="20.5"/>
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="10%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="6" translatesAutoresizingMaskIntoConstraints="NO" id="Qas-yW-aVb">
+                                                        <rect key="frame" x="18" y="2" width="41" height="20.5"/>
                                                         <constraints>
                                                             <constraint firstAttribute="width" secondItem="Qas-yW-aVb" secondAttribute="height" multiplier="2:1" id="t5O-tW-4Kx"/>
                                                         </constraints>
@@ -1119,7 +1119,7 @@
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
-                                                    <constraint firstItem="Qas-yW-aVb" firstAttribute="centerX" secondItem="C92-h1-wrc" secondAttribute="centerX" id="f8U-qX-LlV"/>
+                                                    <constraint firstAttribute="trailing" secondItem="Qas-yW-aVb" secondAttribute="trailing" priority="750" id="TMY-2n-e21"/>
                                                     <constraint firstItem="Qas-yW-aVb" firstAttribute="centerY" secondItem="C92-h1-wrc" secondAttribute="centerY" id="pIZ-TT-Unq"/>
                                                 </constraints>
                                             </view>
@@ -1127,7 +1127,6 @@
                                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="24" id="9A9-ib-uPz"/>
-                                            <constraint firstAttribute="trailing" secondItem="C92-h1-wrc" secondAttribute="trailing" constant="200" id="9t9-LU-yuV"/>
                                             <constraint firstItem="C92-h1-wrc" firstAttribute="centerY" secondItem="uwK-Xb-j2B" secondAttribute="centerY" id="A0L-Ca-BwH"/>
                                             <constraint firstItem="C92-h1-wrc" firstAttribute="leading" secondItem="uwK-Xb-j2B" secondAttribute="leading" id="Jrs-6R-4Qu"/>
                                             <constraint firstItem="C92-h1-wrc" firstAttribute="top" secondItem="uwK-Xb-j2B" secondAttribute="top" id="xqY-kV-YRf"/>
@@ -1165,7 +1164,7 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="qra-aT-8zc" userLabel="FriendsStrongBar">
                                                 <rect key="frame" x="0.0" y="0.0" width="86" height="24"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="9" translatesAutoresizingMaskIntoConstraints="NO" id="TUB-ll-XVG">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="20%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="6" translatesAutoresizingMaskIntoConstraints="NO" id="TUB-ll-XVG">
                                                         <rect key="frame" x="52" y="2" width="33.5" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
@@ -1174,7 +1173,7 @@
                                                 </subviews>
                                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
-                                                    <constraint firstAttribute="trailing" secondItem="TUB-ll-XVG" secondAttribute="trailing" constant="0.5" id="MSm-D7-LTu"/>
+                                                    <constraint firstAttribute="trailing" secondItem="TUB-ll-XVG" secondAttribute="trailing" priority="750" id="MSm-D7-LTu"/>
                                                     <constraint firstItem="TUB-ll-XVG" firstAttribute="centerY" secondItem="qra-aT-8zc" secondAttribute="centerY" id="Rfz-nj-px6"/>
                                                 </constraints>
                                             </view>
@@ -1218,7 +1217,7 @@
                                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="lVR-KH-waK" userLabel="ARStrongBar">
                                                 <rect key="frame" x="0.0" y="0.0" width="74" height="24"/>
                                                 <subviews>
-                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="FSX-qa-zTT">
+                                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="15%" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" minimumFontSize="5" translatesAutoresizingMaskIntoConstraints="NO" id="FSX-qa-zTT">
                                                         <rect key="frame" x="43" y="1.5" width="31" height="20.5"/>
                                                         <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                         <nil key="textColor"/>
@@ -1228,7 +1227,7 @@
                                                 <color key="backgroundColor" red="0.0" green="0.47843137250000001" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                                                 <constraints>
                                                     <constraint firstItem="FSX-qa-zTT" firstAttribute="centerY" secondItem="lVR-KH-waK" secondAttribute="centerY" id="OhZ-7U-lBI"/>
-                                                    <constraint firstAttribute="trailing" secondItem="FSX-qa-zTT" secondAttribute="trailing" id="nxk-Jr-mN6"/>
+                                                    <constraint firstAttribute="trailing" secondItem="FSX-qa-zTT" secondAttribute="trailing" priority="750" id="nxk-Jr-mN6"/>
                                                 </constraints>
                                             </view>
                                         </subviews>
@@ -1335,7 +1334,7 @@
                         <outlet property="scrollView" destination="1SV-o3-mQr" id="jVx-lY-ghB"/>
                         <outlet property="targetDemo100Bar" destination="asW-3Q-BDE" id="omU-mN-zv1"/>
                         <outlet property="targetDemoBarTrailingConstraint" destination="Ykc-mG-Smk" id="VEs-rg-ojn"/>
-                        <outlet property="targetDemoStrongBarTrailingConstraint" destination="9t9-LU-yuV" id="qVa-1C-r1d"/>
+                        <outlet property="targetDemoStrongBarTrailingConstraint" destination="9YO-tC-mLo" id="hwd-oK-4cM"/>
                         <outlet property="targetDemoStrongYesPercentage" destination="Qas-yW-aVb" id="gXC-qF-2yc"/>
                         <outlet property="targetDemoTotalReviewsLabel" destination="dx0-Yy-qmR" id="3QH-a8-fH0"/>
                         <outlet property="targetDemoYesPercentage" destination="ngD-q5-gXu" id="Tqy-18-YfF"/>
