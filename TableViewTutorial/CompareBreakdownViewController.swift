@@ -10,34 +10,58 @@ import UIKit
 
 class CompareBreakdownViewController: UIViewController {
 
-    //IBOutlets go here
+    // This outlet is here to enable swipe funtionality:
     @IBOutlet weak var compareBreakdownView: UIView!
+
+    // Target Demographic Outlets:
+    @IBOutlet weak var targetDemoNumReviewsLabel: UILabel!
+    @IBOutlet weak var targetDemoWinningImageView: UIImageView!
+    @IBOutlet weak var targetDemoWinningTitleLabel: UILabel!
+    @IBOutlet weak var targetDemoVotePercentageTop: UILabel!
+    @IBOutlet weak var targetDemoVotePercentageBottom: UILabel!
+    @IBOutlet weak var targetDemoStrongVotePercentageTop: UILabel!
+    @IBOutlet weak var targetDemoStrongVotePercentageBottom: UILabel!
+    @IBOutlet weak var targetDemo100BarTop: UIView!
+    @IBOutlet weak var targetDemo100BarBottom: UIView!
+    @IBOutlet weak var targetDemoTopBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoBottomBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoTopStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoBottomStrongBarTrailingConstraint: NSLayoutConstraint!
+
+    // Friends Outlets
+    @IBOutlet weak var friendsNumReviewsLabel: UILabel!
+    @IBOutlet weak var friendsWinningImageView: UIImageView!
+    @IBOutlet weak var friendsWinningTitleLabel: UILabel!
+    @IBOutlet weak var friendsVotePercentageTop: UILabel!
+    @IBOutlet weak var friendsVotePercentageBottom: UILabel!
+    @IBOutlet weak var friendsStrongVotePercentageTop: UILabel!
+    @IBOutlet weak var friendsStrongVotePercentageBottom: UILabel!
+    @IBOutlet weak var friends100BarTop: UIView!
+    @IBOutlet weak var friends100BarBottom: UIView!
+    @IBOutlet weak var friendsTopBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsBottomBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsTopStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsBottomStrongBarTrailingConstraint: NSLayoutConstraint!
     
-    @IBOutlet weak var imageView1: UIImageView!
-    @IBOutlet weak var imageView2: UIImageView!
-    @IBOutlet weak var title1Label: UILabel!
-    @IBOutlet weak var title2Label: UILabel!
+    // All Reviews Outlets
+    @IBOutlet weak var allReviewsNumReviewsLabel: UILabel!
+    @IBOutlet weak var allReviewsWinningImageView: UIImageView!
+    @IBOutlet weak var allReviewsWinningTitleLabel: UILabel!
+    @IBOutlet weak var allReviewsVotePercentageTop: UILabel!
+    @IBOutlet weak var allReviewsVotePercentageBottom: UILabel!
+    @IBOutlet weak var allReviewsStrongVotePercentageTop: UILabel!
+    @IBOutlet weak var allReviewsStrongVotePercentageBottom: UILabel!
+    @IBOutlet weak var allReviews100BarTop: UIView!
+    @IBOutlet weak var allReviews100BarBottom: UIView!
+    @IBOutlet weak var allReviewsTopBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsBottomBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsTopStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsBottomStrongBarTrailingConstraint: NSLayoutConstraint!
+    
+    
 
     
-    @IBOutlet weak var straightWomenVotes4OneLabel: UILabel!
-    @IBOutlet weak var straightWomenVotes4TwoLabel: UILabel!
-    @IBOutlet weak var straightMenVotes4OneLabel: UILabel!
-    @IBOutlet weak var straightMenVotes4TwoLabel: UILabel!
-    @IBOutlet weak var gayWomenVotes4OneLabel: UILabel!
-    @IBOutlet weak var gayWomenVotes4TwoLabel: UILabel!
-    @IBOutlet weak var gayMenVotes4OneLabel: UILabel!
-    @IBOutlet weak var gayMenVotes4TwoLabel: UILabel!
     
-    @IBOutlet weak var straightWomenAvgAgeLabel: UILabel!
-    @IBOutlet weak var straightMenAvgAgeLabel: UILabel!
-    @IBOutlet weak var gayWomenAvgAgeLabel: UILabel!
-    @IBOutlet weak var gayMenAvgAgeLabel: UILabel!
-    
-    /////////////////
-    
-    // NEED CONSTRAINTS TO MAKE THE BARS WORK
-    
-    /////////////////
     
     override var prefersStatusBarHidden: Bool {
         return true
