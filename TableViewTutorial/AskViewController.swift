@@ -203,9 +203,6 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         strongYesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYes, hundredBarWidth: hundredBarWidth)
         
         
-        //still need code for setting constraints
-        // set them in a separate generic method that will be called here: inside DataModels
-        
     }
     
 

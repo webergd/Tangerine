@@ -471,6 +471,13 @@ public struct ConsolidatedCompareDataSet {
     let percentGW: Int
     let percentGM: Int
     let numReviews: Int
+    var winner: CompareWinner {
+        switch percentTop {
+        case 51...100: return .photo1Won
+        case 0...49: return .photo2Won
+        default: return .itsATie // the only other case could be 50% so this is why it's a tie.
+        }
+    }
 }
 
 // an "Ask" is an object containing a single image to be rated

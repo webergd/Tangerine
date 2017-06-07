@@ -6,6 +6,9 @@
 //  Copyright © 2016 Freedom Electric. All rights reserved.
 //
 
+// Does the time remaining label display yet?
+
+
 import UIKit
 
 class CompareBreakdownViewController: UIViewController {
@@ -59,8 +62,14 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var allReviewsBottomStrongBarTrailingConstraint: NSLayoutConstraint!
     
     
-
+    @IBOutlet weak var compareTimeRemainingLabel: UILabel!
     
+    // these are all initialized with actual values in configureView()
+    var compareImage1: UIImage? = nil
+    var compareImage2: UIImage? = nil
+    var compareTitle1: String = ""
+    var compareTitle2: String = ""
+
     
     
     override var prefersStatusBarHidden: Bool {
@@ -83,69 +92,19 @@ class CompareBreakdownViewController: UIViewController {
     }
     
     func configureView() {
-        print("configuring ask view")
+        print("configuring compare view")
         
-        // unwraps the ask that the tableView sent over:
+        // unwraps the compare that the tableView sent over:
         if let thisCompare = self.container?.question as! Compare? {
-            let compareSW = thisCompare.breakdown.straightWomen as! CompareDemo
-            let compareSM = thisCompare.breakdown.straightMen as! CompareDemo
-            let compareGW = thisCompare.breakdown.gayWomen as! CompareDemo
-            let compareGM = thisCompare.breakdown.gayMen as! CompareDemo
+
+            compareImage1 = thisCompare.comparePhoto1
+            compareImage2 = thisCompare.comparePhoto2
+            compareTitle1 = thisCompare.compareTitle1
+            compareTitle2 = thisCompare.compareTitle2
             
-            // unwraps the ratingLabel from the IBOutlet and stores the demo rating to it (rounded)
-            if let thisLabel = self.straightWomenVotes4OneLabel {
-                thisLabel.text = "\(compareSW.votesForOne)"
-            }
-            if let thisLabel = self.straightWomenVotes4TwoLabel {
-                thisLabel.text = "\(compareSW.votesForTwo)"
-            }
-            if let thisLabel = self.straightMenVotes4OneLabel {
-                thisLabel.text = "\(compareSM.votesForOne)"
-            }
-            if let thisLabel = self.straightMenVotes4TwoLabel {
-                thisLabel.text = "\(compareSM.votesForTwo)"
-            }
-            if let thisLabel = self.gayWomenVotes4OneLabel {
-                thisLabel.text = "\(compareGW.votesForOne)"
-            }
-            if let thisLabel = self.gayWomenVotes4TwoLabel {
-                thisLabel.text = "\(compareGW.votesForTwo)"
-            }
-            if let thisLabel = self.gayMenVotes4OneLabel {
-                thisLabel.text = "\(compareGM.votesForOne)"
-            }
-            if let thisLabel = self.gayMenVotes4TwoLabel {
-                thisLabel.text = "\(compareGM.votesForTwo)"
-            }
-            
-            
-            // unwraps the imageView from the IBOutlet
-            if let thisImageView = self.imageView1 {
-                thisImageView.image = thisCompare.comparePhoto1
-            }
-            if let thisImageView = self.imageView2 {
-                thisImageView.image = thisCompare.comparePhoto2
-            }
-            
-            if let thisLabel = self.title1Label {
-                thisLabel.text = "\(thisCompare.compareTitle1)"
-            }
-            if let thisLabel = self.title2Label {
-                thisLabel.text = "\(thisCompare.compareTitle2)"
-            }
-            
-            // load the Avg Age labels
-            if let thisLabel = self.straightWomenAvgAgeLabel {
-                thisLabel.text = "\(compareSW.avgAge)"
-            }
-            if let thisLabel = self.straightMenAvgAgeLabel {
-                thisLabel.text = "\(compareSM.avgAge)"
-            }
-            if let thisLabel = self.gayWomenAvgAgeLabel {
-                thisLabel.text = "\(compareGW.avgAge)"
-            }
-            if let thisLabel = self.gayMenAvgAgeLabel {
-                thisLabel.text = "\(compareGM.avgAge)"
+            // unwraps the timeRemaining from the IBOutlet
+            if let thisTimeRemaining = self.compareTimeRemainingLabel {
+                thisTimeRemaining.text = "TIME REMAINING: \(thisCompare.timeRemaining)"
             }
             
             // After linking constraints to this code using outlets,
@@ -154,20 +113,115 @@ class CompareBreakdownViewController: UIViewController {
             // There should be more code in this one since there are 2x the bars.
             
             
+            // Configure TARGET DEMO data display:
+            
             let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+ 
             
-            
-            /*
             if let thisDataSet = targetDemoDataSet,
-                let thisTopScoreLabel = self.votes1Label,
-                let thisBottomScoreLabel = self.votes2Label {
-                thisTopScoreLabel.text = "\(thisDataSet.percentTop) %"
-                thisBottomScoreLabel.text = "\(thisDataSet.percentBottom) %"
+                let thisNumReviewsLabel = targetDemoNumReviewsLabel,
+                let thisWinningImageView = targetDemoWinningImageView,
+                let thisWinningTitleLabel = targetDemoWinningTitleLabel,
+                let thisVotePercentageTopLabel = targetDemoVotePercentageTop,
+                let thisVotePercentageBottomLabel = targetDemoVotePercentageBottom,
+                let thisStrongVotePercentageTopLabel = targetDemoStrongVotePercentageTop,
+                let thisStrongVotePercentageBottomLabel = targetDemoStrongVotePercentageBottom,
+                let this100BarTop = targetDemo100BarTop,
+                let this100BarBottom = targetDemo100BarBottom,
+                let thisTopBarTrailingConstraint = targetDemoTopBarTrailingConstraint,
+                let thisBottomBarTrailingConstraint = targetDemoBottomBarTrailingConstraint,
+                let thisTopStrongBarTrailingConstraint = targetDemoTopStrongBarTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = targetDemoBottomStrongBarTrailingConstraint   {
+                
+                displayData(dataSet: thisDataSet,
+                            numReviewsLabel: thisNumReviewsLabel,
+                            winningImageView: thisWinningImageView,
+                            winningTitleLabel: thisWinningTitleLabel,
+                            votePercentageTopLabel: thisVotePercentageTopLabel,
+                            votePercentageBottomLabel: thisVotePercentageBottomLabel,
+                            strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
+                            strongVotePercentageBottomLabel: thisStrongVotePercentageBottomLabel,
+                            hundredBarTopView: this100BarTop,
+                            hundredBarBottomView: this100BarBottom,
+                            topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
             }
             
-            */
+            // Configure FRIENDS data display:
+            
+            let friendsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true)
             
             
+            if let thisDataSet = friendsDataSet,
+                let thisNumReviewsLabel = friendsNumReviewsLabel,
+                let thisWinningImageView = friendsWinningImageView,
+                let thisWinningTitleLabel = friendsWinningTitleLabel,
+                let thisVotePercentageTopLabel = friendsVotePercentageTop,
+                let thisVotePercentageBottomLabel = friendsVotePercentageBottom,
+                let thisStrongVotePercentageTopLabel = friendsStrongVotePercentageTop,
+                let thisStrongVotePercentageBottomLabel = friendsStrongVotePercentageBottom,
+                let this100BarTop = friends100BarTop,
+                let this100BarBottom = friends100BarBottom,
+                let thisTopBarTrailingConstraint = friendsTopBarTrailingConstraint,
+                let thisBottomBarTrailingConstraint = friendsBottomBarTrailingConstraint,
+                let thisTopStrongBarTrailingConstraint = friendsTopStrongBarTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = friendsBottomStrongBarTrailingConstraint   {
+                
+                // There is probably a way to avoid calling this next line in its entirety.
+                // Violates the DRY principle but it does work..
+                displayData(dataSet: thisDataSet,
+                            numReviewsLabel: thisNumReviewsLabel,
+                            winningImageView: thisWinningImageView,
+                            winningTitleLabel: thisWinningTitleLabel,
+                            votePercentageTopLabel: thisVotePercentageTopLabel,
+                            votePercentageBottomLabel: thisVotePercentageBottomLabel,
+                            strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
+                            strongVotePercentageBottomLabel: thisStrongVotePercentageBottomLabel,
+                            hundredBarTopView: this100BarTop,
+                            hundredBarBottomView: this100BarBottom,
+                            topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
+            }
+            
+            // Configure ALL REVIEWS data display:
+            
+            let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false)
+            
+            
+            if let thisDataSet = allReviewsDataSet,
+                let thisNumReviewsLabel = allReviewsNumReviewsLabel,
+                let thisWinningImageView = allReviewsWinningImageView,
+                let thisWinningTitleLabel = allReviewsWinningTitleLabel,
+                let thisVotePercentageTopLabel = allReviewsVotePercentageTop,
+                let thisVotePercentageBottomLabel = allReviewsVotePercentageBottom,
+                let thisStrongVotePercentageTopLabel = allReviewsStrongVotePercentageTop,
+                let thisStrongVotePercentageBottomLabel = allReviewsStrongVotePercentageBottom,
+                let this100BarTop = allReviews100BarTop,
+                let this100BarBottom = allReviews100BarBottom,
+                let thisTopBarTrailingConstraint = allReviewsTopBarTrailingConstraint,
+                let thisBottomBarTrailingConstraint = allReviewsBottomBarTrailingConstraint,
+                let thisTopStrongBarTrailingConstraint = allReviewsTopStrongBarTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = allReviewsBottomStrongBarTrailingConstraint   {
+                
+                displayData(dataSet: thisDataSet,
+                            numReviewsLabel: thisNumReviewsLabel,
+                            winningImageView: thisWinningImageView,
+                            winningTitleLabel: thisWinningTitleLabel,
+                            votePercentageTopLabel: thisVotePercentageTopLabel,
+                            votePercentageBottomLabel: thisVotePercentageBottomLabel,
+                            strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
+                            strongVotePercentageBottomLabel: thisStrongVotePercentageBottomLabel,
+                            hundredBarTopView: this100BarTop,
+                            hundredBarBottomView: this100BarBottom,
+                            topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
+            }
             
             
             
@@ -178,6 +232,54 @@ class CompareBreakdownViewController: UIViewController {
     }
     
     
+    func displayData(dataSet: ConsolidatedCompareDataSet,
+                     numReviewsLabel: UILabel,
+                     winningImageView: UIImageView,
+                     winningTitleLabel: UILabel,
+                     votePercentageTopLabel: UILabel,
+                     votePercentageBottomLabel: UILabel,
+                     strongVotePercentageTopLabel: UILabel,
+                     strongVotePercentageBottomLabel: UILabel,
+                     hundredBarTopView: UIView,
+                     hundredBarBottomView: UIView,
+                     topBarTrailingConstraint: NSLayoutConstraint,
+                     bottomBarTrailingConstraint: NSLayoutConstraint,
+                     topStrongBarTrailingConstraint: NSLayoutConstraint,
+                     bottomStrongBarTrailingConstraint: NSLayoutConstraint){
+        
+        numReviewsLabel.text = String(dataSet.numReviews)
+        
+        switch dataSet.winner {
+        case .photo1Won:
+            winningImageView.image = compareImage1
+            winningTitleLabel.text = compareTitle2
+        case .photo2Won:
+            winningImageView.image = compareImage2
+            winningTitleLabel.text = compareTitle2
+        case .itsATie:
+            winningImageView.image = #imageLiteral(resourceName: "shrug")
+            winningTitleLabel.text = "TIE"
+        }
+      
+        votePercentageTopLabel.text = String(dataSet.percentTop) + "%"
+        votePercentageBottomLabel.text = String(dataSet.percentBottom) + "%"
+        
+        strongVotePercentageTopLabel.text = String(dataSet.percentStrongYesTop) + "%"
+        strongVotePercentageBottomLabel.text = String(dataSet.percentStrongYesBottom) + "%"
+        // Note: strongNo storage capability exists but has not been (and may never be) implemented
+        
+        let hundredBarTopWidth = hundredBarTopView.frame.size.width
+        let hundredBarBottomWidth = hundredBarBottomView.frame.size.width
+        
+        // Both 100 bars should presumably be the same size. I used their separate values though in case something funky happens with te constraints at runtime.
+        topBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentTop, hundredBarWidth: hundredBarTopWidth)
+        bottomBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentBottom, hundredBarWidth: hundredBarBottomWidth)
+        
+        topStrongBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYesTop, hundredBarWidth: hundredBarTopWidth)
+        bottomStrongBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYesBottom, hundredBarWidth: hundredBarBottomWidth)
+        
+        
+    }
 
     
     

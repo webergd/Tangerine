@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12120" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12088"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="12089"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="Constraints with non-1.0 multipliers" minToolsVersion="5.1"/>
@@ -2133,6 +2133,7 @@
                         <outlet property="allReviewsWinningImageView" destination="YGy-21-dxf" id="aX5-UO-IBF"/>
                         <outlet property="allReviewsWinningTitleLabel" destination="dj3-qG-oXG" id="E0F-Gh-86Y"/>
                         <outlet property="compareBreakdownView" destination="pax-kb-VSq" id="qWy-aO-0Va"/>
+                        <outlet property="compareTimeRemainingLabel" destination="1pq-Nv-4lV" id="DtE-E9-RwJ"/>
                         <outlet property="friends100BarBottom" destination="MRf-xP-Jtj" id="0Oi-p9-Jl1"/>
                         <outlet property="friends100BarTop" destination="9Li-Aa-jO7" id="duM-QL-aoB"/>
                         <outlet property="friendsBottomBarTrailingConstraint" destination="pZe-cK-6Ei" id="HmF-qr-aoT"/>
