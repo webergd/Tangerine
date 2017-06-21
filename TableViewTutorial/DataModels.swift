@@ -175,9 +175,53 @@ public func calcTrailingConstraint(percentYes: Int, hundredBarWidth: CGFloat) ->
 
 }
 
-// There also needs to be a second method to calc the blue bar.                      //
-// This will probably just require the white bar's width and percent strong yes.     //
-// Actually we can use the same method. We just set the strong bar using the 100 bar width also. Just use this method once for the blue and once for the white.
+public func flipBarLabelsAsRequired(hundredBarWidth: CGFloat, yesTrailingConstraint: NSLayoutConstraint, yesPercentageLabel: UILabel, yesLabelLeadingConstraint: NSLayoutConstraint, strongYesTrailingConstraint: NSLayoutConstraint, strongYesPercentageLabel: UILabel, strongYesLabelTrailingConstraint: NSLayoutConstraint) {
+    
+    // Switch the yesPercentageLabel to the inside of the bar if there isn't enough space to display it on the outside:
+    if (yesTrailingConstraint.constant < yesPercentageLabel.frame.size.width) {
+        // this flips the label over to the other side by giving the constraint a negative constant
+        yesLabelLeadingConstraint.constant = -1 * yesPercentageLabel.frame.size.width * 1.3
+        // this changes the text color
+        yesPercentageLabel.textColor = UIColor.black
+        
+        if ((strongYesTrailingConstraint.constant - yesTrailingConstraint.constant) < (yesPercentageLabel.frame.size.width * 1.3)){
+            print("inside the fixer nested if - system knows there is not enough room for both labels")
+            // in layman's terms:
+            // If the space left for the label is too small,
+            //  hide the strong label
+            strongYesPercentageLabel.isHidden = true
+        }
+
+    } else { // this just sets it back to normal in case we flipped the label over and it needs to go back
+        yesLabelLeadingConstraint.constant = 0.5
+        yesPercentageLabel.textColor = UIColor.white
+    }
+
+    // Switch the strongYesPercentageLabel to the outside of the bar if there isn't enough space to display it on the inside:
+    if ((hundredBarWidth - strongYesTrailingConstraint.constant) < yesPercentageLabel.frame.size.width) {
+        // this flips the label over to the other side by giving the constraint a negative constant
+        strongYesLabelTrailingConstraint.constant = -1 * strongYesPercentageLabel.frame.size.width // 0.5 is just a little extra padding
+        // this changes the text color
+        strongYesPercentageLabel.textColor = UIColor.blue
+        strongYesPercentageLabel.isHidden = false
+
+        if ((yesTrailingConstraint.constant - strongYesTrailingConstraint.constant) < (yesPercentageLabel.frame.size.width * 1.3)){
+            print("inside the fixer nested if - system knows there is not enough room for both labels")
+            
+            // hide the strong label if there's not enough room to display it:
+            strongYesPercentageLabel.isHidden = true
+            
+            
+        }
+    }
+    
+    
+    
+} // end of public func flipBarLabelsAsRequired(..)
+
+
+
+
 
 public struct DemoPreferences {
     var minAge: Int

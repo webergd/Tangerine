@@ -1,5 +1,5 @@
 //
-//  AskTableViewController.swift   //This file needs a better name
+//  AskTableViewController.swift   //This file needs a more accurate name -> it holds Asks and Compares
 //  TableViewTutorial
 //
 //  Created by Wyatt Weber on 7/14/16.
@@ -151,19 +151,23 @@ class AskTableViewController: UITableViewController {
     // requires loadSampleAsks() to be called first in order to work.
     func loadSampleAskReviews() {
 
-        let askReview1 = AskReview(selection: .yes, strong: nil, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
+        let askReview1 = AskReview(selection: .no, strong: nil, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
         
-        let askReview2 = AskReview(selection: .yes, strong: .yes, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        let askReview2 = AskReview(selection: .no, strong: nil, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
         
         let askReview3 = AskReview(selection: .no, strong: nil, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Goooooooo")
         
-        let askReview4 = AskReview(selection: .yes, strong: .yes, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        let askReview4 = AskReview(selection: .no, strong: nil, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
         
         let askReview5 = AskReview(selection: .no, strong: nil, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
         
-        let askReview6 = AskReview(selection: .yes, strong: nil, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        let askReview6 = AskReview(selection: .no, strong: nil, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
         
-        let askReview7 = AskReview(selection: .yes, strong: nil, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        let askReview7 = AskReview(selection: .no, strong: nil, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        
+        let askReview8 = AskReview(selection: .yes, strong: nil, userName: "Country Bear", reviewerDemo: .straightMan, reviewerAge: 33, comments: "You suck at preflighting")
+        
+        let askReview9 = AskReview(selection: .yes, strong: .yes, userName: "Bob", reviewerDemo: .gayMan, reviewerAge: 23, comments: "My name is Bob?")
         
         // this loop adds all the reviews to each ask container since 0 through 2 are Asks 
         //  we only know this because we loaded 0 through 2 as asks
@@ -175,6 +179,8 @@ class AskTableViewController: UITableViewController {
             containers[x].reviewCollection.reviews.append(askReview5)
             containers[x].reviewCollection.reviews.append(askReview6)
             containers[x].reviewCollection.reviews.append(askReview7)
+            containers[x].reviewCollection.reviews.append(askReview8)
+            containers[x].reviewCollection.reviews.append(askReview9)
         }
         
         
@@ -183,19 +189,19 @@ class AskTableViewController: UITableViewController {
     // requires loadSampleCompares() to be called first in order to work.
     
     func loadSampleCompareReviews() {
-        let compareReview1 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
+        let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
         
-        let compareReview2 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        let compareReview2 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
         
-        let compareReview3 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Gooooooo")
+        let compareReview3 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Gooooooo")
         
-        let compareReview4 = CompareReview(selection: .top, strongYes: false, strongNo: false, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        let compareReview4 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
         
-        let compareReview5 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
+        let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
         
-        let compareReview6 = CompareReview(selection: .bottom, strongYes: false, strongNo: false, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        let compareReview6 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
         
-        let compareReview7 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
         
         // this loop adds all the reviews to each compare container since 3 through 4 are Compares
         for x in 3...4  {

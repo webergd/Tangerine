@@ -26,10 +26,15 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var targetDemoStrongVotePercentageBottom: UILabel!
     @IBOutlet weak var targetDemo100BarTop: UIView!
     @IBOutlet weak var targetDemo100BarBottom: UIView!
-    @IBOutlet weak var targetDemoTopBarTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var targetDemoBottomBarTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var targetDemoTopStrongBarTrailingConstraint: NSLayoutConstraint!
-    @IBOutlet weak var targetDemoBottomStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoTopBarTrailingConstraint: NSLayoutConstraint! //controls length of top white bar
+    @IBOutlet weak var targetDemoBottomBarTrailingConstraint: NSLayoutConstraint! //controls length of bottom white bar
+    @IBOutlet weak var targetDemoTopStrongBarTrailingConstraint: NSLayoutConstraint! //controls length of top blue bar
+    @IBOutlet weak var targetDemoBottomStrongBarTrailingConstraint: NSLayoutConstraint! //controls length of bottom blue bar
+    @IBOutlet weak var targetDemoVoteTopLabelLeadingConstraint: NSLayoutConstraint! //controls position of normal votes top number
+    @IBOutlet weak var targetDemoVoteBottomLabelLeadingConstraint: NSLayoutConstraint! //controls position of normal votes bottom number
+    @IBOutlet weak var targetDemoStrongTopLabelTrailingConstraint: NSLayoutConstraint! //controls position of strong votes top number
+    @IBOutlet weak var targetDemoStrongBottomLabelTrailingConstraint: NSLayoutConstraint! //controls position of strong votes top number
+    
 
     // Friends Outlets
     @IBOutlet weak var friendsNumReviewsLabel: UILabel!
@@ -45,6 +50,13 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var friendsBottomBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var friendsTopStrongBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var friendsBottomStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsVoteTopLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsVoteBottomLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsStrongTopLabelTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsStrongBottomLabelTrailingConstraint: NSLayoutConstraint!
+
+    
+    
     
     // All Reviews Outlets
     @IBOutlet weak var allReviewsNumReviewsLabel: UILabel!
@@ -60,6 +72,14 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var allReviewsBottomBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var allReviewsTopStrongBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var allReviewsBottomStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsVoteTopLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsVoteBottomLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsStrongTopLabelTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsStrongBottomLabelTrailingConstraint: NSLayoutConstraint!
+
+    
+    
+    
     
     
     @IBOutlet weak var compareTimeRemainingLabel: UILabel!
@@ -129,9 +149,13 @@ class CompareBreakdownViewController: UIViewController {
                 let this100BarTop = targetDemo100BarTop,
                 let this100BarBottom = targetDemo100BarBottom,
                 let thisTopBarTrailingConstraint = targetDemoTopBarTrailingConstraint,
+                let thisVoteTopLabelLeadingConstraint = targetDemoVoteTopLabelLeadingConstraint,
                 let thisBottomBarTrailingConstraint = targetDemoBottomBarTrailingConstraint,
+                let thisVoteBottomLabelLeadingConstraint = targetDemoVoteBottomLabelLeadingConstraint,
                 let thisTopStrongBarTrailingConstraint = targetDemoTopStrongBarTrailingConstraint,
-                let thisBottomStrongBarTrailingConstraint = targetDemoBottomStrongBarTrailingConstraint   {
+                let thisStrongTopLabelTrailingConstraint = targetDemoStrongTopLabelTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = targetDemoBottomStrongBarTrailingConstraint,
+                let thisStrongBottomLabelTrailingConstraint = targetDemoStrongBottomLabelTrailingConstraint {
                 
                 displayData(dataSet: thisDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
@@ -144,9 +168,13 @@ class CompareBreakdownViewController: UIViewController {
                             hundredBarTopView: this100BarTop,
                             hundredBarBottomView: this100BarBottom,
                             topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            voteTopLabelLeadingConstraint: thisVoteTopLabelLeadingConstraint,
                             bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            voteBottomLabelLeadingConstraint: thisVoteBottomLabelLeadingConstraint,
                             topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
-                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
+                            strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
+                            strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
             }
             
             // Configure FRIENDS data display:
@@ -165,12 +193,17 @@ class CompareBreakdownViewController: UIViewController {
                 let this100BarTop = friends100BarTop,
                 let this100BarBottom = friends100BarBottom,
                 let thisTopBarTrailingConstraint = friendsTopBarTrailingConstraint,
+                let thisVoteTopLabelLeadingConstraint = friendsVoteTopLabelLeadingConstraint,
                 let thisBottomBarTrailingConstraint = friendsBottomBarTrailingConstraint,
+                let thisVoteBottomLabelLeadingConstraint = friendsVoteBottomLabelLeadingConstraint,
                 let thisTopStrongBarTrailingConstraint = friendsTopStrongBarTrailingConstraint,
-                let thisBottomStrongBarTrailingConstraint = friendsBottomStrongBarTrailingConstraint   {
+                let thisStrongTopLabelTrailingConstraint = friendsStrongTopLabelTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = friendsBottomStrongBarTrailingConstraint,
+                let thisStrongBottomLabelTrailingConstraint = friendsStrongBottomLabelTrailingConstraint   {
                 
                 // There is probably a way to avoid calling this next line in its entirety.
                 // Violates the DRY principle but it does work..
+                // Although it is technically just a method call
                 displayData(dataSet: thisDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
                             winningImageView: thisWinningImageView,
@@ -182,9 +215,13 @@ class CompareBreakdownViewController: UIViewController {
                             hundredBarTopView: this100BarTop,
                             hundredBarBottomView: this100BarBottom,
                             topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            voteTopLabelLeadingConstraint: thisVoteTopLabelLeadingConstraint,
                             bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            voteBottomLabelLeadingConstraint: thisVoteBottomLabelLeadingConstraint,
                             topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
-                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
+                            strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
+                            strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
             }
             
             // Configure ALL REVIEWS data display:
@@ -203,9 +240,13 @@ class CompareBreakdownViewController: UIViewController {
                 let this100BarTop = allReviews100BarTop,
                 let this100BarBottom = allReviews100BarBottom,
                 let thisTopBarTrailingConstraint = allReviewsTopBarTrailingConstraint,
+                let thisVoteTopLabelLeadingConstraint = allReviewsVoteTopLabelLeadingConstraint,
                 let thisBottomBarTrailingConstraint = allReviewsBottomBarTrailingConstraint,
+                let thisVoteBottomLabelLeadingConstraint = allReviewsVoteBottomLabelLeadingConstraint,
                 let thisTopStrongBarTrailingConstraint = allReviewsTopStrongBarTrailingConstraint,
-                let thisBottomStrongBarTrailingConstraint = allReviewsBottomStrongBarTrailingConstraint   {
+                let thisStrongTopLabelTrailingConstraint = allReviewsStrongTopLabelTrailingConstraint,
+                let thisBottomStrongBarTrailingConstraint = allReviewsBottomStrongBarTrailingConstraint,
+                let thisStrongBottomLabelTrailingConstraint = allReviewsStrongBottomLabelTrailingConstraint   {
                 
                 displayData(dataSet: thisDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
@@ -218,9 +259,13 @@ class CompareBreakdownViewController: UIViewController {
                             hundredBarTopView: this100BarTop,
                             hundredBarBottomView: this100BarBottom,
                             topBarTrailingConstraint: thisTopBarTrailingConstraint,
+                            voteTopLabelLeadingConstraint: thisVoteTopLabelLeadingConstraint,
                             bottomBarTrailingConstraint: thisBottomBarTrailingConstraint,
+                            voteBottomLabelLeadingConstraint: thisVoteBottomLabelLeadingConstraint,
                             topStrongBarTrailingConstraint: thisTopStrongBarTrailingConstraint,
-                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint)
+                            strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
+                            bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
+                            strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
             }
             
             
@@ -243,11 +288,17 @@ class CompareBreakdownViewController: UIViewController {
                      hundredBarTopView: UIView,
                      hundredBarBottomView: UIView,
                      topBarTrailingConstraint: NSLayoutConstraint,
+                     voteTopLabelLeadingConstraint: NSLayoutConstraint,
                      bottomBarTrailingConstraint: NSLayoutConstraint,
+                     voteBottomLabelLeadingConstraint: NSLayoutConstraint,
                      topStrongBarTrailingConstraint: NSLayoutConstraint,
-                     bottomStrongBarTrailingConstraint: NSLayoutConstraint){
+                     strongTopLabelTrailingConstraint: NSLayoutConstraint,
+                     bottomStrongBarTrailingConstraint: NSLayoutConstraint,
+                     strongBottomLabelTrailingConstraint: NSLayoutConstraint){
         
-        numReviewsLabel.text = String(dataSet.numReviews)
+        
+        
+        numReviewsLabel.text = "\(dataSet.numReviews) reviews"
         
         switch dataSet.winner {
         case .photo1Won:
@@ -261,6 +312,22 @@ class CompareBreakdownViewController: UIViewController {
             winningTitleLabel.text = "TIE"
         }
       
+        //////////
+        
+        // The next step here is to mimick the if logic in the displayData
+        //  method of AskViewController in order to cause the Top or 
+        //  bottom and strong top or bottom labels to:
+        //  (1) switch sides if there isn't enough room to display the number
+        //  (2) become hidden if strong is too close to regular such that
+        //       the labels displayed would become cluttered.
+        //
+        //  Most of the code is already written. It should go quickly.
+        
+        //////////
+        
+        
+        
+        
         votePercentageTopLabel.text = String(dataSet.percentTop) + "%"
         votePercentageBottomLabel.text = String(dataSet.percentBottom) + "%"
         
@@ -279,7 +346,27 @@ class CompareBreakdownViewController: UIViewController {
         bottomStrongBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYesBottom, hundredBarWidth: hundredBarBottomWidth)
         
         
-    }
+        // adjust top bar labels if necessary:
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarTopWidth,
+                                yesTrailingConstraint: topBarTrailingConstraint,
+                                yesPercentageLabel: votePercentageTopLabel,
+                                yesLabelLeadingConstraint: voteTopLabelLeadingConstraint,
+                                strongYesTrailingConstraint: topStrongBarTrailingConstraint,
+                                strongYesPercentageLabel: strongVotePercentageTopLabel,
+                                strongYesLabelTrailingConstraint: strongTopLabelTrailingConstraint)
+        
+        // adjust bottom bar labels if necessary:
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarBottomWidth,
+                                yesTrailingConstraint: bottomBarTrailingConstraint,
+                                yesPercentageLabel: votePercentageBottomLabel,
+                                yesLabelLeadingConstraint: voteBottomLabelLeadingConstraint,
+                                strongYesTrailingConstraint: bottomStrongBarTrailingConstraint,
+                                strongYesPercentageLabel: strongVotePercentageBottomLabel,
+                                strongYesLabelTrailingConstraint: strongBottomLabelTrailingConstraint)
+
+        
+        
+    } // end of displayData method
 
     
     

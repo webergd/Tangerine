@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		2A06C36A1E024D08000F21AC /* TestFileLinkedToNothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */; };
+		2A83A0F01EFAE54F009DAE8E /* AskReviewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */; };
 		2AA514761D3B3EE700B1ABF8 /* AskBreakdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */; };
 		2AB0EF7B1E707C5100ADAB68 /* SwipeSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */; };
 		2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACDFA031E2008A600471E3D /* ImageMethods.swift */; };
@@ -50,6 +51,7 @@
 
 /* Begin PBXFileReference section */
 		2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TestFileLinkedToNothing.swift; sourceTree = "<group>"; };
+		2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskReviewsTableViewController.swift; sourceTree = "<group>"; };
 		2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskBreakdownViewController.swift; sourceTree = "<group>"; };
 		2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeSegue.swift; sourceTree = "<group>"; };
 		2ACDFA031E2008A600471E3D /* ImageMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMethods.swift; sourceTree = "<group>"; };
@@ -140,6 +142,7 @@
 				2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */,
 				2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */,
 				2AEBBDBB1D36111F001F7388 /* AskViewController.swift */,
+				2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */,
 				2AA514751D3B3EE700B1ABF8 /* AskBreakdownViewController.swift */,
 				2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */,
 				2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */,
@@ -322,6 +325,7 @@
 				2AA514761D3B3EE700B1ABF8 /* AskBreakdownViewController.swift in Sources */,
 				2AECD6CA1D41DCA700AAB743 /* CompareTableViewCell.swift in Sources */,
 				2AEBBDBC1D36111F001F7388 /* AskViewController.swift in Sources */,
+				2A83A0F01EFAE54F009DAE8E /* AskReviewsTableViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

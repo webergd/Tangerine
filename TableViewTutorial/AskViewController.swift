@@ -22,30 +22,39 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet var askView: UIView!
     @IBOutlet weak var askTimeRemainingLabel: UILabel!
     
-
+    // TARGET DEMO OUTLETS
     @IBOutlet weak var targetDemoTotalReviewsLabel: UILabel!
     @IBOutlet weak var targetDemoYesPercentage: UILabel!
     @IBOutlet weak var targetDemoStrongYesPercentage: UILabel!
     @IBOutlet weak var targetDemo100Bar: UIView! // use this to pull the current width of the 100Bar
     @IBOutlet weak var targetDemoBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var targetDemoStrongBarTrailingConstraint: NSLayoutConstraint!
-
+    @IBOutlet weak var targetDemoYesLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var targetDemoStrongLabelTrailingConstraint: NSLayoutConstraint!
     
     
+    // FRIENDS OUTLETS
     @IBOutlet weak var friendsTotalReviewsLabel: UILabel!
     @IBOutlet weak var friendsYesPercentage: UILabel!
     @IBOutlet weak var friendsStrongYesPercentage: UILabel!
     @IBOutlet weak var friends100Bar: UIView! // use this to pull the current width of the 100Bar
     @IBOutlet weak var friendsBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var friendsStrongBarTrailingConstraint: NSLayoutConstraint!
-
+    @IBOutlet weak var friendsYesLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var friendsStrongLabelTrailingConstraint: NSLayoutConstraint!
     
+    
+    
+
+    // ALL REVIEWS OUTLETS
     @IBOutlet weak var allReviewsTotalReviewsLabel: UILabel!
     @IBOutlet weak var allReviewsYesPercentage: UILabel!
     @IBOutlet weak var allReviewsStrongYesPercentage: UILabel!
     @IBOutlet weak var allReviews100Bar: UIView! // use this to pull the current width of the 100Bar
     @IBOutlet weak var allReviewsBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var allReviewsStrongBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsYesLabelLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var allReviewsStrongLabelTrailingConstraint: NSLayoutConstraint!
  
  
 
@@ -120,14 +129,17 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
             
             
-            if let thisDataSet = targetDemoDataSet, let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint   {
+            if let thisDataSet = targetDemoDataSet, let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisYesLabelLeadingConstraint = targetDemoYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = targetDemoStrongLabelTrailingConstraint   {
+                
                 displayData(dataSet: thisDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
                             hundredBarView: this100Bar,
                             yesTrailingConstraint: thisYesTrailingConstraint,
-                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+                            yesLabelLeadingConstraint: thisYesLabelLeadingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint,
+                            strongYesLabelTrailingConstraint: thisStrongYesLabelTrailingConstraint)
             }
 
             print("configuring FRIEND display **********")
@@ -136,14 +148,17 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true) //friendsOnly value doesn't do anything yet - need to add this functionality to the pullConsolidatedAskData method
 
             
-            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let this100Bar = friends100Bar, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsBarTrailingConstraint, let thisStrongYesTrailingConstraint = friendsStrongBarTrailingConstraint   {
+            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let this100Bar = friends100Bar, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsBarTrailingConstraint, let thisYesLabelLeadingConstraint = friendsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = friendsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = friendsStrongLabelTrailingConstraint   {
+                
                 displayData(dataSet: thisDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
                             hundredBarView: this100Bar,
                             yesTrailingConstraint: thisYesTrailingConstraint,
-                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+                            yesLabelLeadingConstraint: thisYesLabelLeadingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint,
+                            strongYesLabelTrailingConstraint: thisStrongYesLabelTrailingConstraint)
             }
             
             
@@ -153,18 +168,20 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
             let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false) // the only difference between this and the above is the friendsOnly Bool setting
             
-            
-            if let thisDataSet = allReviewsDataSet, let thisTotalReviewsLabel = allReviewsTotalReviewsLabel, let thisYesPercentageLabel = allReviewsYesPercentage, let this100Bar = allReviews100Bar, let thisStrongYesPercentageLabel = allReviewsStrongYesPercentage, let thisYesTrailingConstraint = allReviewsBarTrailingConstraint, let thisStrongYesTrailingConstraint = allReviewsStrongBarTrailingConstraint   {
+            // this multiple if-let is just unwrapping the outlets so we can jam them into the displayData method.
+            if let thisDataSet = allReviewsDataSet, let thisTotalReviewsLabel = allReviewsTotalReviewsLabel, let thisYesPercentageLabel = allReviewsYesPercentage, let this100Bar = allReviews100Bar, let thisStrongYesPercentageLabel = allReviewsStrongYesPercentage, let thisYesTrailingConstraint = allReviewsBarTrailingConstraint, let thisYesLabelLeadingConstraint = allReviewsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = allReviewsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = allReviewsStrongLabelTrailingConstraint {
+                
                 displayData(dataSet: thisDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
                             hundredBarView: this100Bar,
                             yesTrailingConstraint: thisYesTrailingConstraint,
-                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint)
+                            yesLabelLeadingConstraint: thisYesLabelLeadingConstraint,
+                            strongYesTrailingConstraint: thisStrongYesTrailingConstraint,
+                            strongYesLabelTrailingConstraint: thisStrongYesLabelTrailingConstraint)
             }
-            
-            
+
             
             
             // pull review data for the 3 bar graph displays and display it in the view controller
@@ -188,7 +205,17 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
     }
     
-    func displayData(dataSet: ConsolidatedAskDataSet, totalReviewsLabel: UILabel, yesPercentageLabel: UILabel, strongYesPercentageLabel: UILabel, hundredBarView: UIView, yesTrailingConstraint: NSLayoutConstraint, strongYesTrailingConstraint: NSLayoutConstraint){
+    func displayData(dataSet: ConsolidatedAskDataSet,
+                     totalReviewsLabel: UILabel,
+                     yesPercentageLabel: UILabel,
+                     strongYesPercentageLabel: UILabel,
+                     hundredBarView: UIView,
+                     yesTrailingConstraint: NSLayoutConstraint,
+                     //
+                     yesLabelLeadingConstraint: NSLayoutConstraint,//
+                     strongYesTrailingConstraint: NSLayoutConstraint,
+                     //
+                     strongYesLabelTrailingConstraint: NSLayoutConstraint){//
         
         totalReviewsLabel.text = String(dataSet.numReviews)
         yesPercentageLabel.text = String(dataSet.percentYes) + "%"
@@ -202,8 +229,19 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         
         strongYesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYes, hundredBarWidth: hundredBarWidth)
         
+        strongYesLabelTrailingConstraint.constant = 0.5
+        strongYesPercentageLabel.textColor = UIColor.white
+        strongYesPercentageLabel.isHidden = false
         
-    }
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarWidth,
+                                yesTrailingConstraint: yesTrailingConstraint,
+                                yesPercentageLabel: yesPercentageLabel,
+                                yesLabelLeadingConstraint: yesLabelLeadingConstraint,
+                                strongYesTrailingConstraint: strongYesTrailingConstraint,
+                                strongYesPercentageLabel: strongYesPercentageLabel,
+                                strongYesLabelTrailingConstraint: strongYesLabelTrailingConstraint)
+        
+    } // end of displayData(..)
     
 
  
