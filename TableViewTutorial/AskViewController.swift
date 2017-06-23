@@ -298,15 +298,13 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
                 // go back to previous view by swiping right
                 self.navigationController?.popViewController(animated: true)
-            } /* /////////    uncomment this in order to regain left swipe nav capability:   ///////////
-                        ///////////////////////////////////////////////////////////////////
-                else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
-                // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
-                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askBreakdownViewController") as! AskBreakdownViewController
+            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+                // sets the graphical view controller with the storyboard ID askReviewsTableViewController to nextVC
+                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askReviewsTableViewController") as! AskReviewsTableViewController
                 // pushes askBreakdownViewController onto the nav stack
                 nextVC.container = self.container
                 self.navigationController?.pushViewController(nextVC, animated: true)
-            } */
+            }
             
             
         }
@@ -314,8 +312,8 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        let controller = segue.destination as! AskBreakdownViewController
-        // Pass the selected object to the new view controller:
+        let controller = segue.destination as! AskReviewsTableViewController
+        // Pass the current container to the AskReviewsTableViewController:
         controller.container = self.container
     }
     

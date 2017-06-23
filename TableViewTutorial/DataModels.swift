@@ -215,12 +215,26 @@ public func flipBarLabelsAsRequired(hundredBarWidth: CGFloat, yesTrailingConstra
         }
     }
     
-    
-    
 } // end of public func flipBarLabelsAsRequired(..)
 
+// convert the enum value to a text value that's useful in labels:
+public func selectionToText(selection: yesOrNo) -> String {
+    switch selection {
+    case .yes: return "YES"
+    case .no: return "NO"
+    }
+}
 
-
+public func strongToText(strong: yesOrNo?) -> String {
+    if let strong = strong { // strong is an optional property
+        switch strong {
+        case .yes: return "🔥"
+        case .no: return "❄️" // I have not yet implemented any strong No's
+        }
+    } else {
+        return ""
+    }
+}
 
 
 public struct DemoPreferences {
@@ -820,11 +834,14 @@ public struct Caption {
 
 // a "Review" is a protocol that governs AskReview's and CompareReview's
 
-protocol isAReview {
-    var userName: String {get set}
-    var reviewerDemo: demo {get set}
-    var reviewerAge: Int {get set}
+protocol isAReview {  // I am still undecided whether to attach the whole user object to a review or just the username and some simple info
+    // The big thing to decide is whether to attach the reviewing user's picture to the review because that's more memory
+    // Maybe just reference the picture from the server if the user de
+    var reviewerName: String {get} // this might need to be displayName instead
+    var reviewerDemo: demo {get}
+    var reviewerAge: Int {get}
     var comments: String {get set}
+    var reviewerInfo: PublicInfo {get set}
 }
 
 
@@ -838,11 +855,11 @@ protocol isAReview {
 public struct AskReview: isAReview {
     var selection: yesOrNo
     var strong: yesOrNo?
-    var userName: String
-    var reviewerDemo: demo
-    var reviewerAge: Int
+    var reviewerInfo: PublicInfo
+    var reviewerName: String {return reviewerInfo.displayName }
+    var reviewerDemo: demo { return reviewerInfo.orientation }
+    var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
-    
 }
 
 // a "CompareReview" is a review of an Compare from a single individual
@@ -853,14 +870,39 @@ public struct CompareReview: isAReview {
     var selection: topOrBottom
     var strongYes: Bool
     var strongNo: Bool
-    var userName: String
-    var reviewerDemo: demo
-    var reviewerAge: Int
+    var reviewerInfo: PublicInfo
+    var reviewerName: String {return reviewerInfo.displayName }
+    var reviewerDemo: demo { return reviewerInfo.orientation }
+    var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
+}
+
+public struct User {
+    var password: String
+    var emailAddress: String
+    var publicInfo: PublicInfo // this is the information that gets appended to reviews that the user makes
+    
+    /* objects that still need to be created:
+    var defaultSendSettings:
+    var targetDemo: // this could be split into low age, high age, and demo instead also
+    var displaySettings:
+    var privacySettings:
+    var friendCollection
+    //also FB login settings? Not sure how to do that..
+    */
     
 }
 
-
+public struct PublicInfo { //this will always be implemented as a part of a User
+    var userName: String
+    var displayName: String
+    var profilePicture: UIImage? 
+    var age: Int
+    var orientation: demo
+    var signUpDate: Date
+    var reviewsRated: Int
+    var reviewerScore: Double
+}
 
 
 

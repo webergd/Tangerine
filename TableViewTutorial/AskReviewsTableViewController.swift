@@ -10,21 +10,26 @@ import UIKit
 
 class AskReviewsTableViewController: UITableViewController {
 
-  
-    
     
     @IBOutlet var askReviewsTableView: UITableView!
-
+    
+    //var containers: [Container] = questionCollection // this is an array that will hold Asks and Compares
+    
+    var currentReviews = [AskReview]()
+    
+    //var container: Container // I still need to double check that this line doesn't reset container to nil after the previous VC sets it to a real value
+    // (if it does, the best coa is probably to move this line to DataModels and make it public.
     
     
     
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    var container: Container? {
+        didSet {
+            // Update the view.
+            self.viewDidLoad()
+        }
     }
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -60,40 +65,33 @@ class AskReviewsTableViewController: UITableViewController {
     
     //var asks = [Ask]()
     //var compares = [Compare]()
-    var containers: [Container] = questionCollection // this is an array that will hold Asks and Compares
-    var sortedContainers = [Container]()
-    
-    enum Shoes: String {
-        case redReeboks
-        case whiteConverse
-        case violetVans
-        case brownShiny
-        case brownTooled
-    }
-    
-    enum Jeans: String {
-        case carmenJeansLight
-        case carmenJeansDark
-    }
 
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+    
+        
+        // I also need something that sorts the reviews by who they are from
+        if let thisContainer = container {
+        currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
+        } else {
+            print("container was nil")
+        }
+        
+        
         //load the sample data
-        sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        //sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
         
-        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskTableViewController.userSwiped))
-        askTableView.addGestureRecognizer(swipeViewGesture)
-        
-        
-        //print("Questions: \(questions)")
-        print("SortedContainers: \(sortedContainers)")
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskReviewsTableViewController.userSwiped))
+        askReviewsTableView.addGestureRecognizer(swipeViewGesture)
+
         
         
         // Uncomment the following line to preserve selection between presentations
@@ -106,41 +104,29 @@ class AskReviewsTableViewController: UITableViewController {
     
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
     override func viewDidAppear(_ animated: Bool) {
-        // MARK: There is an issue here with
-        // the way that the table is reloading after we introduce
-        // a cell from an ask that was made by the CameraViewController
-        // It may have something to do with the way that we are
-        // loading up the questions array (local) from the main array (public)
-        // ###################################################
         
-        // This refreshes the time remaining labels in the cells every time we come back to the main tableView
+        // I will only need this if I decide to add a timeCreated stamp to each review and then sort by it. As of now, the 
+        //  fact that the reviews should already be roughly in order since they are naturally appended to the ReviewCollection
+        //  chronologically as they are created should be good enough for my purposes.
+        //  This method is pasted from AskTableViewController. Nothing in it has been modified yet.
         
+        
+        // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
         
         var index = 0
-        for container in sortedContainers {
+        for _ in currentReviews {
             let indexPath = IndexPath(row: index, section: 0)
-            if container.containerType == .ask {
+
                 // cellForRowAtIndexPath returns an optional cell so we use 'if let' and then cast it as an optional ask cell
                 // one of the times it returns nil is when the cell isn't visible
-                if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {
-                    let ask = sortedContainers[indexPath.row].question as! Ask
-                    let timeRemaining = calcTimeRemaining(ask.timePosted)
-                    cell.timeRemainingLabel.text = "\(timeRemaining)"
-                }
-            } else if container.containerType == .compare {
-                if let cell = tableView.cellForRow(at: indexPath) as! CompareTableViewCell? {
-                    let compare = sortedContainers[indexPath.row].question as! Compare
-                    let timeRemaining = calcTimeRemaining(compare.timePosted)
-                    cell.timeRemainingLabel.text = "\(timeRemaining)"
-                }
-            }
+            
+            tableView.cellForRow(at: indexPath)
+
+      
             index += 1
-        }
-        
-        
+        } 
         
     }
-    
     
     // MARK: - Table view data source
     
@@ -151,89 +137,82 @@ class AskReviewsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return sortedContainers.count
+        return currentReviews.count
     }
     
     
     //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        // here we build a single ask cell:
-        if sortedContainers[indexPath.row].containerType == .ask {
-            
-            let cellIdentifier: String = "AskTableViewCell"
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskTableViewCell
-            let ask = sortedContainers[indexPath.row].question as! Ask
-            print("indexPath.row= \(indexPath.row)")
-            cell.titleLabel.text = ask.askTitle
-            print("Cell title: \(cell.titleLabel.text)")
-            
-            
-            /*
-             if let rowImage = cell.photoImageView.image {
-             print("Photo orientation is up? (in the row): \(rowImage.imageOrientation == UIImageOrientation.up)")
-             } else {
-             print("row image was nil - unable to determine orientation")
-             }
-             */
-            
-            // MARK: need to send value to the numVotesLabel
-            cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
-            let timeRemaining = calcTimeRemaining(ask.timePosted)
-            cell.timeRemainingLabel.text = "\(timeRemaining)"
-            if ask.askRating > -1 {
-                cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
-            } else {
-                cell.ratingLabel.text = "?"
-            }
-            cell.photoImageView.image = ask.askPhoto
-            
-            return cell
-            
-            // here we build a dual compare cell:
-        } else  if sortedContainers[indexPath.row].containerType == .compare {
-            
-            let cellIdentifier: String = "CompareTableViewCell"
-            let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareTableViewCell
-            let compare = sortedContainers[indexPath.row].question as! Compare
-            
-            cell.image1.image = compare.comparePhoto1
-            cell.image2.image = compare.comparePhoto2
-            cell.title1Label.text = compare.compareTitle1
-            cell.title2Label.text = compare.compareTitle2
-            
-            //need a method to change score label to thousands if too big (eg 45,700 to 45.7K)
-            //this method can also be used on the number of reviews the user has given
-            cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
-            //calculations need to be done to get time REMAINING vice time posted:
-            let timeRemaining = calcTimeRemaining(compare.timePosted)
-            cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
-            
-            //set up the arrow image to point the right way:
-            switch compare.winner {
-            case CompareWinner.photo1Won.rawValue:
-                cell.arrowImage.image = UIImage(named: "leftArrow")
-                cell.winnerOutline1.isHidden = false
-                cell.winnerOutline2.isHidden = true
-            case CompareWinner.photo2Won.rawValue:
-                cell.arrowImage.image = UIImage(named: "rightArrow")
-                cell.winnerOutline1.isHidden = true
-                cell.winnerOutline2.isHidden = false
-            case CompareWinner.itsATie.rawValue:
-                cell.arrowImage.image = UIImage(named: "shrug")
-                cell.winnerOutline1.isHidden = true // should I make them both false?
-                cell.winnerOutline2.isHidden = true // this might be too much orange shit everywhere
-            default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
-                
-            }
-            
-            return cell
-        } else {
-            //should there be error handling in here? This could be much prettier I think..
+        print("cellforRowAt indexPath called")
+        
+        if let thisContainer = container {
+            currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
+        }  else {
             let cell: UITableViewCell? = nil
             return cell!
         }
+            // here we build a single ask cell:
+            
+            
+            /////////////////////////////////////
+            /// There is some issue here      ///
+            /// that is throwing an exception ///
+            /// that seems to imply that the  ///
+            /// prototype cell is not hooked  ///
+            /// up correctly                  //
+            /////////////////////////////////////
+            
+            
+            /* Here is is:
+            'NSInternalInconsistencyException', reason: 'unable to dequeue a cell with identifier AskReviewsTableViewCell - must register a nib or a class for the identifier or connect a prototype cell in a storyboard'
+            */
+            
+
+        let cellIdentifier: String = "AskReviewsTableViewCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskReviewsTableViewCell
+        let review = currentReviews[indexPath.row]
+        // unwrap reviewing user's profile picture (it's optional)
+        if let thisImage = review.reviewerInfo.profilePicture {
+                cell.reviewerImageView.image = thisImage
+        } else {
+            cell.reviewerImageView.image = #imageLiteral(resourceName: "generic_user")
+        }
+        cell.reviewerNameLabel.text = review.reviewerName
+        cell.reviewerAgeLabel.text = String(review.reviewerAge)
+        
+        cell.voteLabel.text = selectionToText(selection: review.selection)
+        
+        /* //replaced by the above line
+        switch review.selection {
+        case .yes: cell.voteLabel.text = "YES"
+        case .no: cell.voteLabel.text = "NO"
+        }
+        */
+
+        cell.strongExistsLabel.text = strongToText(strong: review.strong)
+        
+        /* //replaced by the above line
+        if let strong = review.strong { // strong is an optional property
+            switch strong {
+            case .yes: cell.strongExistsLabel.text = "🔥"
+            case .no: cell.strongExistsLabel.text = "❄️"
+            }
+        } else {
+            cell.strongExistsLabel.text = ""
+        }
+        */
+        
+        switch review.comments {
+        case "": cell.commentExistsLabel.text = ""
+        default: cell.commentExistsLabel.text = "📋"
+        }
+            
+        return cell
+
+
     }
+    
     
     // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
     //func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
@@ -300,8 +279,13 @@ class AskReviewsTableViewController: UITableViewController {
         
         print("prepareForSegue")
         
+        
+        // Pass the specific review's info, along with the required info from the container's ask
+        
+        /////// Uncomment this: //////////
+        /*
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            let passedContainer = sortedContainers[indexPath.row]
+            let passedContainer = currentReviews[indexPath.row]
             if passedContainer.containerType == .ask {
                 let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
@@ -313,6 +297,7 @@ class AskReviewsTableViewController: UITableViewController {
             }
             
         }
+        */
         
         //}
         

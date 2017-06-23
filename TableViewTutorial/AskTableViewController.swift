@@ -15,11 +15,15 @@ class AskTableViewController: UITableViewController {
     
     @IBOutlet var askTableView: UITableView!
 
-    
-    
+    // this is just for the dummy reviewers
+    var usersArray: [User] = []
     
     //var asks = [Ask]()
     //var compares = [Compare]()
+    
+    // In the actual implementation, the variable 'containers' is going to need to be pulled from the server
+    // In this implementation I am just loading it with dummy reviews
+    
     var containers: [Container] = questionCollection // this is an array that will hold Asks and Compares
     var sortedContainers = [Container]()
     
@@ -148,26 +152,67 @@ class AskTableViewController: UITableViewController {
         
     }
     
+    
+    func loadSampleUsers(){ // These Users are only used for reviews at this point, but I can probably use them as sample friends down the road
+        let user1: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "guido", displayName: "Guido", profilePicture: nil, age: 37, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 8.8))
+        let user2: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "beast", displayName: "Beast", profilePicture: nil, age: 32, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 6.5))
+        let user3: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "uncleDanny", displayName: "Uncle Danny", profilePicture: nil, age: 69, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.0))
+        let user4: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "melissa", displayName: "Melissa", profilePicture: nil, age: 32, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 8.1))
+        let user5: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "zeenat", displayName: "Zeenat", profilePicture: nil, age: 29, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.4))
+        let user6: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "morgan", displayName: "Morgan", profilePicture: nil, age: 26, orientation: .gayWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 9.9))
+        let user7: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "ian", displayName: "Ian", profilePicture: nil, age: 21, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 5.5))
+        let user8: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "countryBear", displayName: "Country Bear", profilePicture: nil, age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 7.0))
+        let user9: User = User(password: "123", emailAddress: "yut@yut.com",
+                                   publicInfo: PublicInfo(userName: "bob", displayName: "Bob", profilePicture: nil, age: 23, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.1))
+        
+        // I put the reviewers in an array to avoid having to explicitly declare each user at the class level.
+        // This way I just declared an empty (but not nil) array at the class level and then add to it within this method.
+        usersArray.append(user1)
+        usersArray.append(user2)
+        usersArray.append(user3)
+        usersArray.append(user4)
+        usersArray.append(user5)
+        usersArray.append(user6)
+        usersArray.append(user7)
+        usersArray.append(user8)
+        usersArray.append(user9)
+
+    }
+    
+    
+    
+    
+    
     // requires loadSampleAsks() to be called first in order to work.
     func loadSampleAskReviews() {
-
-        let askReview1 = AskReview(selection: .no, strong: nil, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
         
-        let askReview2 = AskReview(selection: .no, strong: nil, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        loadSampleUsers() // this ensures that the reviewersArray values are not nil
         
-        let askReview3 = AskReview(selection: .no, strong: nil, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Goooooooo")
+        let askReview1 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly")
         
-        let askReview4 = AskReview(selection: .no, strong: nil, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        let askReview2 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot")
         
-        let askReview5 = AskReview(selection: .no, strong: nil, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
+        let askReview3 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo")
         
-        let askReview6 = AskReview(selection: .no, strong: nil, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        let askReview4 = AskReview(selection: .no, strong: .yes, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML")
         
-        let askReview7 = AskReview(selection: .no, strong: nil, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        let askReview5 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice")
         
-        let askReview8 = AskReview(selection: .yes, strong: nil, userName: "Country Bear", reviewerDemo: .straightMan, reviewerAge: 33, comments: "You suck at preflighting")
+        let askReview6 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best")
         
-        let askReview9 = AskReview(selection: .yes, strong: .yes, userName: "Bob", reviewerDemo: .gayMan, reviewerAge: 23, comments: "My name is Bob?")
+        let askReview7 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?")
+        
+        let askReview8 = AskReview(selection: .yes, strong: nil, reviewerInfo: usersArray[7].publicInfo, comments: "You suck at preflighting")
+        
+        let askReview9 = AskReview(selection: .yes, strong: .yes, reviewerInfo: usersArray[8].publicInfo, comments: "My name is Bob?")
         
         // this loop adds all the reviews to each ask container since 0 through 2 are Asks 
         //  we only know this because we loaded 0 through 2 as asks
@@ -189,19 +234,19 @@ class AskTableViewController: UITableViewController {
     // requires loadSampleCompares() to be called first in order to work.
     
     func loadSampleCompareReviews() {
-        let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, userName: "Guido", reviewerDemo: .straightMan, reviewerAge: 37, comments: "raising eyebrows rapidly")
+        let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly")
         
-        let compareReview2 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Beast", reviewerDemo: .straightMan, reviewerAge: 32, comments: "I can dream a hell of a lot")
+        let compareReview2 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot")
         
-        let compareReview3 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Uncle Danny", reviewerDemo: .straightMan, reviewerAge: 69, comments: "Gooooooo")
+        let compareReview3 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[2].publicInfo, comments: "Gooooooo")
         
-        let compareReview4 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Melissa", reviewerDemo: .straightWoman, reviewerAge: 32, comments: "Go team WML")
+        let compareReview4 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML")
         
-        let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Zeenat", reviewerDemo: .straightWoman, reviewerAge: 29, comments: "I like beet juice")
+        let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice")
         
-        let compareReview6 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Morgan", reviewerDemo: .gayWoman, reviewerAge: 26, comments: "Oregon is the best")
+        let compareReview6 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best")
         
-        let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, userName: "Ian", reviewerDemo: .gayMan, reviewerAge: 21, comments: "Wanna act something out silently?")
+        let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?")
         
         // this loop adds all the reviews to each compare container since 3 through 4 are Compares
         for x in 3...4  {
@@ -256,9 +301,10 @@ class AskTableViewController: UITableViewController {
         // loading up the questions array (local) from the main array (public)
         // ###################################################
         
-        // This refreshes the time remaining labels in the cells every time we come back to the main tableView
+        // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
         
-
+        
+        
         var index = 0
         for container in sortedContainers {
             let indexPath = IndexPath(row: index, section: 0)
@@ -280,7 +326,7 @@ class AskTableViewController: UITableViewController {
             index += 1
         }
         
-        
+ 
 
     }
 
@@ -452,11 +498,11 @@ class AskTableViewController: UITableViewController {
             if passedContainer.containerType == .ask {
                 let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
-                controller.container = passedContainer as! Container // may not need the force casting
+                controller.container = passedContainer
             } else if passedContainer.containerType == .compare {
                 let controller = segue.destination as! CompareViewController
                 // Pass the selected object to the new view controller:
-                controller.container = passedContainer as! Container
+                controller.container = passedContainer 
             }
 
             }
@@ -476,7 +522,7 @@ class AskTableViewController: UITableViewController {
         //} */   //extranous bs
    
    
-}
+    }
 }
  
 

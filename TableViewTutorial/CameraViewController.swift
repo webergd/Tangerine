@@ -802,7 +802,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     // this is just here for testing purposes right now (to see where user tapped for blur)
     // And it doesn't really even work. Can be deleted.
     func drawCircle(_ circleCenter: CGPoint) {
-        let circlePath = UIBezierPath(arcCenter: circleCenter, radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(M_PI * 2), clockwise: true)
+        let circlePath = UIBezierPath(arcCenter: circleCenter, radius: CGFloat(20), startAngle: CGFloat(0), endAngle:CGFloat(Double.pi * 2), clockwise: true)
         
         let shapeLayer = CAShapeLayer()
         shapeLayer.path = circlePath.cgPath
@@ -1486,19 +1486,19 @@ else that means we're in case 3 or 4
             || img.imageOrientation == UIImageOrientation.downMirrored) {
             
             transform = transform.translatedBy(x: img.size.width, y: img.size.height)
-            transform = transform.rotated(by: CGFloat(M_PI)) //seems to be the number of radians we rotate the image
+            transform = transform.rotated(by: CGFloat(Double.pi)) //seems to be the number of radians we rotate the image
         }
         
         if (img.imageOrientation == UIImageOrientation.left
             || img.imageOrientation == UIImageOrientation.leftMirrored) {
             transform = transform.translatedBy(x: img.size.width, y: 0)
-            transform = transform.rotated(by: CGFloat(M_PI_2))
+            transform = transform.rotated(by: CGFloat(Double.pi / 2))
         }
         
         if (img.imageOrientation == UIImageOrientation.right
             || img.imageOrientation == UIImageOrientation.rightMirrored) {
             transform = transform.translatedBy(x: 0, y: img.size.height);
-            transform = transform.rotated(by: CGFloat(-M_PI_2));
+            transform = transform.rotated(by: CGFloat(-Double.pi / 2));
         }
         
         if (img.imageOrientation == UIImageOrientation.upMirrored

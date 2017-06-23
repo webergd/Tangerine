@@ -2188,7 +2188,7 @@
         <!--Ask Breakdown View Controller-->
         <scene sceneID="Q5M-pL-1k3">
             <objects>
-                <viewController storyboardIdentifier="askBreakdownViewController" id="aDH-yY-Zb3" userLabel="Ask Breakdown View Controller" customClass="AskBreakdownViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController storyboardIdentifier="askReviewDetailsViewController" id="aDH-yY-Zb3" userLabel="Ask Breakdown View Controller" customClass="AskReviewDetailsViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
                     <layoutGuides>
                         <viewControllerLayoutGuide type="top" id="dVv-Zs-QrZ"/>
                         <viewControllerLayoutGuide type="bottom" id="V5I-vM-RU6"/>
@@ -2211,6 +2211,24 @@
                                     </mask>
                                 </variation>
                             </imageView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Guido" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWQ-p6-EZ0" userLabel="ReviewerName">
+                                <rect key="frame" x="18" y="116" width="94" height="18"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="33" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sqy-BZ-qIe" userLabel="ReviewerName">
+                                <rect key="frame" x="120" y="28" width="36.5" height="36"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍊🍊🍊🍊(7.1)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="txX-28-0oP" userLabel="ReviewerName">
+                                <rect key="frame" x="120" y="82" width="237" height="24"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <nil key="highlightedColor"/>
+                            </label>
                             <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" preservesSuperviewLayoutMargins="YES" translatesAutoresizingMaskIntoConstraints="NO" id="p0y-UE-xGQ" userLabel="Reviewer Image">
                                 <rect key="frame" x="18" y="179" width="94" height="94"/>
                                 <constraints>
@@ -2225,14 +2243,14 @@
                                     </mask>
                                 </variation>
                             </imageView>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Guido" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="xWQ-p6-EZ0" userLabel="ReviewerName">
-                                <rect key="frame" x="18" y="116" width="94" height="18"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="YES" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V2Z-mr-Q64" userLabel="ReviewerName">
+                                <rect key="frame" x="120" y="199" width="80.5" height="54"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="45"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="33" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="sqy-BZ-qIe" userLabel="ReviewerName">
-                                <rect key="frame" x="120" y="28" width="36.5" height="36"/>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🔥" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ivn-lP-CXM" userLabel="ReviewerName">
+                                <rect key="frame" x="224" y="208" width="34" height="36"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="30"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -2243,26 +2261,8 @@
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" ambiguous="YES" text="Comments:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yov-gQ-Ql3">
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Comments:" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="yov-gQ-Ql3">
                                 <rect key="frame" x="0.0" y="315" width="375" height="24"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="20"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🔥" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="Ivn-lP-CXM" userLabel="ReviewerName">
-                                <rect key="frame" x="224.5" y="208" width="34" height="36"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="30"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="YES" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="V2Z-mr-Q64" userLabel="ReviewerName">
-                                <rect key="frame" x="120" y="199" width="80.5" height="54"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="45"/>
-                                <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                                <nil key="highlightedColor"/>
-                            </label>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="🍊🍊🍊🍊(7.1)" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="txX-28-0oP" userLabel="ReviewerName">
-                                <rect key="frame" x="120" y="82" width="237" height="24"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="20"/>
                                 <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                 <nil key="highlightedColor"/>
@@ -2278,6 +2278,7 @@
                         <constraints>
                             <constraint firstItem="97a-gF-6wC" firstAttribute="width" secondItem="Bs8-FS-Gmg" secondAttribute="width" id="4Oo-jJ-mUd"/>
                             <constraint firstItem="V5I-vM-RU6" firstAttribute="top" secondItem="wVH-Pk-9tF" secondAttribute="bottom" constant="430" id="6Tm-rc-xp6"/>
+                            <constraint firstItem="yov-gQ-Ql3" firstAttribute="width" secondItem="Bs8-FS-Gmg" secondAttribute="width" id="HtL-c9-Ui8"/>
                             <constraint firstItem="txX-28-0oP" firstAttribute="leading" secondItem="wVH-Pk-9tF" secondAttribute="trailing" constant="8" id="Ilj-ld-euG"/>
                             <constraint firstItem="sqy-BZ-qIe" firstAttribute="leading" secondItem="wVH-Pk-9tF" secondAttribute="trailing" constant="8" id="Jru-VB-BDf"/>
                             <constraint firstItem="xWQ-p6-EZ0" firstAttribute="width" secondItem="wVH-Pk-9tF" secondAttribute="width" id="Jxo-fs-BDF"/>
@@ -2292,6 +2293,7 @@
                             <constraint firstItem="wVH-Pk-9tF" firstAttribute="leading" secondItem="Bs8-FS-Gmg" secondAttribute="leadingMargin" constant="2" id="VI3-YB-ZhX"/>
                             <constraint firstItem="sqy-BZ-qIe" firstAttribute="top" secondItem="wVH-Pk-9tF" secondAttribute="top" constant="8" id="W6K-jB-mBc"/>
                             <constraint firstItem="wVH-Pk-9tF" firstAttribute="top" secondItem="dVv-Zs-QrZ" secondAttribute="bottom" id="bru-FT-AZs"/>
+                            <constraint firstItem="yov-gQ-Ql3" firstAttribute="centerX" secondItem="Bs8-FS-Gmg" secondAttribute="centerX" id="cC6-Ya-AQP"/>
                             <constraint firstItem="Ivn-lP-CXM" firstAttribute="leading" secondItem="V2Z-mr-Q64" secondAttribute="trailing" priority="999" constant="24" id="cZV-6P-uJt"/>
                             <constraint firstItem="Ivn-lP-CXM" firstAttribute="centerY" secondItem="V2Z-mr-Q64" secondAttribute="centerY" id="d3r-rs-Ojy"/>
                             <constraint firstAttribute="trailingMargin" secondItem="txX-28-0oP" secondAttribute="trailing" constant="2" id="edo-zj-tc8"/>
@@ -2316,6 +2318,19 @@
                         </variation>
                     </view>
                     <navigationItem key="navigationItem" id="4Vx-s5-oHc"/>
+                    <connections>
+                        <outlet property="askImageView" destination="p0y-UE-xGQ" id="3QQ-P6-xQR"/>
+                        <outlet property="askSelectionLabel" destination="V2Z-mr-Q64" id="jIi-mZ-PHC"/>
+                        <outlet property="askTitleLabel" destination="S1f-uo-FYj" id="c12-EX-jUT"/>
+                        <outlet property="commentsBodyLabel" destination="97a-gF-6wC" id="7L3-Cs-jfC"/>
+                        <outlet property="commentsTitleLabel" destination="yov-gQ-Ql3" id="ZAI-PD-XJm"/>
+                        <outlet property="reviewDetailsView" destination="Bs8-FS-Gmg" id="WbV-3J-yE5"/>
+                        <outlet property="reviewerAgeLabel" destination="sqy-BZ-qIe" id="kiD-eX-mZY"/>
+                        <outlet property="reviewerImageView" destination="wVH-Pk-9tF" id="dvG-DN-SOb"/>
+                        <outlet property="reviewerNameLabel" destination="xWQ-p6-EZ0" id="60W-QU-ZpM"/>
+                        <outlet property="reviewerRatingLabel" destination="txX-28-0oP" id="WLU-u0-Fb4"/>
+                        <outlet property="strongLabel" destination="Ivn-lP-CXM" id="Uvi-Q1-mTi"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eN2-L5-IBG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
@@ -2359,13 +2374,13 @@
         <!--Ask Reviews Table View Controller-->
         <scene sceneID="Bd7-Lj-Vwn">
             <objects>
-                <tableViewController automaticallyAdjustsScrollViewInsets="NO" id="Q9G-dQ-NhF" customClass="AskReviewsTableViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
+                <tableViewController storyboardIdentifier="askReviewsTableViewController" automaticallyAdjustsScrollViewInsets="NO" id="Q9G-dQ-NhF" customClass="AskReviewsTableViewController" customModule="TableViewTutorial" customModuleProvider="target" sceneMemberID="viewController">
                     <tableView key="view" clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="90" sectionHeaderHeight="28" sectionFooterHeight="28" id="gLt-kH-15A">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <prototypes>
-                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AskTableViewCell" rowHeight="100" id="SXz-Pj-STX">
+                            <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="AskReviewsTableViewCell" rowHeight="100" id="SXz-Pj-STX" customClass="AskReviewsTableViewCell" customModule="TableViewTutorial" customModuleProvider="target">
                                 <rect key="frame" x="0.0" y="28" width="375" height="100"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="SXz-Pj-STX" id="ckI-RQ-5v8">
@@ -2500,6 +2515,14 @@
                                         </mask>
                                     </variation>
                                 </tableViewCellContentView>
+                                <connections>
+                                    <outlet property="commentExistsLabel" destination="qRc-OA-Zqf" id="tZw-PI-cat"/>
+                                    <outlet property="reviewerAgeLabel" destination="uS1-Cg-4rh" id="ube-Gy-V3K"/>
+                                    <outlet property="reviewerImageView" destination="z98-uy-3gt" id="8gh-VV-j8H"/>
+                                    <outlet property="reviewerNameLabel" destination="f8I-i5-mfe" id="Awi-Op-AZi"/>
+                                    <outlet property="strongExistsLabel" destination="Fa3-Bt-gRv" id="d9a-CA-7JM"/>
+                                    <outlet property="voteLabel" destination="hLz-iI-lLA" id="nWa-Zu-T8e"/>
+                                </connections>
                             </tableViewCell>
                         </prototypes>
                         <connections>
