@@ -173,11 +173,14 @@ class AskReviewsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskReviewsTableViewCell
         let review = currentReviews[indexPath.row]
         // unwrap reviewing user's profile picture (it's optional)
+        cell.reviewerImageView.image = returnProfilePic(image: review.reviewerInfo.profilePicture)
+        /*
         if let thisImage = review.reviewerInfo.profilePicture {
                 cell.reviewerImageView.image = thisImage
         } else {
             cell.reviewerImageView.image = #imageLiteral(resourceName: "generic_user")
         }
+        */
         cell.reviewerNameLabel.text = review.reviewerName
         cell.reviewerAgeLabel.text = String(review.reviewerAge)
         
@@ -278,26 +281,25 @@ class AskReviewsTableViewController: UITableViewController {
         //if segue.identifier == "showAsk" {
         
         print("prepareForSegue")
-        
-        
+
         // Pass the specific review's info, along with the required info from the container's ask
-        
-        /////// Uncomment this: //////////
-        /*
+
         if let indexPath = self.tableView.indexPathForSelectedRow {
-            let passedContainer = currentReviews[indexPath.row]
-            if passedContainer.containerType == .ask {
-                let controller = segue.destination as! AskViewController
-                // Pass the selected object to the new view controller:
-                controller.container = passedContainer as! Container // may not need the force casting
-            } else if passedContainer.containerType == .compare {
-                let controller = segue.destination as! CompareViewController
-                // Pass the selected object to the new view controller:
-                controller.container = passedContainer as! Container
+            
+            let passedReview = currentReviews[indexPath.row]
+            
+            let controller = segue.destination as! AskReviewDetailsViewController
+            // Pass the selected review to the next view controller:
+            controller.review = passedReview
+            
+            // for some reason it made us unwrap the container prior to using it:
+            if let passedAsk = container?.question as! Ask? {
+                controller.ask = passedAsk
             }
             
+
         }
-        */
+        
         
         //}
         

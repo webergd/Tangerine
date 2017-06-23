@@ -2334,7 +2334,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="eN2-L5-IBG" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="3320.8000000000002" y="372.86356821589209"/>
+            <point key="canvasLocation" x="3382" y="373"/>
         </scene>
         <!--Navigation Controller-->
         <scene sceneID="K63-M0-okr">
@@ -2522,6 +2522,7 @@
                                     <outlet property="reviewerNameLabel" destination="f8I-i5-mfe" id="Awi-Op-AZi"/>
                                     <outlet property="strongExistsLabel" destination="Fa3-Bt-gRv" id="d9a-CA-7JM"/>
                                     <outlet property="voteLabel" destination="hLz-iI-lLA" id="nWa-Zu-T8e"/>
+                                    <segue destination="aDH-yY-Zb3" kind="show" id="Odh-cd-KCA"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>

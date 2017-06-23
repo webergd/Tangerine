@@ -32,33 +32,32 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        self.configureView()
+        self.configureReviewItems()
+        self.configureAskItems()
         let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskReviewDetailsViewController.userSwiped))
         reviewDetailsView.addGestureRecognizer(swipeViewGesture)
     }
     
-    // code still needed in AskReviewsTableViewController to pass these 3 properties upon segue
+    // code still needed in AskReviewsTableViewController to pass these 2 properties upon segue
     
+    
+    // Sending over 1 review and the ask prevents us from having to send all reviews
+    //  as would be the case if we sent the whole container.
     var review: AskReview? {
         didSet {
             // Update the view.
-            self.configureView()
+            self.configureReviewItems()
         }
     }
     
-    var askPhoto: UIImage? {
+    var ask: Ask? {
         didSet{
-            self.configureAskImageView()
+            self.configureAskItems()
         }
     }
     
-    var askTitle: String? {
-        didSet{
-            self.configureTitleLabel()
-        }
-    }
     
-    func configureView() {
+    func configureReviewItems() {
         print("configuring ask view")
         
         // unwraps the ask that the tableView sent over:
@@ -72,49 +71,36 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
                 let strongLabel = self.strongLabel,
                 let commentsBodyLabel = self.commentsBodyLabel {
                 
-                reviewerImage.image = thisReview.reviewerInfo.profilePicture
+                reviewerImage.image = returnProfilePic(image: thisReview.reviewerInfo.profilePicture)
                 nameLabel.text = thisReview.reviewerName
                 ageLabel.text = String(thisReview.reviewerAge)
                 ratingLabel.text = String(round(thisReview.reviewerInfo.reviewerScore)) // this needs to be changed to show a tangerine for each 1-5 point
                 selectionLabel.text = selectionToText(selection: thisReview.selection)
                 strongLabel.text = strongToText(strong: thisReview.strong)
                 commentsBodyLabel.text = thisReview.comments // this will probably need additional formatting so it looks right
-                
 
             }
 
-            if let thisLabel = self.reviewerNameLabel {
-                thisLabel.text = thisReview.reviewerName
-            }
 
-            
-        } else {
-            print("Looks like ask is nil")
+        } else { // I probably don't need this else statement
+            print("Looks like review is nil")
         }
         
     }
     
-    func configureAskImageView() {
-        if let thisImageView = self.reviewerImageView,
-            let thisAskPhoto = self.askPhoto{
+    func configureAskItems() {
+        if let thisImageView = self.askImageView,
+            let thisLabel = self.askTitleLabel,
+            let thisAsk = self.ask {
             
-            thisImageView.image = thisAskPhoto
-        }
-    }
-    
-    func configureTitleLabel() {
-        if let thisLabel = self.askTitleLabel,
-            let thisAskTitle = self.askTitle {
-            
-            thisLabel.text = thisAskTitle
+            thisImageView.image = thisAsk.askPhoto
+            thisLabel.text = thisAsk.askTitle
         }
     }
     
     
     
-    
-    
-    
+
     // MARK: Need to store values to IBOutlet Labels!
     
     

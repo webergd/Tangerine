@@ -236,6 +236,15 @@ public func strongToText(strong: yesOrNo?) -> String {
     }
 }
 
+public func returnProfilePic(image: UIImage?) -> UIImage {
+    // unwrap reviewing user's profile picture (it's optional)
+    if let thisImage = image {
+        return thisImage
+    } else {
+        return #imageLiteral(resourceName: "generic_user")
+    }
+}
+
 
 public struct DemoPreferences {
     var minAge: Int
