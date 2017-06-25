@@ -44,6 +44,12 @@ public enum demo: String {
     case gayMan
 }
 
+public enum userGroup: String {
+    case targetDemo
+    case friends
+    case allUsers
+}
+
 // MARK: MAIN VARIABLES
 public var currentImage: UIImage = UIImage(named: "tangerineImage2")!
 public var currentTitle: String = "" //realistically this should probably be an optional
@@ -225,6 +231,21 @@ public func selectionToText(selection: yesOrNo) -> String {
     }
 }
 
+public func selectionImage(selection: topOrBottom, compare: Compare) -> UIImage {
+    switch selection {
+    case .top: return compare.comparePhoto1
+    case .bottom: return compare.comparePhoto2
+    }
+}
+
+public func selectionTitle(selection: topOrBottom, compare: Compare) -> String {
+    switch selection {
+    case .top: return compare.compareTitle1
+    case .bottom: return compare.compareTitle2
+    }
+}
+
+// This method is for Asks
 public func strongToText(strong: yesOrNo?) -> String {
     if let strong = strong { // strong is an optional property
         switch strong {
@@ -236,6 +257,60 @@ public func strongToText(strong: yesOrNo?) -> String {
     }
 }
 
+// This method is for compares
+public func strongToText(strongYes: Bool, strongNo: Bool) -> String {
+    var stringToReturn: String = ""
+    if strongYes == true {
+        stringToReturn = stringToReturn + "🔥"
+    }
+    if strongNo == true {
+        stringToReturn = stringToReturn + "❄️"
+    }
+    
+    // It's possible that the label could have both emojis
+    // This would be a situation where the user loved the one they voted for
+    //  and really hated the one they didn't.
+    // I'm not sure if I'll ever even use the strong no.
+    // It is currently unimplemented.
+    
+    return stringToReturn
+}
+
+public func reviewerRatingToTangerines(rating: Double) -> String {
+    switch rating {
+    case 0..<0.5: return "" + String(format:"%.1f", rating)
+    case 0.5..<1.5: return "🍊" + String(format:"%.1f", rating)
+    case 1.5..<2.5: return "🍊🍊" + String(format:"%.1f", rating)
+    case 2.5..<3.5: return "🍊🍊🍊" + String(format:"%.1f", rating)
+    case 3.5..<4.5: return "🍊🍊🍊🍊" + String(format:"%.1f", rating)
+    case 4.5..<5.1: return "🍊🍊🍊🍊🍊" + String(format:"%.1f", rating)
+    default: return String(format:"%.1f", rating)
+    }
+}
+
+
+public func demoToText(userDemo: demo) -> String {
+    switch userDemo {
+    case .straightWoman: return "Straight Woman"
+    case .straightMan: return "Straight Man"
+    case .gayWoman: return "Gay Woman"
+    case .gayMan: return "Gay Man"
+    }
+}
+
+
+
+// an awesome website for color conversion is: http://uicolor.xyz/#/hex-to-ui
+public func demoSpecificColor(userDemo: demo) -> UIColor {
+    switch userDemo {
+    case .straightWoman: return UIColor(red:0.92, green:0.63, blue:0.89, alpha:1.0) //pink
+    case .straightMan: return UIColor(red:0.48, green:0.65, blue:0.93, alpha:1.0) //blue
+    case .gayWoman: return UIColor(red:0.71, green:0.36, blue:0.89, alpha:1.0) //purple
+    case .gayMan: return UIColor(red:0.48, green:0.93, blue:0.55, alpha:1.0) //green
+    }
+}
+
+
 public func returnProfilePic(image: UIImage?) -> UIImage {
     // unwrap reviewing user's profile picture (it's optional)
     if let thisImage = image {
@@ -245,7 +320,7 @@ public func returnProfilePic(image: UIImage?) -> UIImage {
     }
 }
 
-
+/*
 public struct DemoPreferences {
     var minAge: Int
     var maxAge: Int
@@ -254,9 +329,10 @@ public struct DemoPreferences {
     var gayWomenPreferred: Bool
     var gayMenPreferred: Bool
 }
+*/
 
 // These settings will be toggled by the user, eventually
-public let userDemoPreferences = DemoPreferences(minAge: 0, maxAge: 100, straightWomenPreferred: true, straightMenPreferred: false, gayWomenPreferred: false, gayMenPreferred: true)
+public let myTargetDemo = TargetDemo(minAge: 25, maxAge: 38, straightWomenPreferred: true, straightMenPreferred: false, gayWomenPreferred: false, gayMenPreferred: true)
 
 
 public protocol Question {
@@ -295,6 +371,68 @@ public class ReviewCollection {
     // Can I pull all of these on just one trip through the loop?
     // Can I create a method that will pull this info from the RC within specific constraints?
     
+
+    
+    func isTargetDemo(index: Int, targetDemo: TargetDemo) -> Bool {
+        let thisReview = reviews[index]
+        
+        if thisReview.reviewerAge <= targetDemo.minAge || thisReview.reviewerAge >= targetDemo.maxAge {
+            print("too old or young.")
+            return false // skips the rest of the code in this method
+        }
+
+        // This switch statement checks which demo the reviewer was, and if we are
+        //  trying to pull from that demo, it returns true (since we already know they 
+        //  are in the appropriate age range)
+
+        switch thisReview.reviewerDemo {
+        case .straightWoman:
+            print("found a straight woman")
+            if targetDemo.straightWomenPreferred {return true}
+        case .straightMan:
+            if targetDemo.straightMenPreferred {return true}
+        case .gayWoman:
+            if targetDemo.gayWomenPreferred {return true}
+        case .gayMan:
+            if targetDemo.gayMenPreferred {return true}
+        }
+        // the reviewer was in the age range but was not in any of my preferred demo's
+        return false
+    }
+    
+    func isFriend(index: Int, targetDemo: TargetDemo) -> Bool {
+        //let thisReview = reviews[index]  //UNCOMMENT WHEN UPDATING THIS METHOD
+        // This method will require updating once I start linking users together through friendship
+        // As of now, all users are friends because this always returns true.
+        return true
+    }
+    
+    func filterReviews(by sortType: userGroup) -> [isAReview] {
+        var filteredReviewsArray: [isAReview] = []
+        var index: Int = 0
+        switch sortType {
+        case .allUsers: return self.reviews
+        case .targetDemo:
+            print("filtering for target demo")
+            for review in reviews {
+                if self.isTargetDemo(index: index, targetDemo: myTargetDemo) {
+                    print("appending a \(String(describing: review.reviewerDemo)) to the array")
+                    filteredReviewsArray.append(review)
+                }
+                index += 1
+            }
+        case .friends:
+            print("filtering for friends")
+            for review in reviews {
+                if self.isFriend(index: index, targetDemo: myTargetDemo) {
+                    filteredReviewsArray.append(review)
+                }
+                index += 1
+            }
+        }
+        
+        return filteredReviewsArray
+    }
     // Returns aggregated data within the age and demographic specified in the arguments:
     func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedAskDataSet {
         
@@ -324,6 +462,8 @@ public class ReviewCollection {
         
         reviewLoop: for r in reviews {
             let review = r as! AskReview //this way we can access all properties of an AskReview
+            
+            // the isTargetDemo method could be incorporated into this method to shorten/sugar it
             
             // This guard statement skips this iteration if review is outside the selected age
             guard review.reviewerAge >= lowestAge || review.reviewerAge <= highestAge else {
@@ -660,6 +800,9 @@ open class Compare: Question {
         return calcTimeRemaining(timePosted)
     }
     
+    
+    // I don't use these next two computed properties for anything anymore:
+    
     var compareVotes1: Int {
         let sW = breakdown.straightWomen as! CompareDemo
         let sM = breakdown.straightMen as! CompareDemo
@@ -681,6 +824,9 @@ open class Compare: Question {
     // Ex: "photo1Won" means the photo on the left/top has more votes.
     // This is used to determine which way the arrow points in the
     // user reviews section and which photo lights up in the Compare1 view.
+    
+    
+    // This needs to move to the ReviewCollection class
     var winner: String {
         if self.compareVotes1 > self.compareVotes2 {
             return CompareWinner.photo1Won.rawValue
@@ -696,6 +842,7 @@ open class Compare: Question {
         }
     }
     
+    // If we even use this, it needs to move to the ReviewCollection class
     open var numVotes: Int {
         let numSW = breakdown.straightWomen as! CompareDemo
         let numSM = breakdown.straightMen as! CompareDemo
@@ -760,6 +907,7 @@ class CompareDemo: hasOrientation {
     }
 }
 
+// This is currently not being used for anything:
 struct Breakdown {
     
     // All breakdown really does for us is give us the average age and number of votes
@@ -890,16 +1038,25 @@ public struct User {
     var password: String
     var emailAddress: String
     var publicInfo: PublicInfo // this is the information that gets appended to reviews that the user makes
+    var targetDemo: TargetDemo
     
     /* objects that still need to be created:
     var defaultSendSettings:
-    var targetDemo: // this could be split into low age, high age, and demo instead also
+
     var displaySettings:
     var privacySettings:
     var friendCollection
     //also FB login settings? Not sure how to do that..
-    */
-    
+    */ 
+}
+
+public struct TargetDemo {
+    var minAge: Int
+    var maxAge: Int
+    var straightWomenPreferred: Bool
+    var straightMenPreferred: Bool
+    var gayWomenPreferred: Bool
+    var gayMenPreferred: Bool
 }
 
 public struct PublicInfo { //this will always be implemented as a part of a User

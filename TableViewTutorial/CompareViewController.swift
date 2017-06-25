@@ -80,7 +80,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
             //  the user's preferred display type, be it target demo or friend, or maybe even all.
             // For now, we will use target demo.
             // It should be just a simple if statement or two to set values that go into this.
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
 
     
     
@@ -216,6 +216,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
     }
  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        print("prepare for segue called in CompareViewController")
         let controller = segue.destination as! CompareBreakdownViewController
         // Pass the selected object to the new view controller:
         controller.container = self.container

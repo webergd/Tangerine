@@ -56,10 +56,14 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     @IBOutlet weak var allReviewsYesLabelLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var allReviewsStrongLabelTrailingConstraint: NSLayoutConstraint!
  
- 
-
-    
     @IBOutlet weak var reviewsLabelWidthConstraint: UILabel!
+    
+    // OUTLETS TO USE LABELS AS BUTTONS
+    @IBOutlet weak var targetDemoLabel: UILabel!
+    @IBOutlet weak var friendsLabel: UILabel!
+    @IBOutlet weak var allReviewsLabel: UILabel!
+    // For these to work, user interaction must be enabled in attributes inspector
+    
     
     
     //@IBOutlet weak var detailDescriptionLabel: UILabel!
@@ -79,6 +83,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         }
     }
     
+    var sortType: userGroup = .allUsers // this will be adjusted prior to segue if user taps specific area
     
     func configureView() {
         print("configuring ask view")
@@ -126,7 +131,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             print("configuring TARGET DEMO display **********")
             
             
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
             
             
             if let thisDataSet = targetDemoDataSet, let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisYesLabelLeadingConstraint = targetDemoYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = targetDemoStrongLabelTrailingConstraint   {
@@ -246,12 +251,6 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
 
  
  
-    
-    
-    
-    
-    
-    
         
 
 
@@ -265,7 +264,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         //askView.addGestureRecognizer(swipeViewGesture)
         
         
-        
+        // Gesture Recognizers for swiping left and right
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
         swipeRight.direction = UISwipeGestureRecognizerDirection.right
         self.view.addGestureRecognizer(swipeRight)
@@ -274,8 +273,16 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         swipeLeft.direction = UISwipeGestureRecognizerDirection.left
         self.view.addGestureRecognizer(swipeLeft)
         
+        // Gesture recognizers for tapping sortType labels to filter reviews
+        let tdTap = UITapGestureRecognizer(target: self, action: #selector(AskViewController.userTappedTargetDemographicLabel))
+        targetDemoLabel.addGestureRecognizer(tdTap)
         
+        let friendsTap = UITapGestureRecognizer(target: self, action: #selector(AskViewController.userTappedFriendsLabel))
+        friendsLabel.addGestureRecognizer(friendsTap)
         
+        let arTap = UITapGestureRecognizer(target: self, action: #selector(AskViewController.userTappedAllReviewsLabel))
+        allReviewsLabel.addGestureRecognizer(arTap)
+  
     }
     
     // Allows the user to zoom within the scrollView that the user is manipulating at the time.
@@ -299,22 +306,55 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                 // go back to previous view by swiping right
                 self.navigationController?.popViewController(animated: true)
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
-                // sets the graphical view controller with the storyboard ID askReviewsTableViewController to nextVC
-                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askReviewsTableViewController") as! AskReviewsTableViewController
-                // pushes askBreakdownViewController onto the nav stack
-                nextVC.container = self.container
-                self.navigationController?.pushViewController(nextVC, animated: true)
+                sortType = .allUsers // on left swipe show all reviews (may want to change this to targetDemo instead)
+                segueToNextViewController()
             }
-            
-            
         }
         
+    } //end of userSwiped
+    
+    func userTappedTargetDemographicLabel(sender: UITapGestureRecognizer) {
+        print("td label tapped")
+        self.sortType = .targetDemo
+        segueToNextViewController()
     }
     
+    func userTappedFriendsLabel(sender: UITapGestureRecognizer) {
+        print("friends label tapped")
+        self.sortType = .friends
+        segueToNextViewController()
+    }
+    
+    func userTappedAllReviewsLabel(sender: UITapGestureRecognizer) {
+        print("all users label tapped")
+        self.sortType = .allUsers
+        segueToNextViewController()
+    }
+    
+    func segueToNextViewController() {
+        // sets the graphical view controller with the storyboard ID askReviewsTableViewController to nextVC
+        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "askReviewsTableViewController") as! AskReviewsTableViewController
+        
+        // sends this VC's container over to the next one
+        //print("The container to be passed has a row type of: \(container?.question.rowType)")
+        nextVC.sortType = self.sortType
+        nextVC.container = self.container
+        print("sortType being sent to next VC is: \(self.sortType)")
+        //print("The container that was passed has a row type of: \(nextVC.container?.question.rowType)")
+        // pushes askBreakdownViewController onto the nav stack
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    // This method never gets called:
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        print("prepare for segue called in AskViewController")
         let controller = segue.destination as! AskReviewsTableViewController
         // Pass the current container to the AskReviewsTableViewController:
+        print("The container to be passed has a row type of: \(String(describing: container?.question.rowType))")
         controller.container = self.container
+        controller.sortType = self.sortType // tells the tableView which reviews to display
+        
     }
     
     

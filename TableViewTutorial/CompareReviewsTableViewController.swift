@@ -1,20 +1,20 @@
 //
-//  AskReviewsTableViewController.swift
+//  CompareReviewsTableViewController.swift
 //  TableViewTutorial
 //
-//  Created by Wyatt Weber on 6/21/17.
+//  Created by Wyatt Weber on 6/23/17.
 //  Copyright © 2017 Freedom Electric. All rights reserved.
 //
 
 import UIKit
 
-class AskReviewsTableViewController: UITableViewController {
+class CompareReviewsTableViewController: UITableViewController {
 
     
-    @IBOutlet var askReviewsTableView: UITableView!
 
+    @IBOutlet var compareReviewsTableView: UITableView!
     
-    var currentReviews = [AskReview]()
+    var currentReviews = [CompareReview]()
 
     var sortType: userGroup? {
         didSet {
@@ -48,28 +48,15 @@ class AskReviewsTableViewController: UITableViewController {
     */
 
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // I also need something that sorts the reviews by who they are from
+
         if let thisContainer = self.container,
             let thisSortType = self.sortType {
             
-            print("storing the sorted arrat to currentReviews")
-            currentReviews = thisContainer.reviewCollection.filterReviews(by: thisSortType) as! [AskReview]
-            
-            
-            /*
-            if sortType == .allUsers {
-                print("sortType = allUsers")
-                currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
-            } else {
-                print("sortType is something other than allUsers")
-                print("sortType is: \(self.sortType)")
-                //method to sort by either friends or TD
-                // a function called isTargetDemo that returns a Bool would be useful
-            }
-            */
+            print("storing the sorted array to currentReviews")
+            currentReviews = thisContainer.reviewCollection.filterReviews(by: thisSortType) as! [CompareReview]
             
         } else {
             print("container was nil")
@@ -84,8 +71,8 @@ class AskReviewsTableViewController: UITableViewController {
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
         
-        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskReviewsTableViewController.userSwiped))
-        askReviewsTableView.addGestureRecognizer(swipeViewGesture)
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareReviewsTableViewController.userSwiped))
+        compareReviewsTableView.addGestureRecognizer(swipeViewGesture)
 
         
         
@@ -100,13 +87,8 @@ class AskReviewsTableViewController: UITableViewController {
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
     override func viewDidAppear(_ animated: Bool) {
         
-        // I will only need this if I decide to add a timeCreated stamp to each review and then sort by it. As of now, the 
-        //  fact that the reviews should already be roughly in order since they are naturally appended to the ReviewCollection
-        //  chronologically as they are created should be good enough for my purposes.
-        //  This method is pasted from AskTableViewController. Nothing in it has been modified yet.
-        
-        
-        // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
+        // I'm not sure if any of this code inside viewDidAppear() is necessary
+        // It seems like the cellForRow at index path stuff executes automatically
         
         var index = 0
         for _ in currentReviews {
@@ -140,41 +122,26 @@ class AskReviewsTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         print("cellforRowAt indexPath called")
-        /*
-        if let thisContainer = container {
-            currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
-        }  else {
-            let cell: UITableViewCell? = nil
-            return cell!
-        }
-        */
-            // here we build a single ask cell:
-            
-            
-            /////////////////////////////////////
-            /// There is some issue here      ///
-            /// that is throwing an exception ///
-            /// that seems to imply that the  ///
-            /// prototype cell is not hooked  ///
-            /// up correctly                  //
-            /////////////////////////////////////
-            
-            
-            /* Here is is:
-            'NSInternalInconsistencyException', reason: 'unable to dequeue a cell with identifier AskReviewsTableViewCell - must register a nib or a class for the identifier or connect a prototype cell in a storyboard'
-            */
-            
 
-        let cellIdentifier: String = "AskReviewsTableViewCell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskReviewsTableViewCell
+        let cellIdentifier: String = "CompareReviewsTableViewCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareReviewsTableViewCell
         let review = currentReviews[indexPath.row]
+        
+        // These will be different for the compare cell
+
         cell.reviewerImageView.image = returnProfilePic(image: review.reviewerInfo.profilePicture)
         cell.reviewerNameLabel.text = review.reviewerName
         cell.reviewerAgeLabel.text = String(review.reviewerAge)
-        cell.voteLabel.text = selectionToText(selection: review.selection)
-        cell.strongExistsLabel.text = strongToText(strong: review.strong)
+        
+        cell.strongExistsLabel.text = strongToText(strongYes: review.strongYes, strongNo: review.strongNo)
+        
+        if let thisContainer = container {
+            cell.selectionImageView.image = selectionImage(selection: review.selection, compare: thisContainer.question as! Compare)
+            cell.selectionTitleLabel.text = selectionTitle(selection: review.selection, compare: thisContainer.question as! Compare)
+        }
+        // sets the cell background color according to the reviewers demo
         cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: review.reviewerDemo)
-
+        
         switch review.comments {
         case "": cell.commentExistsLabel.text = ""
         default: cell.commentExistsLabel.text = "📋"
@@ -184,18 +151,7 @@ class AskReviewsTableViewController: UITableViewController {
 
 
     }
-    
-    
-    // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
-    //func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    //print("didSelectRowAtIndexPath")
-    
-    //performSegueWithIdentifier ("showSingleAsk", sender: self)
-    //presentViewController(Single Ask View Controller, animated: true, completion: nil)
-    //self.navigationController?.pushViewController(singleAskViewController as! UIViewController, animated: true)
-    //}
-    
-    
+
     /*
      // Override to support conditional editing of the table view.
      override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -257,13 +213,13 @@ class AskReviewsTableViewController: UITableViewController {
             
             let passedReview = currentReviews[indexPath.row]
             
-            let controller = segue.destination as! AskReviewDetailsViewController
+            let controller = segue.destination as! CompareReviewDetailsViewController
             // Pass the selected review to the next view controller:
             controller.review = passedReview
             
             // for some reason it made us unwrap the container prior to using it:
-            if let passedAsk = container?.question as! Ask? {
-                controller.ask = passedAsk
+            if let passedCompare = container?.question as! Compare? {
+                controller.compare = passedCompare
             }
             
 
@@ -288,28 +244,4 @@ class AskReviewsTableViewController: UITableViewController {
     }
 
 } // end of the class for this VC
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

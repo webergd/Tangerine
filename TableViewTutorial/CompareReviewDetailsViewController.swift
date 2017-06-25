@@ -1,14 +1,14 @@
 //
-//  AskReviewDetailsViewController.swift
+//  CompareReviewDetailsViewController.swift
 //  TableViewTutorial
 //
-//  Created by Wyatt Weber on 6/22/17.
+//  Created by Wyatt Weber on 6/23/17.
 //  Copyright © 2017 Freedom Electric. All rights reserved.
 //
 
 import UIKit
 
-class AskReviewDetailsViewController: UIViewController, UINavigationControllerDelegate {
+class CompareReviewDetailsViewController: UIViewController, UINavigationControllerDelegate {
 
     // Outlets:
     @IBOutlet weak var reviewerImageView: UIImageView!
@@ -17,16 +17,15 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
     @IBOutlet weak var reviewerNameLabel: UILabel!
     @IBOutlet weak var reviewerDemoLabel: UILabel!
     
-    
-    @IBOutlet weak var askImageView: UIImageView!
-    @IBOutlet weak var askTitleLabel: UILabel!
-    @IBOutlet weak var askSelectionLabel: UILabel!
+    @IBOutlet weak var selectionImageView: UIImageView!
+    @IBOutlet weak var selectionTitleLabel: UILabel!
     @IBOutlet weak var strongLabel: UILabel!
     
     @IBOutlet weak var commentsTitleLabel: UILabel!
     @IBOutlet weak var commentsBodyLabel: UILabel!
     
     @IBOutlet var reviewDetailsView: UIView!
+ 
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -35,7 +34,7 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureReviewItems()
-        self.configureAskItems()
+        self.configureCompareItems()
         let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskReviewDetailsViewController.userSwiped))
         reviewDetailsView.addGestureRecognizer(swipeViewGesture)
     }
@@ -45,16 +44,16 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
     
     // Sending over 1 review and the ask prevents us from having to send all reviews
     //  as would be the case if we sent the whole container.
-    var review: AskReview? {
+    var review: CompareReview? {
         didSet {
             // Update the view.
             self.configureReviewItems()
         }
     }
     
-    var ask: Ask? {
+    var compare: Compare? {
         didSet{
-            self.configureAskItems()
+            self.configureCompareItems()
         }
     }
     
@@ -70,7 +69,6 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
                 let ageLabel = self.reviewerAgeLabel,
                 let demoLabel = self.reviewerDemoLabel,
                 let ratingLabel = self.reviewerRatingLabel,
-                let selectionLabel = self.askSelectionLabel,
                 let strongLabel = self.strongLabel,
                 let commentsBodyLabel = self.commentsBodyLabel {
                 
@@ -81,8 +79,7 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
                 demoLabel.textColor = demoSpecificColor(userDemo: thisReview.reviewerDemo)
                 
                 ratingLabel.text = reviewerRatingToTangerines(rating: thisReview.reviewerInfo.reviewerScore)
-                selectionLabel.text = selectionToText(selection: thisReview.selection)
-                strongLabel.text = strongToText(strong: thisReview.strong)
+                strongLabel.text = strongToText(strongYes: thisReview.strongYes, strongNo: thisReview.strongNo)
                 commentsBodyLabel.text = thisReview.comments // this will probably need additional formatting so it looks right
 
             }
@@ -94,13 +91,16 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
         
     }
     
-    func configureAskItems() {
-        if let thisImageView = self.askImageView,
-            let thisLabel = self.askTitleLabel,
-            let thisAsk = self.ask {
+    func configureCompareItems() {
+        if let thisImageView = self.selectionImageView,
+            let thisTitleLabel = self.selectionTitleLabel,
+            let thisCompare = self.compare,
+            let thisReview = self.review {
             
-            thisImageView.image = thisAsk.askPhoto
-            thisLabel.text = thisAsk.askTitle
+            
+            thisImageView.image = selectionImage(selection: thisReview.selection, compare: thisCompare)
+            thisTitleLabel.text = selectionTitle(selection: thisReview.selection, compare: thisCompare)
+ 
         }
     }
     

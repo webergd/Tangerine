@@ -16,7 +16,11 @@ class CompareBreakdownViewController: UIViewController {
     // This outlet is here to enable swipe funtionality:
     @IBOutlet weak var compareBreakdownView: UIView!
 
+    
     // Target Demographic Outlets:
+    @IBOutlet weak var targetDemoLabel: UILabel!
+    @IBOutlet weak var targetDemoView: UIView!
+    
     @IBOutlet weak var targetDemoNumReviewsLabel: UILabel!
     @IBOutlet weak var targetDemoWinningImageView: UIImageView!
     @IBOutlet weak var targetDemoWinningTitleLabel: UILabel!
@@ -37,6 +41,9 @@ class CompareBreakdownViewController: UIViewController {
     
 
     // Friends Outlets
+    @IBOutlet weak var friendsLabel: UILabel! // remove this
+    @IBOutlet weak var friendsView: UIView!
+    
     @IBOutlet weak var friendsNumReviewsLabel: UILabel!
     @IBOutlet weak var friendsWinningImageView: UIImageView!
     @IBOutlet weak var friendsWinningTitleLabel: UILabel!
@@ -59,6 +66,9 @@ class CompareBreakdownViewController: UIViewController {
     
     
     // All Reviews Outlets
+    @IBOutlet weak var allReviewsLabel: UILabel! //remove this
+    @IBOutlet weak var allReviewsView: UIView!
+    
     @IBOutlet weak var allReviewsNumReviewsLabel: UILabel!
     @IBOutlet weak var allReviewsWinningImageView: UIImageView!
     @IBOutlet weak var allReviewsWinningTitleLabel: UILabel!
@@ -77,12 +87,11 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var allReviewsStrongTopLabelTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var allReviewsStrongBottomLabelTrailingConstraint: NSLayoutConstraint!
 
-    
-    
-    
-    
+
     
     @IBOutlet weak var compareTimeRemainingLabel: UILabel!
+    
+    var sortType: userGroup = .allUsers // this will be adjusted prior to segue if user taps specific area
     
     // these are all initialized with actual values in configureView()
     var compareImage1: UIImage? = nil
@@ -100,8 +109,34 @@ class CompareBreakdownViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.configureView()
+        sortType = .allUsers // this should always be the default
         let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
         compareBreakdownView.addGestureRecognizer(swipeViewGesture)
+        
+        
+        // Gesture Recognizers for swiping left and right
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.view.addGestureRecognizer(swipeLeft)
+        
+        // Gesture recognizers for tapping sortType labels to filter reviews
+        let tdTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedTargetDemographicLabel))
+        targetDemoView.addGestureRecognizer(tdTap)
+
+        
+        
+        let friendsTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedFriendsLabel))
+        friendsView.addGestureRecognizer(friendsTap)
+        
+        let arTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedAllReviewsLabel))
+        allReviewsView.addGestureRecognizer(arTap)
+        
+
+        
     }
     
     var container: Container? {
@@ -135,7 +170,7 @@ class CompareBreakdownViewController: UIViewController {
             
             // Configure TARGET DEMO data display:
             
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: userDemoPreferences.minAge, to: userDemoPreferences.maxAge, straightWomen: userDemoPreferences.straightWomenPreferred, straightMen: userDemoPreferences.straightMenPreferred, gayWomen: userDemoPreferences.gayWomenPreferred, gayMen: userDemoPreferences.gayMenPreferred, friendsOnly: false)
+            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
  
             
             if let thisDataSet = targetDemoDataSet,
@@ -376,12 +411,63 @@ class CompareBreakdownViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func userSwiped() {
-        print("user swiped**********")
-        self.navigationController?.popViewController(animated: true)
+    func userSwiped(gesture: UIGestureRecognizer) {
+        //print("user swiped**********")
+        //self.navigationController?.popViewController(animated: true)
         
+        
+        ///////////////////////////////////////////////////
+        // The next step is to hook up the swipe and tap //
+        //  segues from this view controller.            //
+        // Almost all example functionality should       //
+        //  be found in AskViewController                //
+        ///////////////////////////////////////////////////
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                // go back to previous view by swiping right
+                self.navigationController?.popViewController(animated: true)
+            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+                sortType = .allUsers // on left swipe show all reviews (may want to change this to targetDemo instead)
+                segueToNextViewController()
+            }
+
+        }
+    } // end of userSwiped
+    
+    func userTappedTargetDemographicLabel(sender: UITapGestureRecognizer) {
+        print("td label tapped")
+        self.sortType = .targetDemo
+        segueToNextViewController()
     }
-
-
+    
+    func userTappedFriendsLabel(sender: UITapGestureRecognizer) {
+        print("friends label tapped")
+        self.sortType = .friends
+        segueToNextViewController()
+    }
+    
+    func userTappedAllReviewsLabel(sender: UITapGestureRecognizer) {
+        print("all users label tapped")
+        self.sortType = .allUsers
+        segueToNextViewController()
+    }
+    
+    func segueToNextViewController() {
+        // sets the graphical view controller with the storyboard ID askReviewsTableViewController to nextVC
+        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareReviewsTableViewController") as! CompareReviewsTableViewController
+        
+        // sends this VC's container over to the next one
+        //print("The container to be passed has a row type of: \(container?.question.rowType)")
+        nextVC.sortType = self.sortType
+        nextVC.container = self.container
+        print("sortType being sent to next VC is: \(self.sortType)")
+        //print("The container that was passed has a row type of: \(nextVC.container?.question.rowType)")
+        // pushes askBreakdownViewController onto the nav stack
+        self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    
+    
     
 }

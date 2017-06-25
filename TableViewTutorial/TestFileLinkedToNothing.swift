@@ -592,17 +592,6 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
 }
-
-
-
-
-
-
-
-
-
-
-
 */
 
 
