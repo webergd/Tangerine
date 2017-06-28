@@ -127,10 +127,11 @@ class CompareReviewsTableViewController: UITableViewController {
         let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareReviewsTableViewCell
         let review = currentReviews[indexPath.row]
         
-        // These will be different for the compare cell
 
+        // MARK: Need an if statement so if user is not a friend, profile picture and name are hidden
         cell.reviewerImageView.image = returnProfilePic(image: review.reviewerInfo.profilePicture)
         cell.reviewerNameLabel.text = review.reviewerName
+        
         cell.reviewerAgeLabel.text = String(review.reviewerAge)
         
         cell.strongExistsLabel.text = strongToText(strongYes: review.strongYes, strongNo: review.strongNo)

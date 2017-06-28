@@ -1207,12 +1207,20 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // Once the Ask is created it is appended to the main array within a Container:
         
         // Creates a new container containing the newAsk and a flag that tells the container it is holding an Ask, as well as a new ReviewCollection that is initialized.
-        let containerToBeAppended = Container(containerType: .ask, question: newAsk, reviewCollection: ReviewCollection(type: .ask))
         
-        questionCollection.append(containerToBeAppended)
+        let cont = Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber())
         
-        //let testAsk = questionCollection.last as! Ask
-        //print("New Ask now appended to questionCollection. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
+        let containerToBeAppended = Container(containerID: Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber()),
+                                              containerType: .ask,
+                                              question: newAsk,
+                                              reviewCollection: ReviewCollection(type: .ask))
+        
+        
+        // this needs to change to my user's containerCollection
+        myUser.containerCollection.append(containerToBeAppended)
+        
+        //let testAsk = containerCollection.last as! Ask
+        //print("New Ask now appended to containerCollection. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")
         clearOutCurrentCompare()
         self.backTwo() //back to main
      

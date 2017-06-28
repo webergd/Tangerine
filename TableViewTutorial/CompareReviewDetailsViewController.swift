@@ -72,9 +72,13 @@ class CompareReviewDetailsViewController: UIViewController, UINavigationControll
                 let strongLabel = self.strongLabel,
                 let commentsBodyLabel = self.commentsBodyLabel {
                 
+                // MARK: Need an if statement so if user is not a friend, profile picture and name are hidden
                 reviewerImage.image = returnProfilePic(image: thisReview.reviewerInfo.profilePicture)
                 nameLabel.text = thisReview.reviewerName
+                
                 ageLabel.text = String(thisReview.reviewerAge)
+                
+                // MARK: Hide this label if user is a friend
                 demoLabel.text = demoToText(userDemo: thisReview.reviewerDemo)
                 demoLabel.textColor = demoSpecificColor(userDemo: thisReview.reviewerDemo)
                 

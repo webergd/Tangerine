@@ -188,9 +188,13 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                     print("new compare created. Title 1 is: \(iBE1.iBEtitle)")
                 
                 // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
-                let containerToBeAppended = Container(containerType: .compare, question: newCompare, reviewCollection: ReviewCollection(type: .compare))
-                    
-                questionCollection.append(containerToBeAppended)
+                let containerToBeAppended = Container(containerID: Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber()),
+                                                      containerType: .compare,
+                                                      question: newCompare,
+                                                      reviewCollection: ReviewCollection(type: .compare))
+                
+               
+                myUser.containerCollection.append(containerToBeAppended)
                     
                 clearOutCurrentCompare() // this is a method is DataModels and will set the flag to .noImageTaken
                     

@@ -11,6 +11,10 @@
 		2A68F9BE1EFE20D10054A03A /* CompareReviewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9BD1EFE20D10054A03A /* CompareReviewsTableViewController.swift */; };
 		2A68F9C01EFE24670054A03A /* CompareReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9BF1EFE24670054A03A /* CompareReviewsTableViewCell.swift */; };
 		2A68F9C21EFE2BAC0054A03A /* CompareReviewDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C11EFE2BAC0054A03A /* CompareReviewDetailsViewController.swift */; };
+		2A68F9C41EFF81C30054A03A /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C31EFF81C30054A03A /* FriendsTableViewController.swift */; };
+		2A68F9C61EFF824A0054A03A /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C51EFF824A0054A03A /* FriendsTableViewCell.swift */; };
+		2A68F9C81F00BDED0054A03A /* FriendDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C71F00BDED0054A03A /* FriendDetailsViewController.swift */; };
+		2A79B20A1F03FBC100A1DF24 /* ReviewAskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79B2091F03FBC100A1DF24 /* ReviewAskViewController.swift */; };
 		2A83A0F01EFAE54F009DAE8E /* AskReviewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */; };
 		2A83A0F41EFC1B96009DAE8E /* AskReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F31EFC1B96009DAE8E /* AskReviewsTableViewCell.swift */; };
 		2A83A0F61EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F51EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift */; };
@@ -58,6 +62,10 @@
 		2A68F9BD1EFE20D10054A03A /* CompareReviewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareReviewsTableViewController.swift; sourceTree = "<group>"; };
 		2A68F9BF1EFE24670054A03A /* CompareReviewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareReviewsTableViewCell.swift; sourceTree = SOURCE_ROOT; };
 		2A68F9C11EFE2BAC0054A03A /* CompareReviewDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompareReviewDetailsViewController.swift; sourceTree = "<group>"; };
+		2A68F9C31EFF81C30054A03A /* FriendsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsTableViewController.swift; sourceTree = "<group>"; };
+		2A68F9C51EFF824A0054A03A /* FriendsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendsTableViewCell.swift; sourceTree = SOURCE_ROOT; };
+		2A68F9C71F00BDED0054A03A /* FriendDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FriendDetailsViewController.swift; sourceTree = "<group>"; };
+		2A79B2091F03FBC100A1DF24 /* ReviewAskViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewAskViewController.swift; sourceTree = "<group>"; };
 		2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AskReviewsTableViewController.swift; sourceTree = "<group>"; };
 		2A83A0F31EFC1B96009DAE8E /* AskReviewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AskReviewsTableViewCell.swift; path = ../AskReviewsTableViewCell.swift; sourceTree = "<group>"; };
 		2A83A0F51EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AskReviewDetailsViewController.swift; path = ../AskReviewDetailsViewController.swift; sourceTree = "<group>"; };
@@ -162,6 +170,10 @@
 				2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */,
 				2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */,
 				2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */,
+				2A68F9C31EFF81C30054A03A /* FriendsTableViewController.swift */,
+				2A68F9C51EFF824A0054A03A /* FriendsTableViewCell.swift */,
+				2A68F9C71F00BDED0054A03A /* FriendDetailsViewController.swift */,
+				2A79B2091F03FBC100A1DF24 /* ReviewAskViewController.swift */,
 				2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */,
 			);
 			path = TableViewTutorial;
@@ -323,12 +335,16 @@
 				2A83A0F41EFC1B96009DAE8E /* AskReviewsTableViewCell.swift in Sources */,
 				2A68F9BE1EFE20D10054A03A /* CompareReviewsTableViewController.swift in Sources */,
 				2AE338C11D44502C00B32C03 /* TestViewController.swift in Sources */,
+				2A68F9C81F00BDED0054A03A /* FriendDetailsViewController.swift in Sources */,
+				2A68F9C61EFF824A0054A03A /* FriendsTableViewCell.swift in Sources */,
+				2A68F9C41EFF81C30054A03A /* FriendsTableViewController.swift in Sources */,
 				2AE338C31D48858D00B32C03 /* CompareBreakdownViewController.swift in Sources */,
 				2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */,
 				2AEBBDC41D389FB1001F7388 /* AskTableViewController.swift in Sources */,
 				2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */,
 				2AEBBDBA1D36018E001F7388 /* MainController.swift in Sources */,
 				2ADBFBE51D6AB5AC0011B6A7 /* CameraViewController.swift in Sources */,
+				2A79B20A1F03FBC100A1DF24 /* ReviewAskViewController.swift in Sources */,
 				2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */,
 				2A83A0F61EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift in Sources */,
 				2AEBBD8A1D35E175001F7388 /* AppDelegate.swift in Sources */,

@@ -1,33 +1,30 @@
 //
-//  AskReviewsTableViewController.swift
+//  FriendsReviewsTableViewController.swift
 //  TableViewTutorial
 //
-//  Created by Wyatt Weber on 6/21/17.
+//  Created by Wyatt Weber on 6/24/17.
 //  Copyright © 2017 Freedom Electric. All rights reserved.
 //
 
 import UIKit
 
-class AskReviewsTableViewController: UITableViewController {
+class FriendsTableViewController: UITableViewController {
 
     
-    @IBOutlet var askReviewsTableView: UITableView!
+    @IBOutlet var friendsTableView: UITableView!
 
-    
-    var currentReviews = [AskReview]()
+    ///////////////////////////////////////////
+    // To populate this table of friends, we //
+    //  need an array of users who are our   //
+    //  friends. Eventually, there also needs//
+    //  to be a way that this array is       //
+    //  compared against the online database //
+    //  and updated as appropriate.          //
+    // For now, friends is a dummy array that//
+    //  lives in dataModels.swift            //
+    ///////////////////////////////////////////
 
-    var sortType: userGroup? {
-        didSet {
-            // I'm not sure if I actually need to call a method in here- doesn't seem like it
-        }
-    }
-    
-    var container: Container? {
-        didSet {
-            // Update the view.
-            self.viewDidLoad()
-        }
-    }
+
     
 
 
@@ -50,42 +47,14 @@ class AskReviewsTableViewController: UITableViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        // I also need something that sorts the reviews by who they are from
-        if let thisContainer = self.container,
-            let thisSortType = self.sortType {
-            
-            print("storing the sorted arrat to currentReviews")
-            currentReviews = thisContainer.reviewCollection.filterReviews(by: thisSortType) as! [AskReview]
-            
-            
-            /*
-            if sortType == .allUsers {
-                print("sortType = allUsers")
-                currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
-            } else {
-                print("sortType is something other than allUsers")
-                print("sortType is: \(self.sortType)")
-                //method to sort by either friends or TD
-                // a function called isTargetDemo that returns a Bool would be useful
-            }
-            */
-            
-        } else {
-            print("container was nil")
-        }
-        
-        
-        //load the sample data
-        //sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
-        
+
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
         
-        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskReviewsTableViewController.userSwiped))
-        askReviewsTableView.addGestureRecognizer(swipeViewGesture)
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(FriendsTableViewController.userSwiped))
+        friendsTableView.addGestureRecognizer(swipeViewGesture)
 
         
         
@@ -107,7 +76,7 @@ class AskReviewsTableViewController: UITableViewController {
         
         
         // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
-        
+        /*
         var index = 0
         for _ in currentReviews {
             let indexPath = IndexPath(row: index, section: 0)
@@ -120,6 +89,7 @@ class AskReviewsTableViewController: UITableViewController {
       
             index += 1
         } 
+        */
         
     }
     
@@ -132,57 +102,28 @@ class AskReviewsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return currentReviews.count
+        return friendsArray.count
     }
     
     
     //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        
-        print("cellforRowAt indexPath called")
-        /*
-        if let thisContainer = container {
-            currentReviews = thisContainer.reviewCollection.reviews as! [AskReview]
-        }  else {
-            let cell: UITableViewCell? = nil
-            return cell!
-        }
-        */
-            // here we build a single ask cell:
-            
-            
-            /////////////////////////////////////
-            /// There is some issue here      ///
-            /// that is throwing an exception ///
-            /// that seems to imply that the  ///
-            /// prototype cell is not hooked  ///
-            /// up correctly                  //
-            /////////////////////////////////////
-            
-            
-            /* Here is is:
-            'NSInternalInconsistencyException', reason: 'unable to dequeue a cell with identifier AskReviewsTableViewCell - must register a nib or a class for the identifier or connect a prototype cell in a storyboard'
-            */
-            
 
-        let cellIdentifier: String = "AskReviewsTableViewCell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskReviewsTableViewCell
-        let review = currentReviews[indexPath.row]
+        let cellIdentifier: String = "FriendsTableViewCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! FriendsTableViewCell
+        let friend = friendsArray[indexPath.row]
         
-        // MARK: Need an if statement so if user is not a friend, profile picture and name are hidden
-        cell.reviewerImageView.image = returnProfilePic(image: review.reviewerInfo.profilePicture)
-        cell.reviewerNameLabel.text = review.reviewerName
-        
-        cell.reviewerAgeLabel.text = String(review.reviewerAge)
-        cell.voteLabel.text = selectionToText(selection: review.selection)
-        cell.strongExistsLabel.text = strongToText(strong: review.strong)
-        cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: review.reviewerDemo)
+        cell.friendImageView.image = returnProfilePic(image: friend.publicInfo.profilePicture)
 
-        switch review.comments {
-        case "": cell.commentExistsLabel.text = ""
-        default: cell.commentExistsLabel.text = "📋"
-        }
-            
+        
+        cell.friendNameLabel.text = friend.publicInfo.displayName
+        cell.friendAgeLabel.text = String(friend.publicInfo.age)
+        cell.friendRatingLabel.text = reviewerRatingToTangerines(rating: friend.publicInfo.reviewerScore)
+        
+        // Don't color code friends by demo. We should know thier demo.
+        // And if we don't, then it's because they don't want us to know and that's thier private prerogative.
+        //cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: friend.publicInfo.orientation)
+
         return cell
 
 
@@ -256,23 +197,21 @@ class AskReviewsTableViewController: UITableViewController {
 
         // Pass the specific review's info, along with the required info from the container's ask
 
+        //This needs to be switched over once the friend detail VC is built:
+
         if let indexPath = self.tableView.indexPathForSelectedRow {
             
-            let passedReview = currentReviews[indexPath.row]
+            let passedFriend = friendsArray[indexPath.row]
             
-            let controller = segue.destination as! AskReviewDetailsViewController
+            let controller = segue.destination as! FriendDetailsViewController
             // Pass the selected review to the next view controller:
-            controller.review = passedReview
-            
-            // for some reason it made us unwrap the container prior to using it:
-            if let passedAsk = container?.question as! Ask? {
-                controller.ask = passedAsk
-            }
-            
+            controller.friend = passedFriend
 
         }
+         
+
         
-        
+
         //}
         
         
