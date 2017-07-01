@@ -36,8 +36,13 @@ class MainController: UIViewController {
         loadSampleAsks()
         loadSampleCompares()
         
-        // clear the question queue
+        // clear the question queue so old ones don't just sit in it
         assignedQuestions = []
+        
+        // This is done because the loadAssignedQuestions() method removes the first element at the beginning
+        //  and we don't want to remove the question we just created.
+        assignedQuestions.append(sampleContainers[0].question)
+        
         // front load the queue with any new questions that we created in the app
         for thisContainer in myUser.containerCollection {
             assignedQuestions.append(thisContainer.question)

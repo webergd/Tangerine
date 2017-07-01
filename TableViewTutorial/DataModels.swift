@@ -96,7 +96,34 @@ public var initialContentOffset: CGPoint {
 // It's essentially a buffer.
 // This length may need to be adjusted if reviewers are swiping faster than the array can keep up.
 public var assignedQuestions: [Question] = []
+// I will need a method in this file to load this up that the ReviewAsk and ReviewCompare can call on.
+// The method should check the age of the questions and purge them and reload new ones if they are too old.
+// The method should also check the length of the array and append new questions until its back to where we want.
+public let assignedQuestionsBufferSize: Int = 3
+// We will use the above constant to set the length of the assignQuestions array.
+// The name of the method that references it will be below and called loadAssignedQuestions()
 
+// This will hold the containerID of Questions that the user created but has not performed the requisite number of reviews
+//  yet in order to be allowed to view the results.
+public var lockedContainers: [ContainerIdentification] = []
+// We will have to check in AskTableView whether the container has been unlocked before we can display the results
+
+
+// OBLIGATORY REVIEWS
+// This keeps track of how many reviews need to be performed to open the next container:
+public var obligatoryReviewsToUnlockNextContainer: Int = 0
+
+// Sets the number of reviews required to unlock a container:
+public let obligatoryReviewsPerContainer: Int = 3
+
+public var obligatoryReviewsRemaining: Int {
+    // The reason for the minus one is because obligatoryReviewsToUnlockNextContainer adds the reviews for the first container
+    var additionalContainers: Int = lockedContainers.count - 1
+    // If additionalContainers were allowed to drop below zero, we would get a negative value for obligatoryReviewsRemaining
+    if additionalContainers < 0 { additionalContainers = 0 }
+    return obligatoryReviewsToUnlockNextContainer + (additionalContainers * obligatoryReviewsPerContainer)
+}
+// There is also a function in DataModels that adds more obligatory reviews when a new Question is created.
 
 // I'm supposed to change this to round(to places: Int) for swift 3 compliance but to make that work I will also have to change all the places where it is implemented.
 public extension Double {
@@ -130,7 +157,13 @@ public func clearOutCurrentCompare() {
     //whatToCreate = .ask //hopefully we can get rid of this property also
 }
 
-
+public func resetTextView(textView: UITextView?, blankText: String) {
+    if let thisTextView = textView {
+        thisTextView.text = blankText
+        thisTextView.textColor = UIColor.gray
+    }
+    
+}
 
 // MARK: TIME REMAINING
 
@@ -323,6 +356,69 @@ public func returnProfilePic(image: UIImage?) -> UIImage {
     }
 }
 
+public func createContainerID() -> ContainerIdentification {
+    // this works because myUser always exists
+    return ContainerIdentification(userID: myUser.publicInfo.userName,
+                                   containerNumber: myUser.lowestAvailableContainerIDNumber())
+}
+
+public func unlockOneContainer() {
+    // Take the first container off the locked list
+    lockedContainers.removeFirst()
+    // reset the number of reviews required to unlock the next one
+    obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+}
+
+public func addLockedContainer(containerID: ContainerIdentification) {
+    // This should only happen if there are not yet any locked containers:
+    if obligatoryReviewsToUnlockNextContainer == 0 {
+        obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+    }
+    
+    lockedContainers.append(containerID)
+}
+
+public func removeOneObligatoryReview() {
+    if obligatoryReviewsToUnlockNextContainer > 0 {
+        obligatoryReviewsToUnlockNextContainer =  obligatoryReviewsToUnlockNextContainer - 1
+        if obligatoryReviewsToUnlockNextContainer == 0 {
+            unlockOneContainer()
+        }
+    }
+    
+    // if it's not greater than zero, that means it should be at zero, meaning we don't have to do anything because there shouldn't be any locked containers
+
+}
+
+public func loadAssignedQuestions() {
+    // pull the first element off of the array because we may have already reviewed it
+    assignedQuestions.removeFirst()
+    for question in assignedQuestions {
+        // Need to do this first:
+        // check the age of the question here and throw it out if it's too old, then continue, i.e. start the loop over
+        // We will use the "question" local variable here. Don't change it to a _
+        
+        // checks the assignedQuestions array size and trims off the front or adds to the back. A queue essentially.
+        switch assignedQuestions.count {
+        case Int.min..<assignedQuestionsBufferSize: assignedQuestions.append(fetchNewQuestion())
+        case assignedQuestionsBufferSize..<Int.max: assignedQuestions.removeFirst()
+        default: print("assignedQuestions loaded new question(s) and is the appropriate size")
+        }
+    }
+    
+}
+
+// This counter is only for use with dummy Questions. It allows us to keep iterating through them.
+var questionCounter: Int = 0
+
+public func fetchNewQuestion() -> Question {
+    // This will have to pull info from the database. For now we will just use dummy questions.
+    if questionCounter > 4 {
+        questionCounter = 0 // we only have 5 sample questions so we need to go back to the start of the array
+    }
+    return sampleContainers[questionCounter].question
+}
+
 /*
 public struct DemoPreferences {
     var minAge: Int
@@ -338,11 +434,13 @@ public struct DemoPreferences {
 public let myTargetDemo = TargetDemo(minAge: 25, maxAge: 38, straightWomenPreferred: true, straightMenPreferred: false, gayWomenPreferred: false, gayMenPreferred: true)
 
 
-public protocol Question {
-    var rowType: String {get set}
+public protocol Question { //this really should be isQuestion
+    var type: askOrCompare {get set}
     var timePosted: Date {get set}
     var numVotes: Int {get}
-    
+    // this should enable us to send reviews about this question up to the database:
+    // We may need to create a dictionary at some point with the database primary keys of each containerID
+    var containerID: ContainerIdentification {get set}
     // MARK: Will also need to set up a timePosted requirement so the array of these objects can be sorted according to that
 }
 
@@ -351,16 +449,39 @@ public protocol Question {
 //   on the reviewing side, we can send the reviewer Question's without also forcing the device
 //   to download all associated reviews in the ReviewCollection, which they will never see or use.
 // Essentially, it's an effort to save bandwidth / transmitted data.
-public struct Container {
-    var containerID: ContainerIdentification
-    var containerType: askOrCompare
+public class Container {
+    var containerID: ContainerIdentification {
+        return question.containerID
+    }
+    var containerType: askOrCompare {
+        return question.type
+    }
     var question: Question
     var reviewCollection: ReviewCollection
+    var numReports: Int 
     
-    struct ContainerIdentification {
-        var userID: String
-        var containerNumber: Int
+    init(question q: Question, reviewCollection r: ReviewCollection) {
+        question = q
+        reviewCollection = r
+        numReports = 0
     }
+ 
+    // If we call this on a container, it will update its tracker of how many of its reviews are inappropriate content reports.
+    func updateNumReports(){
+        var reports: Int = 0
+        for review in self.reviewCollection.reviews {
+            if review.reported != .none {
+                reports += 1
+            }
+        }
+        self.numReports = reports
+    }
+
+}
+
+public struct ContainerIdentification {
+    var userID: String
+    var containerNumber: Int
 }
 
 public class ReviewCollection {
@@ -379,8 +500,6 @@ public class ReviewCollection {
     // % of each orientation
     // Can I pull all of these on just one trip through the loop?
     // Can I create a method that will pull this info from the RC within specific constraints?
-    
-
     
     func isTargetDemo(index: Int, targetDemo: TargetDemo) -> Bool {
         let thisReview = reviews[index]
@@ -704,9 +823,10 @@ open class Ask: Question {
     var askTitle: String
     //var askRating: Double
     let askPhoto: UIImage
-    open var rowType: String = "\(RowType.isSingle)"
+    open var type: askOrCompare = .ask
     open var timePosted: Date
     let askCaption: Caption
+    public var containerID: ContainerIdentification // it seems stupid that this has to be public but the compiler is forcing me to make it that way
     
     // This loads breakdown with 4 fully initialized AskDemo objects because they don't require parameters to initialize
     let breakdown = Breakdown(straightWomen: AskDemo(), straightMen: AskDemo(), gayWomen: AskDemo(), gayMen: AskDemo())
@@ -747,16 +867,14 @@ open class Ask: Question {
         
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
-    
 
     init(title: String, photo: UIImage,caption: Caption, timePosted time: Date) {
         askTitle = title
         askPhoto = photo
         timePosted = time
         askCaption = caption
-        print("inside the Ask initializer method")
-        print("currentImage orientation is upright \(currentImage.imageOrientation == UIImageOrientation.up)")
-        print("newAsk.image orientation is upright \(askPhoto.imageOrientation == UIImageOrientation.up)")
+        containerID = createContainerID() //automatically creates a containerID when you make a new Ask
+        print("containerID created for ask. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
     }
 }
 
@@ -790,6 +908,9 @@ public func createAsk (){
 */ //Should be deleted in later versions. Doesn't seem to do anything at all.
 
 open class Compare: Question {
+    
+    open var type: askOrCompare = .compare
+    
     //first image (displayed on top or left)
     var compareTitle1: String
     let comparePhoto1: UIImage
@@ -800,6 +921,8 @@ open class Compare: Question {
     var compareTitle2: String
     let comparePhoto2: UIImage
     let compareCaption2: Caption
+    
+    public var containerID: ContainerIdentification
     
     open var timePosted: Date
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
@@ -845,7 +968,7 @@ open class Compare: Question {
             return CompareWinner.itsATie.rawValue
         }
         else {
-            print("Data Models: Something is fucked here dude. Votes are not >,<, or =")
+            print("Data Models: Error. Votes are not >,<, or =")
             print("compareVotes1: \(compareVotes1), compareVotes2: \(compareVotes2)")
             fatalError()
         }
@@ -860,12 +983,7 @@ open class Compare: Question {
         
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
-    
-    open var rowType: String = "\(RowType.isDual)"
-    
-    // MARK: Also need to implement a timePosted value *********************
-    // Maybe even a computed value that returns the time remaining using the timePosted
-    
+
     init(title1: String, photo1: UIImage, caption1: Caption, title2: String, photo2: UIImage, caption2: Caption, timePosted time: Date) {
         
         compareTitle1 = title1
@@ -875,6 +993,8 @@ open class Compare: Question {
         comparePhoto2 = photo2
         compareCaption2 = caption2
         timePosted = time
+        containerID = createContainerID()
+        print("containerID created for compare. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
     }
 }
 
@@ -1008,11 +1128,18 @@ protocol isAReview {  // I am still undecided whether to attach the whole user o
     var reviewerAge: Int {get}
     var comments: String {get set}
     var reviewerInfo: PublicInfo {get set}
+    var reported: reportType {get set}
 }
 
 
-
-
+// move this to the top after integrating into Reviews
+public enum reportType: String {
+    case nudity
+    case demeaning
+    case notRelevant
+    case other
+    case none
+}
 
 // an "AskReview" is a review of an Ask from a single individual
 // AskReviews are held in an array of AskReviews that is part of the Ask.
@@ -1026,6 +1153,25 @@ public struct AskReview: isAReview {
     var reviewerDemo: demo { return reviewerInfo.orientation }
     var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
+    var reported: reportType
+    
+    init(selection sel: yesOrNo, strong strg: yesOrNo?, comments c: String) {
+        selection = sel
+        strong = strg
+        comments = c
+        reviewerInfo = myUser.publicInfo
+        reported = .none // default report type is none
+    }
+    
+    // this only exists to facilitate dummy reviews:
+    // Normally we would never create a review for someone else, only for ourselves aka myUser
+    init(selection sel: yesOrNo, strong strg: yesOrNo?, reviewerInfo p: PublicInfo, comments c: String) {
+        selection = sel
+        strong = strg
+        comments = c
+        reviewerInfo = p
+        reported = .none // default report type is none
+    }
 }
 
 // a "CompareReview" is a review of an Compare from a single individual
@@ -1041,6 +1187,28 @@ public struct CompareReview: isAReview {
     var reviewerDemo: demo { return reviewerInfo.orientation }
     var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
+    var reported: reportType = .none
+    
+    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, comments c: String) {
+        selection = sel
+        strongYes = strgY
+        strongNo = strgN
+        comments = c
+        reviewerInfo = myUser.publicInfo
+        reported = .none // default report type is none
+    }
+    
+    // this only exists to facilitate dummy reviews:
+    // Normally we would never create a review for someone else, only for ourselves aka myUser
+    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, reviewerInfo p: PublicInfo, comments c: String) {
+        selection = sel
+        strongYes = strgY
+        strongNo = strgN
+        comments = c
+        reviewerInfo = p
+        reported = .none // default report type is none
+    }
+    
 }
 
 public struct User {
@@ -1187,7 +1355,7 @@ public func loadSampleUsers(){
 
 /* to load dummy values for the new data model, I need dummy asks and compares, as well as sample reviews.
  I should be able to modfiy the loadSampleAsks and loadSampleCompares methods to work within the Container paradigm.
- At that point I then just need to create the sample reviews from scratch and then load them into the ReviewCollection for the specific Questions */
+ At that point I then just need to create the sample reviews from scratch and then load them into the ReviewCollection for the specific Questions - DONE */
 
 // this is temporary code
 
@@ -1227,7 +1395,7 @@ public func loadSampleAsks() {
     ask1GM.rating = 6
     ask1GM.numVotes = 10
     
-    let container1 = Container(containerID: Container.ContainerIdentification(userID: "user1", containerNumber: 0), containerType: .ask, question: ask1, reviewCollection: ReviewCollection(type: .ask))
+    let container1 = Container(question: ask1, reviewCollection: ReviewCollection(type: .ask))
     
     let photo2 = UIImage(named: "\(Shoes.whiteConverse)")!
     let caption2 = Caption(text: "", yLocation: 0.0)
@@ -1236,7 +1404,7 @@ public func loadSampleAsks() {
     let ask2GW = ask2.breakdown.gayWomen as! AskDemo
     ask2GW.rating = 6
     ask2GW.numVotes = 5
-    let container2 = Container(containerID: Container.ContainerIdentification(userID: "user2", containerNumber: 0), containerType: .ask, question: ask2, reviewCollection: ReviewCollection(type: .ask))
+    let container2 = Container(question: ask2, reviewCollection: ReviewCollection(type: .ask))
     
     let photo3 = UIImage(named: "\(Shoes.violetVans)")!
     let caption3 = Caption(text: "", yLocation: 0.0)
@@ -1245,7 +1413,7 @@ public func loadSampleAsks() {
     let ask3SM = ask3.breakdown.straightMen as! AskDemo
     ask3SM.rating = 9.8
     ask3SM.numVotes = 90
-    let container3 = Container(containerID: Container.ContainerIdentification(userID: "user3", containerNumber: 0), containerType: .ask, question: ask3, reviewCollection: ReviewCollection(type: .ask))
+    let container3 = Container(question: ask3, reviewCollection: ReviewCollection(type: .ask))
     
     //I think this is a pointless line of code:
     //asks += [ask1,ask2,ask3]  //+= just appends them, I believe
@@ -1284,7 +1452,7 @@ public func loadSampleCompares() {
     compare1GM.votesForOne = 60
     compare1GM.votesForTwo = 77
     
-    let container4 = Container(containerID: Container.ContainerIdentification(userID: "user1", containerNumber: 0), containerType: .compare, question: compare1, reviewCollection: ReviewCollection(type: .compare))
+    let container4 = Container(question: compare1, reviewCollection: ReviewCollection(type: .compare))
     
     
     //create another sample Shoes compare object
@@ -1308,7 +1476,7 @@ public func loadSampleCompares() {
     compare2SM.votesForOne = 550
     compare2SM.votesForTwo = 550
     
-    let container5 = Container(containerID: Container.ContainerIdentification(userID: "user1", containerNumber: 0), containerType: .compare, question: compare2, reviewCollection: ReviewCollection(type: .compare))
+    let container5 = Container(question: compare2, reviewCollection: ReviewCollection(type: .compare))
     
     
     

@@ -17,21 +17,21 @@ func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
         || img.imageOrientation == UIImageOrientation.downMirrored) {
         
         transform = transform.translatedBy(x: img.size.width, y: img.size.height)
-        transform = transform.rotated(by: CGFloat(M_PI)) //seems to be the number of radians we rotate the image
+        transform = transform.rotated(by: CGFloat(Double.pi)) //seems to be the number of radians we rotate the image
     }
     
     if (img.imageOrientation == UIImageOrientation.left
         || img.imageOrientation == UIImageOrientation.leftMirrored) {
         
         transform = transform.translatedBy(x: img.size.width, y: 0)
-        transform = transform.rotated(by: CGFloat(M_PI_2))
+        transform = transform.rotated(by: CGFloat(Double.pi / 2))
     }
     
     if (img.imageOrientation == UIImageOrientation.right
         || img.imageOrientation == UIImageOrientation.rightMirrored) {
         
         transform = transform.translatedBy(x: 0, y: img.size.height);
-        transform = transform.rotated(by: CGFloat(-M_PI_2));
+        transform = transform.rotated(by: CGFloat(-(Double.pi / 2)));
     }
     
     if (img.imageOrientation == UIImageOrientation.upMirrored

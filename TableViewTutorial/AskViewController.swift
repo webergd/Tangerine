@@ -351,7 +351,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         print("prepare for segue called in AskViewController")
         let controller = segue.destination as! AskReviewsTableViewController
         // Pass the current container to the AskReviewsTableViewController:
-        print("The container to be passed has a row type of: \(String(describing: container?.question.rowType))")
+        //print("The container to be passed has a row type of: \(String(describing: container?.question.type))")
         controller.container = self.container
         controller.sortType = self.sortType // tells the tableView which reviews to display
         

@@ -398,18 +398,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         otherImageThumbnail.setImage(iBE.iBEimageBlurredCropped, for: .normal)
     }
     
-    
 
-    
-    
-
-    
-    
-    
-    
-    
-    
-    
     
     //Enables tap on image to show caption (2 of 2):
     func userTappedImage(_ tapImageGesture: UITapGestureRecognizer){
@@ -1208,11 +1197,8 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         // Creates a new container containing the newAsk and a flag that tells the container it is holding an Ask, as well as a new ReviewCollection that is initialized.
         
-        let cont = Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber())
         
-        let containerToBeAppended = Container(containerID: Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber()),
-                                              containerType: .ask,
-                                              question: newAsk,
+        let containerToBeAppended = Container(question: newAsk,
                                               reviewCollection: ReviewCollection(type: .ask))
         
         

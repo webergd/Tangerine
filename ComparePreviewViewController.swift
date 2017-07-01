@@ -182,15 +182,13 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 UIAlertAction in
                 
                 if let iBE1 = currentCompare.imageBeingEdited1, let iBE2 = currentCompare.imageBeingEdited2 {
-                
+                    
                 let newCompare = Compare(title1: iBE1.iBEtitle, photo1: iBE1.iBEimageBlurredCropped, caption1: iBE1.iBEcaption, title2: iBE2.iBEtitle, photo2: iBE2.iBEimageBlurredCropped, caption2: iBE2.iBEcaption, timePosted: Date())
                     
                     print("new compare created. Title 1 is: \(iBE1.iBEtitle)")
                 
                 // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
-                let containerToBeAppended = Container(containerID: Container.ContainerIdentification(userID: myUser.publicInfo.userName, containerNumber: myUser.lowestAvailableContainerIDNumber()),
-                                                      containerType: .compare,
-                                                      question: newCompare,
+                let containerToBeAppended = Container(question: newCompare,
                                                       reviewCollection: ReviewCollection(type: .compare))
                 
                
