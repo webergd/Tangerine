@@ -10,14 +10,19 @@
 
 import UIKit
 
-class ReviewAskViewController: UIViewController, UIScrollViewDelegate {
+class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
+    @IBOutlet weak var helperView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
     @IBOutlet weak var askCaptionTextField: UITextField!
     @IBOutlet weak var askCaptionTopConstraint: NSLayoutConstraint!
 
-    @IBOutlet weak var strongButton: UIButton!
+
+    @IBOutlet weak var strongLabel: UILabel!
+
+    @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
+
     @IBOutlet weak var commentsTextView: UITextView!
     
     
@@ -32,9 +37,12 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate {
     
     var ask: Ask? {
         didSet{
+            print("ask value changed")
             self.configureView()
         }
     }
+    
+    var strongFlag: Bool = false
     
     let enterCommentConstant: String = "Enter optional comments here."
     
@@ -79,12 +87,27 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate {
             // CODE NEEDED
         }
         
-        ask = assignedQuestions[0] as! Ask
+        commentsTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+        ask = assignedQuestions[0] as? Ask
         // The above line causes configureView to be called.
+        
+        
         
         // This makes the text view have rounded corners.
         commentsTextView.clipsToBounds = true
         commentsTextView.layer.cornerRadius = 10.0
+        commentsTextView.delegate = self
+        setTextViewYPosition()
+        
+        // Hides keyboard when user taps outside of text view
+        self.hideKeyboardWhenTappedAround()
+        
+        // This will move the caption text box out of the way when the keyboard pops up:
+        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+        // This will move the caption text box back down when the keyboard goes away:
+        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         // Do any additional setup after loading the view, typically from a nib.
         scrollView.delegate = self
@@ -95,115 +118,155 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate {
         
         
         // Gesture Recognizers for swiping left and right
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(FriendDetailsViewController.userSwiped))
-        self.view.addGestureRecognizer(swipeRight) // right is the default so no if logic required later
+        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+        swipeUp.direction = UISwipeGestureRecognizerDirection.up
+        self.view.addGestureRecognizer(swipeUp)
         
+        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        self.view.addGestureRecognizer(swipeRight)
+        
+        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        self.view.addGestureRecognizer(swipeLeft)
 
-        
     }
     
     // KEYBOARD METHODS:
-    
-    // This is called in the viewDidLoad section in our NSNotificationCenter command
+
+    // There is a decent amount of this in viewDidLoad() also
     func keyboardWillShow(_ notification: Notification) {
-        // Basically all this shit is for moving the caption out of the way of the keyboard while we're editing it:
-        //if self.commentsTextView.isEditing == true { //aka if the title is editing, don't do any of this
-            //get the height of the keyboard that will show and then shift the text field up by that amount
-            if let userInfoDict = notification.userInfo,
-                let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+        // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
+        
+        self.commentsTextView.textColor = UIColor.black
+        
+        if self.commentsTextView.text == enterCommentConstant {
+            self.commentsTextView.text = ""
+        }
+        
+        //get the height of the keyboard that will show and then shift the text field up by that amount
+        if let userInfoDict = notification.userInfo,
+            let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
                 
-                let keyboardFrame = keyboardFrameValue.cgRectValue
+            let keyboardFrame = keyboardFrameValue.cgRectValue
                 
-                //this makes the text box movement animated so it looks smoother:
-                UIView.animate(withDuration: 0.8, animations: {
-                    // Save the captionTextField's Location so we can restore it after editing:
-                    // Ensures that the saved captionYValue will be within the top and bottom limit.
-                    
-                    
-                    //self.captionYValue = self.vetCaptionTopConstraint(self.captionTextFieldTopConstraint.constant)
-                    
-                    
-                    self.captionYValue = self.captionTextFieldTopConstraint.constant
-                    
-                    
-                    
-                    //self.captionTextFieldBottomConstraint.constant = keyboardFrame.size.height
-                    self.captionTextFieldTopConstraint.constant = self.screenHeight - keyboardFrame.size.height - self.topLayoutGuide.length - self.captionTextFieldHeight
-                    self.view.layoutIfNeeded()
-                })
-                
-            }
-        //}
+            //this makes the text box movement animated so it looks smoother:
+            UIView.animate(withDuration: 0.8, animations: {
+
+                self.textViewTopConstraint.constant = UIScreen.main.bounds.height - keyboardFrame.size.height - self.topLayoutGuide.length - self.commentsTextView.frame.size.height
+                self.view.layoutIfNeeded()
+            })
+        }
     }
     
     func keyboardWillHide(_ notification: Notification) {
-        //get the height of the keyboard that will show and then shift the text field down by that amount
-        
-        if self.captionTextField.text == "" {
-            self.captionTextField.isHidden = true
-            mirrorCaptionButton.isHidden = true
-            centerFlexibleSpace.isEnabled = false
-        }
-        
         //this makes the text box movement animated so it looks smoother:
         UIView.animate(withDuration: 1.0, animations: {
-            //moves the caption back to its original location:
-            self.captionTextFieldTopConstraint.constant = self.vetCaptionTopConstraint(self.captionYValue)
-            
+            //moves the textView back to its original location:
+            self.setTextViewYPosition()
             
         })
         // If the user has entered no text in the titleTextField, reset it to how it was originally:
-        if self.titleTextField.text == "" {
-            self.titleTextField.text = enterTitleConstant
-            self.titleTextField.textColor = UIColor.gray
-            self.titleHasBeenTapped = false
+        if self.commentsTextView.text == "" {
             
-            if captionTextField.text != "" {
-                mirrorCaptionButton.isHidden = false
-                centerFlexibleSpace.isEnabled = true
-            }
-        } else if titleTextField.text != enterTitleConstant  {
-            mirrorCaptionButton.isHidden = true
-            centerFlexibleSpace.isEnabled = false
+            resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
+ 
         }
         self.view.layoutIfNeeded()
-        
-        //This is here because the title was somehow getting lost between it displaying correctly in the text field, and the publish button being tapped.
-        print("titleTextField value at the end of hiding the keyboard is: \(titleTextField.text!)")
-        
     }
     
     // This dismisses the keyboard when the user clicks the DONE button on the keyboard
-    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
-        textField.resignFirstResponder()
+    func textViewShouldReturn(_ textView: UITextView) -> Bool {
+        textView.resignFirstResponder()
         return true
     }
 
-    // I'm pretty sure I already have this functionality in datamodels
-    func resetTitleTextField() {
-        self.titleTextField.text = enterTitleConstant
-        self.titleTextField.textColor = UIColor.gray
-        currentTitle = ""
+    // END KEYBOARD METHODS
+
+    
+    func setTextViewYPosition() {
+        // This positions the textView correctly so that it's not covering up the image (or too low):
+        textViewTopConstraint.constant = helperView.frame.size.height * 1.1
     }
     
+    func createReview(selection: yesOrNo) {
+        var strong: yesOrNo? = nil
+        if strongFlag == true { strong = selection }
+        let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text)
+        // normally we would then send this review up to the server.
+        // Instead, for the sake of testing, we will add it to the user's reviews
+        // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
+        if let thisAsk = ask {
+
+            // Figures out which array the userID is at, then returns the element at that index in the usersArray.
+            // In other words, it returns that user; not a copy, the actual user.
+            // This will need to be changed to get the user in the database once I'm using that.
+            
+            // This is basically what is happening here:
+            //  1. look up the user's id name in the usersArray,
+            //  2. look up the container number in that user's containerCollection,
+            //  3. append the new askReview to the container's review collection.
+            
+            print("length of usersArray is: \(usersArray.count)")
+            print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisAsk.containerID.userID))")
+            print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
+            print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
+            
+            usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+
+        } else {
+            print("Fatal Error:")
+            print("The ask was null when trying to access it in the createReview() method")
+            fatalError() // crash the app deliberately
+        }
+
+        //someUser.containerCollection[containerNumber].reviewCollection.reviews.append(createdReview)
+        print("new review created.")
+        loadNextReview()
+
+    } // end of createReview
     
+    func loadNextReview() {
+        assignedQuestions.removeFirst()
+        if assignedQuestions[0].type == .compare {
+            // need code to segue to CompareReviewVC without stacking it
+            print("segue to CompareReviewViewController")
+        }
+        ask = assignedQuestions[0] as? Ask
+        // MARK: Also need code to pull a new review from the database 
+        //  and maintain the proper length of assignedReviews
+    }
     
+    func userSwiped(gesture: UIGestureRecognizer) {
+        
+        if let swipeGesture = gesture as? UISwipeGestureRecognizer {
+            var currentSelection: yesOrNo
+            if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
+                // show the strong arm and set a strong flag to true
+                switch strongFlag {
+                case true:
+                    strongFlag = false
+                    strongLabel.isHidden = true
+                case false:
+                    strongFlag = true
+                    strongLabel.isHidden = false
+                }
+                return // this avoids reloading the form or a segue since it was just an up-swipe
+            }else if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+                currentSelection = .yes
+            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+                currentSelection = .no
+            } else {
+                print("no selection made from the swipe")
+                return
+            }
+            self.createReview(selection: currentSelection)
+        }
+        
+        
+    } //end of userSwiped
     
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    // END KEYBOARD METHODS
+
     
     // Allows the user to zoom within the scrollView that the user is manipulating at the time.
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
@@ -226,22 +289,14 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate {
     
     
     @IBAction func menuButtonTapped(_ sender: Any) {
+        // This may need to be adjusted depending on how we segue between asks and compares
+        self.navigationController?.popViewController(animated: true)
     }
     
 
     // I need a way to switch between the two Review Controllers without
     //  stacking up multiple instances of them on top of each other.
-    
-    func userSwiped(gesture: UIGestureRecognizer) {
-        //if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            // go back to previous view by swiping right
-            self.navigationController?.popViewController(animated: true)
-        //}
-        
-    } //end of userSwiped
 
-
-    
     
 }
  

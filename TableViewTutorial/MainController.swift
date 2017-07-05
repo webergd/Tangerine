@@ -9,7 +9,7 @@
 import UIKit
 
 class MainController: UIViewController {
-    
+    var loaded: Bool = false
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("prepareForSegue in MAIN controller called")
@@ -28,32 +28,50 @@ class MainController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         loadSampleUsers()
+
+        // clear the question queue so old ones don't just sit in it
+        assignedQuestions = []
         
         // These two methods load the dummy Questions and create containers for them with empty review collections.
         // As a result, any review created for these questions will be erased at this point.
         // What will not be erased however, are reviews created for questions created by the camera in the app.
         // Keep in mind, all of this is for testing and should be removed at beta.
-        loadSampleAsks()
-        loadSampleCompares()
         
-        // clear the question queue so old ones don't just sit in it
-        assignedQuestions = []
+        if loaded == false {
+            loadSampleAsks()
+            loadSampleCompares()
+            loadSampleAskReviews()
+            loadSampleCompareReviews()
+            print("all sample questions and reviews loaded")
+            // as one final step, load these sample containers into myUser's containerCollection
+            print("storing sample containers to my containerCollection")
+            myUser.containerCollection = sampleContainers
+            
+            loaded = true
+
+        }
         
-        // This is done because the loadAssignedQuestions() method removes the first element at the beginning
-        //  and we don't want to remove the question we just created.
-        assignedQuestions.append(sampleContainers[0].question)
-        
-        // front load the queue with any new questions that we created in the app
+        // // front load the queue with any new questions that we created in the app
         for thisContainer in myUser.containerCollection {
             assignedQuestions.append(thisContainer.question)
         }
+        
         // add the dummy questions to the end of the question queue to be reviewed
-        for thisContainer in sampleContainers {
-            assignedQuestions.append(thisContainer.question)
+        //for thisContainer in sampleContainers {
+        //    assignedQuestions.append(thisContainer.question)
+        //}
+        
+
+        
+        for container in myUser.containerCollection {
+            print("\(container.containerID.userID), \(container.containerID.containerNumber)")
         }
-        
-        
     }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        print("Number of elements in my containerCollection is now: \(myUser.containerCollection.count)")
+    }
+    
     
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(false)

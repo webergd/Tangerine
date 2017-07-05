@@ -236,7 +236,6 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         otherImageThumbnail.imageView?.contentMode = UIViewContentMode.scaleAspectFit
 
         
-        
         self.enableBlurringButton.isHidden = false
         self.clearBlursButton.isHidden = !blursAddedByEditor
         
@@ -1202,8 +1201,9 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
                                               reviewCollection: ReviewCollection(type: .ask))
         
         
-        // this needs to change to my user's containerCollection
-        myUser.containerCollection.append(containerToBeAppended)
+        // this ensures that the containerNumber corresponds with the container's index in the containerArray
+        myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+
         
         //let testAsk = containerCollection.last as! Ask
         //print("New Ask now appended to containerCollection. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")

@@ -390,6 +390,22 @@ public func removeOneObligatoryReview() {
 
 }
 
+public func indexOfUser(in array: [User], userID: String)-> Int {
+    // find userID's index in the array:
+    var index: Int = 0
+    for user in array {
+        if user.publicInfo.userName == userID {
+            return index
+        }
+        index += 1
+    }
+    print("myUser wasn't found in the usersArray, therefore the dummy containers couldn't be appended to it")
+    fatalError()
+}
+
+
+
+
 public func loadAssignedQuestions() {
     // pull the first element off of the array because we may have already reviewed it
     assignedQuestions.removeFirst()
@@ -464,6 +480,7 @@ public class Container {
         question = q
         reviewCollection = r
         numReports = 0
+        myUser.containerCollection.append(self) // at some point I will also need a way to remove the containers
     }
  
     // If we call this on a container, it will update its tracker of how many of its reviews are inappropriate content reports.
@@ -1220,8 +1237,8 @@ public struct User {
     
     func lowestAvailableContainerIDNumber() -> Int {
         var IDNumbers: [Int] = []
-        for thisContainer in containerCollection {
-            IDNumbers.append(thisContainer.containerID.containerNumber)
+        for container in containerCollection {
+            IDNumbers.append(container.containerID.containerNumber)
         }
         // sort IDNumbers in ascending order
         IDNumbers = IDNumbers.sorted { $0 < $1 }
@@ -1311,6 +1328,10 @@ public struct compareBeingEdited {
 
 public var usersArray: [User] = []
 
+// This is the same as the usersArray but we will use it for appending reviews because it is more "database like"
+// There is only one difference: myUser will also be a member of the dictionary
+//public var usersDictionary: [String:User] = [:]
+
 public func loadSampleUsers(){     
     usersArray = []
     
@@ -1346,10 +1367,19 @@ public func loadSampleUsers(){
     usersArray.append(user7)
     usersArray.append(user8)
     usersArray.append(user9)
+    usersArray.append(myUser)
     
     // dummy value as usual, we will keep friendsArray though.
     friendsArray = usersArray
     
+    
+    /*
+    for user in usersArray {
+        usersDictionary.updateValue(user, forKey: user.publicInfo.userName)
+    }
+    
+    usersDictionary.updateValue(myUser, forKey: myUser.publicInfo.userName)
+    */
     
 }
 
@@ -1377,6 +1407,9 @@ public var myUser: User = User(password: "", emailAddress: "kabar3@gmail.com", p
 
 
 public var sampleContainers: [Container] = []
+
+// These dictionaries will simulate the online database:
+
 
 public func loadSampleAsks() {
     
@@ -1483,8 +1516,6 @@ public func loadSampleCompares() {
     sampleContainers.append(container4)
     sampleContainers.append(container5)
     
-    
-    
 }
 
 
@@ -1556,8 +1587,21 @@ public func loadSampleCompareReviews() {
         sampleContainers[x].reviewCollection.reviews.append(compareReview6)
         sampleContainers[x].reviewCollection.reviews.append(compareReview7)
     }
+    
+    let thisIndex: Int = myUserIndex()
+
+    // this loads the sample containers into the myUser that is in the usersArray
+    // All of this as usual is dummy stuff that needs to be deleted on beta
+    usersArray[thisIndex].containerCollection = sampleContainers
+
+
 }
 
+// Applicable to dummy values scenario only. I believe the function it references also is but double check .
+public func myUserIndex() -> Int {
+    // find myUser's index in the usersArray:
+    return indexOfUser(in: usersArray, userID: myUser.publicInfo.userName)
+}
 
 
 

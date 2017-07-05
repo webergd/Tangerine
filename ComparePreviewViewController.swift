@@ -191,8 +191,8 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 let containerToBeAppended = Container(question: newCompare,
                                                       reviewCollection: ReviewCollection(type: .compare))
                 
-               
-                myUser.containerCollection.append(containerToBeAppended)
+                // This ensures that the container number will correspond with the container's location in the containerArray:
+                myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
                     
                 clearOutCurrentCompare() // this is a method is DataModels and will set the flag to .noImageTaken
                     
@@ -211,7 +211,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 self.bottomImageLockButton.setImage(#imageLiteral(resourceName: "unlock_white"), for: .normal)
                 self.topButtonLocked = false
                 self.topImageLockButton.setImage(#imageLiteral(resourceName: "unlock_white"), for: .normal)
-                            }
+            }
             
             alertController.addAction(actionNo)
             alertController.addAction(actionYes)
