@@ -9,30 +9,47 @@
 
 
 import UIKit
+//import QuartzCore // I only did this to try and show rounded corners in interface builder
 
-class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
+class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
-    @IBOutlet weak var helperView: UIView!
-    @IBOutlet weak var scrollView: UIScrollView!
-    @IBOutlet weak var imageView: UIImageView!
-    @IBOutlet weak var askCaptionTextField: UITextField!
-    @IBOutlet weak var askCaptionTopConstraint: NSLayoutConstraint!
+    // TopView's outlets:
+    @IBOutlet weak var topView: UIView!
+    @IBOutlet weak var topScrollView: UIScrollView!
+    @IBOutlet weak var topImageView: UIImageView!
+    @IBOutlet weak var topCaptionTextField: UITextField!
+    @IBOutlet weak var topCaptionTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var topSelectionImageView: UIImageView!
+
+    // BottomView's outlets:
+    @IBOutlet weak var bottomView: UIView!
+    @IBOutlet weak var bottomScrollView: UIScrollView!
+    @IBOutlet weak var bottomImageView: UIImageView!
+    @IBOutlet weak var bottomCaptionTextField: UITextField!
+    @IBOutlet weak var bottomCaptionTopConstraint: NSLayoutConstraint!
+    @IBOutlet weak var bottomSelectionImageView: UIImageView!
     
-    @IBOutlet weak var selectionImageView: UIImageView!
-
-    @IBOutlet weak var strongImageView: UIImageView!
-
-
-
-
-    @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
-
+    
+    
+    @IBOutlet weak var commentsTextViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var commentsTextView: UITextView!
-    
     
     
     @IBOutlet weak var lockedContainersLabel: UILabel!
     @IBOutlet weak var obligatoryReviewsRemainingLabel: UILabel!
+
+    
+    
+    
+    
+    // Link the background views to the code so we can crop them into circles:
+    @IBOutlet weak var topLeftBackgroundView: UIView!
+    @IBOutlet weak var topCenterBackgroundView: UIView!
+    @IBOutlet weak var topRightBackgroundView: UIView!
+    @IBOutlet weak var bottomRightBackgroundView: UIView!
+    @IBOutlet weak var bottomCenterBackgroundView: UIView!
+    @IBOutlet weak var bottomLeftBackgroundView: UIView!
+
     
 
     override var prefersStatusBarHidden: Bool {
@@ -85,6 +102,17 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        makeCircle(view: topLeftBackgroundView)
+        makeCircle(view: topCenterBackgroundView)
+        makeCircle(view: topRightBackgroundView)
+        makeCircle(view: bottomRightBackgroundView)
+        makeCircle(view: bottomCenterBackgroundView)
+        makeCircle(view: bottomLeftBackgroundView)
+
+
+        
+        
         strongOriginalSize = strongImageView.frame.size.height
         // first check and see if it's not an ask
         if assignedQuestions[0].type == .compare {
@@ -141,8 +169,29 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     }
     
+
+    @IBAction func commentButtonTapped(_ sender: Any) {
+        displayTextView()
+    }
+
+    
+    
     // KEYBOARD METHODS:
 
+    // Write a method here to display the comment text View:
+    func displayTextView() {
+        if let superView = commentsTextView.superview {
+            superView.bringSubview(toFront: commentsTextView)
+        }
+        // Need to manually show the keyboard, as well as ensure keyboard doesn't overlap the textView
+    }
+    
+    
+    
+    
+    
+    
+    
     // There is a decent amount of this in viewDidLoad() also
     func keyboardWillShow(_ notification: Notification) {
         // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
@@ -246,8 +295,10 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         //  and maintain the proper length of assignedReviews
     }
     
+    // we also will need a userTapped() method
+    
     func userSwiped(gesture: UIGestureRecognizer) {
-        
+        //This will need to be ammended since we are no longer swiping left or right
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             var currentSelection: yesOrNo
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
@@ -273,9 +324,21 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
     } //end of userSwiped
     
-    
+    // Makes the view that's passed in into a circle
+    func makeCircle(view: UIView){
+        view.layer.cornerRadius = self.view.frame.size.height / 2
+        view.layer.masksToBounds = true
+        view.alpha = 0.6 // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
+        
+    }
 
     func showStrongImage() {
+        ////
+        // Here we will manipulate the strong center background image instead of the imageView
+        ////
+        
+        // We may just want to fade it in instead of changing the size
+        
         self.strongImageView.isHidden = false
         UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
@@ -314,8 +377,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     
     func showSwipeImage(selection: yesOrNo) {
-        // It would be great to animate this or make it fade in and out
-        
+ 
         // If the user swiped up, the muscle emoji should already be set and the image will display
         // Actually this whole method could be rewritten with that in mind.
         
@@ -343,6 +405,9 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     // Allows the user to zoom within the scrollView that the user is manipulating at the time.
     func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        
+        // I think I'll need an if statement here to choose which scrollView to manipulate. Put it alongside other CompareVC's to see how I did it before.
+        
         return self.imageView
     }
     
@@ -357,8 +422,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     }
     
 
+
     @IBAction func reportButtonTapped(_ sender: Any) {
-    
         //pop up a menu and find out what kind of report the user wants
         print("report content button tapped")
         // we pass the processReport function here so that the system will wait for the alert controller input before continuing on:

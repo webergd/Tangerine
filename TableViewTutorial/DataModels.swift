@@ -165,6 +165,46 @@ public func resetTextView(textView: UITextView?, blankText: String) {
     
 }
 
+public func askForReportType(viewController: UIViewController, function: @escaping ()-> Void) -> reportType {
+    print("report alert view method called in datamodels")
+    var valueToReturn: reportType = .other
+    let alertController = UIAlertController(title: "PLEASE LIST REASON FOR REPORTING", message: nil, preferredStyle: .actionSheet)
+    
+    // this should iterate through all enum values and add them as possible selections in the alertView
+    for rT in iterateEnum(reportType) {
+        let action = UIAlertAction(title: rT.rawValue, style: .default) {
+            UIAlertAction in
+            valueToReturn = rT
+            function()
+        }
+        alertController.addAction(action)
+
+    }
+    
+    viewController.present(alertController, animated: true, completion: nil)
+    return valueToReturn
+}
+
+/*
+case nudity
+case demeaning
+case notRelevant
+case other
+case none
+ */
+
+func iterateEnum<T: Hashable>(_: T.Type) -> AnyIterator<T> {
+    var i = 0
+    return AnyIterator {
+        let next = withUnsafeBytes(of: &i) { $0.load(as: T.self) }
+        if next.hashValue != i { return nil }
+        i += 1
+        return next
+    }
+}
+
+
+
 // MARK: TIME REMAINING
 
 public func calcTimeRemaining(_ timePosted: Date) -> String {
@@ -474,24 +514,14 @@ public class Container {
     }
     var question: Question
     var reviewCollection: ReviewCollection
-    var numReports: Int 
+    var reportsCollection: [Report]
+    var numReports: Int { return reportsCollection.count }
     
     init(question q: Question, reviewCollection r: ReviewCollection) {
         question = q
         reviewCollection = r
-        numReports = 0
+        reportsCollection = []
         myUser.containerCollection.append(self) // at some point I will also need a way to remove the containers
-    }
- 
-    // If we call this on a container, it will update its tracker of how many of its reviews are inappropriate content reports.
-    func updateNumReports(){
-        var reports: Int = 0
-        for review in self.reviewCollection.reviews {
-            if review.reported != .none {
-                reports += 1
-            }
-        }
-        self.numReports = reports
     }
 
 }
@@ -499,6 +529,10 @@ public class Container {
 public struct ContainerIdentification {
     var userID: String
     var containerNumber: Int
+}
+
+public struct Report {
+    var type: reportType
 }
 
 public class ReviewCollection {
@@ -1145,7 +1179,6 @@ protocol isAReview {  // I am still undecided whether to attach the whole user o
     var reviewerAge: Int {get}
     var comments: String {get set}
     var reviewerInfo: PublicInfo {get set}
-    var reported: reportType {get set}
 }
 
 
@@ -1170,14 +1203,12 @@ public struct AskReview: isAReview {
     var reviewerDemo: demo { return reviewerInfo.orientation }
     var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
-    var reported: reportType
     
     init(selection sel: yesOrNo, strong strg: yesOrNo?, comments c: String) {
         selection = sel
         strong = strg
         comments = c
         reviewerInfo = myUser.publicInfo
-        reported = .none // default report type is none
     }
     
     // this only exists to facilitate dummy reviews:
@@ -1187,7 +1218,6 @@ public struct AskReview: isAReview {
         strong = strg
         comments = c
         reviewerInfo = p
-        reported = .none // default report type is none
     }
 }
 
@@ -1204,7 +1234,6 @@ public struct CompareReview: isAReview {
     var reviewerDemo: demo { return reviewerInfo.orientation }
     var reviewerAge: Int { return reviewerInfo.age }
     var comments: String
-    var reported: reportType = .none
     
     init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, comments c: String) {
         selection = sel
@@ -1212,7 +1241,7 @@ public struct CompareReview: isAReview {
         strongNo = strgN
         comments = c
         reviewerInfo = myUser.publicInfo
-        reported = .none // default report type is none
+
     }
     
     // this only exists to facilitate dummy reviews:
@@ -1223,7 +1252,6 @@ public struct CompareReview: isAReview {
         strongNo = strgN
         comments = c
         reviewerInfo = p
-        reported = .none // default report type is none
     }
     
 }
