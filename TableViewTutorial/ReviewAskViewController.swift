@@ -12,6 +12,10 @@ import UIKit
 
 class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
+    
+    @IBOutlet var mainView: UIView!
+    @IBOutlet weak var coverView: UIView!
+    
     @IBOutlet weak var helperView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
     @IBOutlet weak var imageView: UIImageView!
@@ -53,6 +57,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     func configureView() {
         print("configuring ReviewAsk view")
+        strongFlag = false
+        strongImageView.isHidden = true
         
         // unwraps the Ask that the tableView sent over:
         if let thisAsk = ask {
@@ -75,7 +81,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             }
 
         } else {
-            print("Passed friend is nil")
+            print("Passed ask is nil")
         }
         
         resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
@@ -85,12 +91,13 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        strongOriginalSize = strongImageView.frame.size.height
+        
         // first check and see if it's not an ask
         if assignedQuestions[0].type == .compare {
-            //segue to CompareAsk
-            // CODE NEEDED
+            segueToReviewCompareViewController()
         }
+        
+        strongOriginalSize = strongImageView.frame.size.height
         
         commentsTextView.translatesAutoresizingMaskIntoConstraints = false
         
@@ -109,10 +116,10 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         self.hideKeyboardWhenTappedAround()
         
         // This will move the caption text box out of the way when the keyboard pops up:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         // This will move the caption text box back down when the keyboard goes away:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         // Do any additional setup after loading the view, typically from a nib.
         scrollView.delegate = self
@@ -145,6 +152,11 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     // There is a decent amount of this in viewDidLoad() also
     func keyboardWillShow(_ notification: Notification) {
+        // this would look better if we animated a fade in of the coverView (and a fade out lower down)
+        coverView.isHidden = false
+        mainView.bringSubview(toFront: coverView)
+        mainView.bringSubview(toFront: commentsTextView)
+        
         // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
         
         self.commentsTextView.textColor = UIColor.black
@@ -181,6 +193,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
  
         }
+        mainView.sendSubview(toBack: coverView)
+        coverView.isHidden = true
         self.view.layoutIfNeeded()
     }
     
@@ -218,8 +232,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             
             print("length of usersArray is: \(usersArray.count)")
             print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisAsk.containerID.userID))")
-            print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
-            print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
+            //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
+            //print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
             
             usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
 
@@ -231,15 +245,17 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
         //someUser.containerCollection[containerNumber].reviewCollection.reviews.append(createdReview)
         print("new review created.")
-        loadNextReview()
+        loadNextQuestion()
 
     } // end of createReview
     
-    func loadNextReview() {
+    func loadNextQuestion() {
         assignedQuestions.removeFirst()
         if assignedQuestions[0].type == .compare {
             // need code to segue to CompareReviewVC without stacking it
-            print("segue to CompareReviewViewController")
+            print("segue to ReviewCompareViewController")
+            segueToReviewCompareViewController()
+            return
         }
         ask = assignedQuestions[0] as? Ask
         // MARK: Also need code to pull a new review from the database 
@@ -256,7 +272,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 showStrongImage()
                 return // this avoids reloading the form or a segue since it was just an up-swipe
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.down {
-                strongFlag = true
+                strongFlag = false
                 hideStrongImage()
                 return // this avoids reloading the form or a segue since it was just an down-swipe
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
@@ -331,14 +347,51 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         self.selectionImageView.isHidden = false
         
         // delays specified number of seconds before executing code in the brackets:
-        UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
-            self.selectionImageView.isHidden = true
-            self.createReview(selection: selection)
+        UIView.animate(withDuration: 0.5, delay: 0.3,
+            options: UIViewAnimationOptions.allowAnimatedContent,
+            animations: {
+                self.selectionImageView.alpha = 0.0
+            },
+            completion: {
+                finished in
+                self.selectionImageView.isHidden = true
+                self.createReview(selection: selection)
         })
 
     }
     
-    
+    func segueToReviewCompareViewController() {
+        // pop this VC off the stack
+        //self.navigationController?.popViewController(animated: false)
+        
+        ////////////
+        // ok this works when the above line is commented out but is there a way to push the next VC and then pop the next one below that in the background without the user seeing?
+        
+
+        ///////        /////////
+        // Untested thus far: //
+        ///////         ////////
+        if let navController = self.navigationController {
+            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewCompareViewController") as! ReviewCompareViewController
+            //let newVC = DestinationViewController(nibName: "DestinationViewController", bundle: nil)
+            
+            var stack = navController.viewControllers
+            stack.remove(at: stack.count - 1)       // remove current VC
+            stack.insert(nextVC, at: stack.count) // add the new one
+            navController.setViewControllers(stack, animated: false) // boom!
+        }
+        
+        
+        
+        
+        
+        
+        
+        // then load the review compare VC onto the stack
+        //let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewCompareViewController") as! ReviewCompareViewController
+        // pushes askBreakdownViewController onto the nav stack
+        //self.navigationController?.pushViewController(nextVC, animated: false)
+    }
 
     
     // Allows the user to zoom within the scrollView that the user is manipulating at the time.
@@ -387,7 +440,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         // delays specified number of seconds before executing code in the brackets:
         UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
             self.selectionImageView.isHidden = true
-            self.loadNextReview()
+            self.loadNextQuestion()
         })
     }
     

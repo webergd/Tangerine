@@ -224,8 +224,39 @@ extension TimeInterval { //got this off the internet to convert an NSTimeInterva
 // calculates the caption's autolayout constraint for its distance from the top of the imageView it is being displayed over.
 // Normally this constraint will actually be within a View that is acting as a container for the imageView, scrollView, and captionTextField
 public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, captionYLocation: CGFloat) -> CGFloat {
+    // As you can see, all this does it multiply the values
+    // This is because the yLocation is just a fraction between 0 and 1
+    //  that represents the percentage of the way down the outside view
+    //  that the caption should appear
+    // The property "imageViewFrameHeight could be misleading because
+    //  it could also be the height of the external "helper view" that contains
+    //  a scrollView which in turn contains an imageView.
+    // The reason it works normally to call the method using the imageView's
+    //  height is because this method is normally invoked upon loading the
+    //  view controller and the scrollView's zoomScale is normally 1.0 at that
+    //  point in the code's execution. 
     return imageViewFrameHeight * captionYLocation
 }
+
+
+public func load(imageView: UIImageView?, with image: UIImage?, within helperView: UIView?, caption: Caption, captionTextField: UITextField?, captionTopConstraint: NSLayoutConstraint?) {
+    if let thisImageView = imageView,
+        let thisHelperView = helperView,
+        let thisTopConstraint = captionTopConstraint,
+        let thisImage = image,
+        let thisTextField = captionTextField {
+        
+        thisImageView.image = thisImage
+        
+        thisTextField.isHidden = !caption.exists
+        thisTextField.text = caption.text
+        thisTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: thisHelperView.frame.height, captionYLocation: caption.yLocation)
+        
+    }
+    
+    
+}
+
 
 
 // Should this just be in the AskVC since Compare bars are calc'd slightly differently?

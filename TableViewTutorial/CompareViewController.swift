@@ -147,9 +147,10 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         
         
 
-        
+        // shouldn't this technically use the helper view's frame.height rather than the imageView?
         if let thisCaptionTopConstraint = self.topCaptionTextFieldTopConstraint {
-            thisCaptionTopConstraint.constant = topImageView.frame.height * thisCompare.compareCaption1.yLocation
+            thisCaptionTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: topImageView.frame.height, captionYLocation: thisCompare.compareCaption1.yLocation)
+            
             print("topView frame height: \(topView.frame.height), topScrollView frame height: \(topScrollView.frame.height)")
             print("topImage frame height: \(topImageView.frame.height), caption y Loc is: \(thisCompare.compareCaption1.yLocation)")
             print("top caption top constraint set to: \(topCaptionTextFieldTopConstraint.constant)")
@@ -167,6 +168,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         
         if let thisCaptionTopConstraint = self.bottomCaptionTextFieldTopConstraint {
             thisCaptionTopConstraint.constant = bottomImageView.frame.height * thisCompare.compareCaption2.yLocation
+            
             print("bottomImage frame height: \(bottomImageView.frame.height), caption y Loc is: \(thisCompare.compareCaption2.yLocation)")
             print("bottom caption top constraint set to: \(bottomCaptionTextFieldTopConstraint.constant)")
         }

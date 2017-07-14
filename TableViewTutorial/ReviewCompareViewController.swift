@@ -13,6 +13,9 @@ import UIKit
 
 class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
     
+    @IBOutlet var mainView: UIView!
+    @IBOutlet weak var coverView: UIView!
+    
     // TopView's outlets:
     @IBOutlet weak var topView: UIView!
     @IBOutlet weak var topScrollView: UIScrollView!
@@ -30,12 +33,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     @IBOutlet weak var bottomSelectionImageView: UIImageView!
     
     
-    
+    // commentsTextView outlets
     @IBOutlet weak var commentsTextViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var commentsTextView: UITextView!
     
-    
+    // Additional information labels and images outlets
     @IBOutlet weak var lockedContainersLabel: UILabel!
+    @IBOutlet weak var strongImageView: UIImageView!
     @IBOutlet weak var obligatoryReviewsRemainingLabel: UILabel!
 
     
@@ -56,9 +60,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         return true
     }
     
-    var ask: Ask? {
+    var compare: Compare? {
         didSet{
-            print("ask value changed")
+            print("compare value changed")
             self.configureView()
         }
     }
@@ -66,33 +70,42 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     var strongFlag: Bool = false
     
     let enterCommentConstant: String = "Enter optional comments here."
+    let backgroundCirclesAlphaValue: CGFloat = 0.75
     var strongOriginalSize: CGFloat = 70.0 // this is a placeholder value, updated in viewDidLoad()
     
     func configureView() {
         print("configuring ReviewAsk view")
         
         // unwraps the Ask that the tableView sent over:
-        if let thisAsk = ask {
+        if let thisCompare = compare {
             
-            if let thisImageView = self.imageView,
-                let thisCaptionTextField = self.askCaptionTextField,
-                let thisCaptionTopConstraint = self.askCaptionTopConstraint,
-                let thisLockedContainersLabel = self.lockedContainersLabel,
+            // Load the top image:
+            load(imageView: topImageView,
+                 with: thisCompare.comparePhoto1,
+                 within: topView,
+                 caption: thisCompare.compareCaption1,
+                 captionTextField: topCaptionTextField,
+                 captionTopConstraint: topCaptionTopConstraint)
+            
+            // Load the bottom image:
+            load(imageView: bottomImageView,
+                 with: thisCompare.comparePhoto2,
+                 within: bottomView,
+                 caption: thisCompare.compareCaption2,
+                 captionTextField: bottomCaptionTextField,
+                 captionTopConstraint: bottomCaptionTopConstraint)
+            
+            
+            if let thisLockedContainersLabel = self.lockedContainersLabel,
                 let thisObligatoryReviewsRemainingLabel = self.obligatoryReviewsRemainingLabel {
-                
-                thisImageView.image = thisAsk.askPhoto
-
-                thisCaptionTextField.isHidden = !thisAsk.askCaption.exists
-                thisCaptionTextField.text = thisAsk.askCaption.text
-                thisCaptionTopConstraint.constant = thisImageView.frame.height * thisAsk.askCaption.yLocation
 
                 thisLockedContainersLabel.text = "🗝" + String(describing: lockedContainers.count)
-                thisObligatoryReviewsRemainingLabel.text = "📋" + String(describing: obligatoryReviewsRemaining)
+                thisObligatoryReviewsRemainingLabel.text = String(describing: obligatoryReviewsRemaining) + "📋"
 
             }
 
         } else {
-            print("Passed friend is nil")
+            print("Passed compare is nil")
         }
         
         resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
@@ -103,6 +116,11 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // first check and see if it's not a compare
+        if assignedQuestions[0].type == .ask {
+            segueToReviewAskViewController()
+        }
+        
         makeCircle(view: topLeftBackgroundView)
         makeCircle(view: topCenterBackgroundView)
         makeCircle(view: topRightBackgroundView)
@@ -110,47 +128,39 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         makeCircle(view: bottomCenterBackgroundView)
         makeCircle(view: bottomLeftBackgroundView)
 
-
-        
-        
+        // we may or may not need this for ReviewCompareVC
         strongOriginalSize = strongImageView.frame.size.height
-        // first check and see if it's not an ask
-        if assignedQuestions[0].type == .compare {
-            //segue to CompareAsk
-            // CODE NEEDED
-        }
         
         commentsTextView.translatesAutoresizingMaskIntoConstraints = false
         
-        ask = assignedQuestions[0] as? Ask
+        compare = assignedQuestions[0] as? Compare
         // The above line causes configureView to be called.
-        
-        
         
         // This makes the text view have rounded corners.
         commentsTextView.clipsToBounds = true
         commentsTextView.layer.cornerRadius = 10.0
         commentsTextView.delegate = self
-        setTextViewYPosition()
+        //setTextViewYPosition()
         
         // Hides keyboard when user taps outside of text view
         self.hideKeyboardWhenTappedAround()
         
         // This will move the caption text box out of the way when the keyboard pops up:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ReviewCompareViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
         // This will move the caption text box back down when the keyboard goes away:
         NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
-        // Do any additional setup after loading the view, typically from a nib.
-        scrollView.delegate = self
+
+        topScrollView.delegate = self
+        bottomScrollView.delegate = self
 
         
         //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
         //askView.addGestureRecognizer(swipeViewGesture)
         
         
-        // Gesture Recognizers for swiping left and right
+        // Gesture Recognizers for swiping up and down
         let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
         swipeUp.direction = UISwipeGestureRecognizerDirection.up
         self.view.addGestureRecognizer(swipeUp)
@@ -159,19 +169,35 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         swipeDown.direction = UISwipeGestureRecognizerDirection.down
         self.view.addGestureRecognizer(swipeDown)
         
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
-        self.view.addGestureRecognizer(swipeRight)
+        // For tapping the images to select them:
+        let tapTopImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedTop(_:) ))
+        topImageView.addGestureRecognizer(tapTopImageGesture)
         
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
-        self.view.addGestureRecognizer(swipeLeft)
+        let tapBottomImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedBottom(_:) ))
+        bottomImageView.addGestureRecognizer(tapBottomImageGesture)
 
+    }
+    
+
+    
+    // Allows the user to zoom within the scrollView that the user is manipulating at the time.
+    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
+        if scrollView == topScrollView {
+            return self.topImageView
+        } else {
+            return self.bottomImageView
+        }
+    }
+    
+    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
+        topScrollView.setZoomScale(1.0, animated: true)
+        bottomScrollView.setZoomScale(1.0, animated: true)
     }
     
 
     @IBAction func commentButtonTapped(_ sender: Any) {
         displayTextView()
+        commentsTextView.becomeFirstResponder() // This makes the keyboard pop up right away
     }
 
     
@@ -180,18 +206,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
 
     // Write a method here to display the comment text View:
     func displayTextView() {
-        if let superView = commentsTextView.superview {
-            superView.bringSubview(toFront: commentsTextView)
-        }
-        // Need to manually show the keyboard, as well as ensure keyboard doesn't overlap the textView
+        // this would look better if we animated a fade in of the coverView (and a fade out lower down)
+        coverView.isHidden = false
+        mainView.bringSubview(toFront: coverView)
+        mainView.bringSubview(toFront: commentsTextView)
+
     }
-    
-    
-    
-    
-    
-    
-    
+
     // There is a decent amount of this in viewDidLoad() also
     func keyboardWillShow(_ notification: Notification) {
         // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
@@ -211,7 +232,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             //this makes the text box movement animated so it looks smoother:
             UIView.animate(withDuration: 0.8, animations: {
 
-                self.textViewTopConstraint.constant = UIScreen.main.bounds.height - keyboardFrame.size.height - self.topLayoutGuide.length - self.commentsTextView.frame.size.height
+                self.commentsTextViewTopConstraint.constant = UIScreen.main.bounds.height - keyboardFrame.size.height - self.topLayoutGuide.length - self.commentsTextView.frame.size.height
                 self.view.layoutIfNeeded()
             })
         }
@@ -221,7 +242,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         //this makes the text box movement animated so it looks smoother:
         UIView.animate(withDuration: 1.0, animations: {
             //moves the textView back to its original location:
-            self.setTextViewYPosition()
+            //self.setTextViewYPosition()
             
         })
         // If the user has entered no text in the titleTextField, reset it to how it was originally:
@@ -230,6 +251,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
  
         }
+        mainView.sendSubview(toBack: commentsTextView)
+        mainView.sendSubview(toBack: coverView)
+        coverView.isHidden = true
         self.view.layoutIfNeeded()
     }
     
@@ -242,19 +266,36 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     // END KEYBOARD METHODS
 
     
+    // I don't think this is necessary for ReviewCompareVC
+    /*
     func setTextViewYPosition() {
         // This positions the textView correctly so that it's not covering up the image (or too low):
-        textViewTopConstraint.constant = helperView.frame.size.height * 1.1
+        commentTextViewTopConstraint.constant = helperView.frame.size.height * 1.1
+    }
+    */
+    
+    func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
+        print("user tapped top")
+        self.showSelectionImage(selection: .top)
+        //createReview(selection: .top)
     }
     
-    func createReview(selection: yesOrNo) {
-        var strong: yesOrNo? = nil
-        if strongFlag == true { strong = selection }
-        let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text)
+    func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
+        print("user tapped bottom")
+        self.showSelectionImage(selection: .bottom)
+        //createReview(selection: .bottom)
+    }
+    
+    func createReview(selection: topOrBottom) {
+        
+        // this strongYes / strongNo logic will change if I implement strong no functionality (currently disabled)
+        if commentsTextView.text == enterCommentConstant { commentsTextView.text = ""}
+        let createdReview: CompareReview = CompareReview(selection: selection, strongYes: strongFlag, strongNo: false, comments: commentsTextView.text)
+        
         // normally we would then send this review up to the server.
         // Instead, for the sake of testing, we will add it to the user's reviews
-        // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
-        if let thisAsk = ask {
+
+        if let thisCompare = compare {
 
             // Figures out which array the userID is at, then returns the element at that index in the usersArray.
             // In other words, it returns that user; not a copy, the actual user.
@@ -263,62 +304,81 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             // This is basically what is happening here:
             //  1. look up the user's id name in the usersArray,
             //  2. look up the container number in that user's containerCollection,
-            //  3. append the new askReview to the container's review collection.
+            //  3. append the new compareReview to the container's review collection.
             
             print("length of usersArray is: \(usersArray.count)")
-            print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisAsk.containerID.userID))")
-            print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
-            print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
+            print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisCompare.containerID.userID))")
+            //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection.count)")
+            //print("index of container collection to replace \(thisCompare.containerID.containerNumber)")
             
-            usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+            
+            // Make sure we are creating a CompareReview:    //////
+            print("about to append review to the review collection")
+            usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
 
         } else {
             print("Fatal Error:")
-            print("The ask was null when trying to access it in the createReview() method")
+            print("The compare was null when trying to access it in the createReview() method")
             fatalError() // crash the app deliberately
         }
 
         //someUser.containerCollection[containerNumber].reviewCollection.reviews.append(createdReview)
         print("new review created.")
-        loadNextReview()
+
+        
+        
+        loadNextQuestion()
 
     } // end of createReview
     
-    func loadNextReview() {
+    func loadNextQuestion() {
+        
         assignedQuestions.removeFirst()
-        if assignedQuestions[0].type == .compare {
+        
+        // UNCOMMENT THIS WHEN IMPLEMENTING SEGUE FUNCTIONALITY:
+        
+        if assignedQuestions[0].type == .ask {
             // need code to segue to CompareReviewVC without stacking it
-            print("segue to CompareReviewViewController")
+            print("segue to ReviewAskViewController")
+            segueToReviewAskViewController()
+
         }
-        ask = assignedQuestions[0] as? Ask
+        
+        compare = assignedQuestions[0] as? Compare
         // MARK: Also need code to pull a new review from the database 
         //  and maintain the proper length of assignedReviews
     }
+
     
-    // we also will need a userTapped() method
     
     func userSwiped(gesture: UIGestureRecognizer) {
         //This will need to be ammended since we are no longer swiping left or right
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            var currentSelection: yesOrNo
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
                 // show the strong arm and set a strong flag to true
-                strongFlag = true
-                showStrongImage()
+                switch strongFlag {
+                case true: return
+                case false:
+                    strongFlag = true
+                    showStrongImage()
+                }
                 return // this avoids reloading the form or a segue since it was just an up-swipe
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.down {
-                strongFlag = true
+                strongFlag = false
                 hideStrongImage()
                 return // this avoids reloading the form or a segue since it was just an down-swipe
+            /*
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
-                currentSelection = .yes
+                currentSelection = .top
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
-                currentSelection = .no
+                currentSelection = .bottom
+            */
             } else {
                 print("no selection made from the swipe")
             return
             }
-            self.showSwipeImage(selection: currentSelection)
+            
+
         }
 
         
@@ -326,9 +386,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     
     // Makes the view that's passed in into a circle
     func makeCircle(view: UIView){
-        view.layer.cornerRadius = self.view.frame.size.height / 2
+        view.layer.cornerRadius = view.frame.size.height / 2
         view.layer.masksToBounds = true
-        view.alpha = 0.6 // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
+        view.alpha = backgroundCirclesAlphaValue // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
         
     }
 
@@ -338,11 +398,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         ////
         
         // We may just want to fade it in instead of changing the size
+        self.topCenterBackgroundView.isHidden = false
         
-        self.strongImageView.isHidden = false
+        //self.strongImageView.isHidden = false
         UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
             self.strongImageView.frame.size.width = self.strongOriginalSize * 2.0
+            self.topCenterBackgroundView.alpha = self.backgroundCirclesAlphaValue
             // I could also try to animate a change in the alpha instead to let it fade in
             // I'm pretty sure that will work.
         }, completion: {
@@ -358,63 +420,68 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 0.0001
             self.strongImageView.frame.size.width = self.strongOriginalSize * 0.0001
+            self.topCenterBackgroundView.alpha = 0.0
             //self.strongImageView.isHidden = true
             // I could also try to animate a change in the alpha instead to let it fade in
             // I'm pretty sure that will work.
         }, completion: {
             finished in
-            self.strongImageView.isHidden = true
+            //self.strongImageView.isHidden = true
+            self.topCenterBackgroundView.isHidden = true
         })
         
 
         
     } // end of hideStrongImage()
-    
-    
-    
-    
-    
-    
-    
-    func showSwipeImage(selection: yesOrNo) {
- 
-        // If the user swiped up, the muscle emoji should already be set and the image will display
-        // Actually this whole method could be rewritten with that in mind.
-        
+
+    func showSelectionImage(selection: topOrBottom) {
         switch selection {
-        case .yes:
-            // display yes image on screen
-            self.selectionImageView.image = #imageLiteral(resourceName: "greencheck")
-        case .no:
-            //display no image on screen
-            self.selectionImageView.image = #imageLiteral(resourceName: "redX")
+        case .top:
+            self.topSelectionImageView.image = #imageLiteral(resourceName: "greencheck")
+            self.topSelectionImageView.alpha = 1.0
+            self.bottomSelectionImageView.image = #imageLiteral(resourceName: "redX")
+            self.bottomSelectionImageView.alpha = 0.5
+        case .bottom:
+            self.topSelectionImageView.image = #imageLiteral(resourceName: "redX")
+            self.topSelectionImageView.alpha = 0.5
+            self.bottomSelectionImageView.image = #imageLiteral(resourceName: "greencheck")
+            self.bottomSelectionImageView.alpha = 1.0
         }
-        self.selectionImageView.alpha = 0.9
-        self.selectionImageView.isHidden = false
+        
+        self.topSelectionImageView.isHidden = false
+        self.bottomSelectionImageView.isHidden = false
         
         // delays specified number of seconds before executing code in the brackets:
-        UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
-            self.selectionImageView.isHidden = true
-            self.createReview(selection: selection)
-        })
+        UIView.animate(withDuration: 0.5, delay: 0.3,
+                       options: UIViewAnimationOptions.allowAnimatedContent,
+                       animations: {
+                        self.topSelectionImageView.alpha = 0.0
+                        self.bottomSelectionImageView.alpha = 0.0
+                        },
+                       completion: { finished in
+                        self.topSelectionImageView.isHidden = true
+                        self.bottomSelectionImageView.isHidden = true
+                        self.createReview(selection: selection)
+                        }
+        )
 
+    } // end showSelectionImage()
+
+    func segueToReviewAskViewController() {
+        ///////        /////////
+        // Untested thus far: //
+        ///////         ////////
+        if let navController = self.navigationController {
+        let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewAskViewController") as! ReviewAskViewController
+        //let newVC = DestinationViewController(nibName: "DestinationViewController", bundle: nil)
+    
+        var stack = navController.viewControllers
+        stack.remove(at: stack.count - 1)       // remove current VC
+        stack.insert(nextVC, at: stack.count) // add the new one
+        navController.setViewControllers(stack, animated: true) // boom!
+        }
     }
     
-    
-
-    
-    // Allows the user to zoom within the scrollView that the user is manipulating at the time.
-    func viewForZooming(in scrollView: UIScrollView) -> UIView? {
-        
-        // I think I'll need an if statement here to choose which scrollView to manipulate. Put it alongside other CompareVC's to see how I did it before.
-        
-        return self.imageView
-    }
-    
-    func scrollViewDidEndZooming(_ scrollView: UIScrollView, with view: UIView?, atScale scale: CGFloat) {
-        scrollView.setZoomScale(1.0, animated: true)
-
-    }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -432,10 +499,10 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         let thisReport: Report = Report(type: thisReportType)
         
         
-        if let thisAsk = ask {
+        if let thisCompare = compare {
             
             // this will need to be changed to a database update later
-            usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reportsCollection.append(thisReport)
+            usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reportsCollection.append(thisReport)
             
         } else {
             print("Fatal Error:")
@@ -446,15 +513,36 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     }
     
     func processReport() {
-        self.selectionImageView.image = #imageLiteral(resourceName: "redexclamation")
-        self.selectionImageView.alpha = 0.9
-        self.selectionImageView.isHidden = false
+        
+        // Here's a question:
+        // Do we let them report a specific image or just the whole compare?
+        // Probably just do the whole compare and display the red exclamation on both selectionImageViews.
+        
+        // Sets both selection images to the red exclamation point
+        displayReportImages(imageView: topSelectionImageView)
+        displayReportImages(imageView: bottomSelectionImageView)
+   
         // delays specified number of seconds before executing code in the brackets:
-        UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
-            self.selectionImageView.isHidden = true
-            self.loadNextReview()
-        })
+        UIView.animate(withDuration: 0.5, delay: 0.3,
+                       options: UIViewAnimationOptions.allowAnimatedContent,
+                       animations: {
+                        self.topSelectionImageView.alpha = 0.0
+                        self.bottomSelectionImageView.alpha = 0.0
+                        },
+                       completion: { finished in
+                        self.topSelectionImageView.isHidden = true
+                        self.bottomSelectionImageView.isHidden = true
+                        self.loadNextQuestion()
+                        }
+        )
     }
+    
+    func displayReportImages(imageView: UIImageView) {
+        imageView.image = #imageLiteral(resourceName: "redexclamation")
+        imageView.alpha = 0.9
+        imageView.isHidden = false
+    }
+    
     
     
     @IBAction func menuButtonTapped(_ sender: Any) {

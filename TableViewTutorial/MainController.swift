@@ -23,6 +23,9 @@ class MainController: UIViewController {
         currentCompare.imageBeingEdited2 = nil
         whatToCreate = .ask
         */
+        
+        
+        
     }
     
     override func viewDidLoad() {
@@ -78,9 +81,28 @@ class MainController: UIViewController {
         // hides the nav bar
         self.navigationController?.setNavigationBarHidden(true, animated: animated)
     }
+    
+    @IBAction func reviewOthersButtonTapped(_ sender: Any) {
+        // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
+        if assignedQuestions[0].type == .ask {
+            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewAskViewController") as! ReviewAskViewController
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        } else if assignedQuestions[0].type == .compare {
+            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewCompareViewController") as! ReviewCompareViewController
+            self.navigationController?.pushViewController(nextVC, animated: true)
+        } else {
+            print("assignedQuestions array is null")
+            fatalError()
+        }
+        // pushes askBreakdownViewController onto the nav stack
+        
+        
+    }
+    
+    
 }
 
- 
- 
+
+
 
 
