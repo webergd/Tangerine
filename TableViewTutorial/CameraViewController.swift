@@ -1184,6 +1184,37 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         var imageToCreateAskWith: UIImage = self.sFunc_imageFixOrientation(img: currentImage)
         
         let captionToCreateAskWith = createCaption()
+        
+        
+        /*
+        ////////////////////////////////////////
+        
+        There is currently a disconnect between the myUser object that we have, and the 
+         myUser object that is stored in the usersArray. In reality, we will need to pull the
+         myUser object from the database whenever we want to modify any of its properties
+         so every instance in which myUser appears on its own and is modified, actually needs to be replaced
+         with some version of:
+         
+         usersArray[indexOfUser(in: usersArray, userID: newAsk.containerID.userID)]
+         usersArray[indexOfUser(in: usersArray, userID: "wyatt")]
+        
+        The reason this will always return the myUser object in the usersAray is because the indexOfUser() function
+         looks for the specific username in the usersArray and returns its index so that the actual object can
+         be accessed by passing that index int value into the array to get whatever user is at that index.
+        In the case where I just type in "wyatt", it's simple. 
+        In the case where I pass in newAsk.containerID.userID, it works because since myUser is wyatt, every new ask
+         or compare will be added to the containerCollection of wyatt automatically because the system sees that user
+         as "me" and it knows that reviews are created by "me."
+         
+        A case can be made for having a local copy of myUser independent from the myUser object in the database, but it should only be 
+         referenced to get simple information like preferences, username, etc. Anytime we read or write to any of myUser's
+         properties involving myUser's containerCollection, we need to be pushing or pulling from the database, aka the usersArray
+         in this case for simulation purposes in the absence of the database.
+         
+
+        ////////////////////////////////////////
+        */
+
 
         // To fix back to normal, replace imageToCreateAskWith with currentImage in the next line:
         let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, caption: captionToCreateAskWith, timePosted: Date())
@@ -1197,13 +1228,20 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // Creates a new container containing the newAsk and a flag that tells the container it is holding an Ask, as well as a new ReviewCollection that is initialized.
         
         
-        let containerToBeAppended = Container(question: newAsk,
-                                              reviewCollection: ReviewCollection(type: .ask))
+        let containerToBeAppended = Container(question: newAsk)
+        
+        //usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+        
+        // this is the line I added. It should add the new question to the myUser that's in the usersArray
+        usersArray[indexOfUser(in: usersArray, userID: newAsk.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+        
         
         
         // this ensures that the containerNumber corresponds with the container's index in the containerArray
-        myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+        //myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+        print("new ask added to myUser.containerCollection at index: \(containerToBeAppended.containerID.containerNumber)")
 
+        assignedQuestions.append(containerToBeAppended.question) //puts the new question in the reviewQueue
         
         //let testAsk = containerCollection.last as! Ask
         //print("New Ask now appended to containerCollection. Last Ask in the Array is title: \(testAsk.askTitle), timePosted: \(testAsk.timePosted)")

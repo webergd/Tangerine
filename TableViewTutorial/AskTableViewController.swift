@@ -41,7 +41,7 @@ class AskTableViewController: UITableViewController {
         //loadSampleAskReviews()
         //loadSampleCompareReviews()
         // this appends the dummy values to this VC's containers property
-        containers = sampleContainers
+        containers = myUser.containerCollection
         // the fact that this sorts the containers array by timestamp is the reason the dummy values are always at the top (they are the oldest)
         sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         

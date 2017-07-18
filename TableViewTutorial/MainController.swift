@@ -30,7 +30,6 @@ class MainController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        loadSampleUsers()
 
         // clear the question queue so old ones don't just sit in it
         assignedQuestions = []
@@ -40,20 +39,31 @@ class MainController: UIViewController {
         // What will not be erased however, are reviews created for questions created by the camera in the app.
         // Keep in mind, all of this is for testing and should be removed at beta.
         
+        // this ensures that the sample database itself only gets created once:
         if loaded == false {
-            loadSampleAsks()
-            loadSampleCompares()
-            loadSampleAskReviews()
-            loadSampleCompareReviews()
+            sd.loadDummyValues()
             print("all sample questions and reviews loaded")
-            // as one final step, load these sample containers into myUser's containerCollection
-            print("storing sample containers to my containerCollection")
-            myUser.containerCollection = sampleContainers
+            
+            ///////////////////////////
+            //                      ///
+            //   START HERE, WYATT  ///
+            //                      ///
+            ///////////////////////////
+            
+            
+            
+            // we need methods to merge lists in case the user modified anything from a different device. Keep in mind, something deleted from another device should be deleted from the local file, not replaced in the database file.
+            
+            // we need to pull some values that would normally be pushed, only becuase this is a simulation. We will only pull them once though.
             
             loaded = true
+            
 
         }
         
+        
+        
+        // This really should be done at the point the asks and compares are created:
         // // front load the queue with any new questions that we created in the app
         for thisContainer in myUser.containerCollection {
             assignedQuestions.append(thisContainer.question)

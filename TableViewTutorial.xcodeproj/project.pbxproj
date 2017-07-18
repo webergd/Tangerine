@@ -39,6 +39,7 @@
 		2AECD6CE1D42938A00AAB743 /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
 		2AF4D5161E58D29C000B958C /* ComparePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */; };
 		2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */; };
+		2AFD1C841F1E68DD006DD919 /* SimulatedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +98,7 @@
 		2AECD6CD1D42938A00AAB743 /* DataModels.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DataModels.swift; sourceTree = "<group>"; };
 		2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComparePreviewViewController.swift; path = ../ComparePreviewViewController.swift; sourceTree = "<group>"; };
 		2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCameraViewController.swift; sourceTree = "<group>"; };
+		2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimulatedDatabase.swift; path = ../SimulatedDatabase.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -154,6 +156,7 @@
 				2AEBBD891D35E175001F7388 /* AppDelegate.swift */,
 				2AEBBD901D35E175001F7388 /* Assets.xcassets */,
 				2AEBBD951D35E175001F7388 /* Info.plist */,
+				2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */,
 				2AEBBDB91D36018E001F7388 /* MainController.swift */,
 				2AECD6CD1D42938A00AAB743 /* DataModels.swift */,
 				2ACDFA031E2008A600471E3D /* ImageMethods.swift */,
@@ -362,6 +365,7 @@
 				2AEBBDBC1D36111F001F7388 /* AskViewController.swift in Sources */,
 				2A83A0F01EFAE54F009DAE8E /* AskReviewsTableViewController.swift in Sources */,
 				2A68F9C01EFE24670054A03A /* CompareReviewsTableViewCell.swift in Sources */,
+				2AFD1C841F1E68DD006DD919 /* SimulatedDatabase.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

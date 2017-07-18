@@ -496,6 +496,8 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         // we pass the processReport function here so that the system will wait for the alert controller input before continuing on:
         let thisReportType: reportType = askForReportType(viewController: self, function: processReport)
 
+        if thisReportType == .cancel { return }
+        
         let thisReport: Report = Report(type: thisReportType)
         
         

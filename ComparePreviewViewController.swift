@@ -183,18 +183,24 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 
                 if let iBE1 = currentCompare.imageBeingEdited1, let iBE2 = currentCompare.imageBeingEdited2 {
                     
-                let newCompare = Compare(title1: iBE1.iBEtitle, photo1: iBE1.iBEimageBlurredCropped, caption1: iBE1.iBEcaption, title2: iBE2.iBEtitle, photo2: iBE2.iBEimageBlurredCropped, caption2: iBE2.iBEcaption, timePosted: Date())
+                    let newCompare = Compare(title1: iBE1.iBEtitle, photo1: iBE1.iBEimageBlurredCropped, caption1: iBE1.iBEcaption, title2: iBE2.iBEtitle, photo2: iBE2.iBEimageBlurredCropped, caption2: iBE2.iBEcaption, timePosted: Date())
                     
                     print("new compare created. Title 1 is: \(iBE1.iBEtitle)")
                 
-                // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
-                let containerToBeAppended = Container(question: newCompare,
-                                                      reviewCollection: ReviewCollection(type: .compare))
+                    // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
+                    let containerToBeAppended = Container(question: newCompare)
                 
-                // This ensures that the container number will correspond with the container's location in the containerArray:
-                myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
                     
-                clearOutCurrentCompare() // this is a method is DataModels and will set the flag to .noImageTaken
+                    // this is the line I added. It should add the new question to the myUser that's in the usersArray
+                    usersArray[indexOfUser(in: usersArray, userID: newCompare.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+
+                    // This ensures that the container number will correspond with the container's location in the containerArray:
+                    // myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+                    print("new compare added to myUser.containerCollection at index: \(containerToBeAppended.containerID.containerNumber)")
+                
+                    assignedQuestions.append(containerToBeAppended.question) //puts the new question in the reviewQueue
+                    
+                    clearOutCurrentCompare() // this is a method in DataModels and will set the flag to .noImageTaken
                     
                 }
                 print("pop the view controller back to the menu")

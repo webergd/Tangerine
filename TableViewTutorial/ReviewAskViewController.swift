@@ -235,6 +235,11 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
             //print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
             
+            print("inside the usersArray, myUser's containerCollection length is: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
+            print("on its own, myUser's containerCollection length is: \(myUser.containerCollection.count)")
+            
+            print("trying to modify the review collection of myUser's container at index: \(thisAsk.containerID.containerNumber)")
+            
             usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
 
         } else {
@@ -286,10 +291,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             self.showSwipeImage(selection: currentSelection)
         }
 
-        
     } //end of userSwiped
-    
-    
 
     func showStrongImage() {
         self.strongImageView.isHidden = false
@@ -322,12 +324,6 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
         
     } // end of hideStrongImage()
-    
-    
-    
-    
-    
-    
     
     func showSwipeImage(selection: yesOrNo) {
         // It would be great to animate this or make it fade in and out
@@ -416,6 +412,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         print("report content button tapped")
         // we pass the processReport function here so that the system will wait for the alert controller input before continuing on:
         let thisReportType: reportType = askForReportType(viewController: self, function: processReport)
+        
+        if thisReportType == .cancel { return }
 
         let thisReport: Report = Report(type: thisReportType)
         
