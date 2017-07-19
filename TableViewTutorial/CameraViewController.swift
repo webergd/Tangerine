@@ -1217,7 +1217,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
 
         // To fix back to normal, replace imageToCreateAskWith with currentImage in the next line:
-        let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, caption: captionToCreateAskWith, timePosted: Date())
+        let newAsk = Ask(title: currentTitle, photo: imageToCreateAskWith, caption: captionToCreateAskWith)
         
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         

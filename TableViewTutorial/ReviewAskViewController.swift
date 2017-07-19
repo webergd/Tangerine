@@ -215,7 +215,17 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     func createReview(selection: yesOrNo) {
         var strong: yesOrNo? = nil
         if strongFlag == true { strong = selection }
-        let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text)
+        
+        // unwrap the ask again to pull its containerID:
+        var containerIDtoSet: ContainerIdentification
+        if let thisAsk = ask {
+            containerIDtoSet = thisAsk.containerID
+        } else {
+            print("the ask was nil when creating the review")
+            fatalError()
+        }
+        
+        let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text, containerID: containerIDtoSet)
         // normally we would then send this review up to the server.
         // Instead, for the sake of testing, we will add it to the user's reviews
         // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
@@ -241,6 +251,11 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             print("trying to modify the review collection of myUser's container at index: \(thisAsk.containerID.containerNumber)")
             
             usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+            //                              ^^^^^^
+            // we really just need to append this to unuploadedReviews
+            // and then call refreshReviews
+            unuploadedReviews.append(createdReview)
+            // refreshReviews()
 
         } else {
             print("Fatal Error:")

@@ -41,9 +41,9 @@ class AskTableViewController: UITableViewController {
         //loadSampleAskReviews()
         //loadSampleCompareReviews()
         // this appends the dummy values to this VC's containers property
-        containers = myUser.containerCollection
+        containers = localMyUser.containerCollection
         // the fact that this sorts the containers array by timestamp is the reason the dummy values are always at the top (they are the oldest)
-        sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        sortedContainers = containers.sorted { $0.question.containerID.timePosted.timeIntervalSince1970 < $1.question.containerID.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -87,13 +87,13 @@ class AskTableViewController: UITableViewController {
                 // one of the times it returns nil is when the cell isn't visible
                 if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {
                     let ask = sortedContainers[indexPath.row].question as! Ask
-                    let timeRemaining = calcTimeRemaining(ask.timePosted)
+                    let timeRemaining = calcTimeRemaining(ask.containerID.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
             } else if container.containerType == .compare {
                 if let cell = tableView.cellForRow(at: indexPath) as! CompareTableViewCell? {
                     let compare = sortedContainers[indexPath.row].question as! Compare
-                    let timeRemaining = calcTimeRemaining(compare.timePosted)
+                    let timeRemaining = calcTimeRemaining(compare.containerID.timePosted)
                     cell.timeRemainingLabel.text = "\(timeRemaining)"
                 }
             }
@@ -146,7 +146,7 @@ class AskTableViewController: UITableViewController {
                 
             // MARK: need to send value to the numVotesLabel
             cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
-            let timeRemaining = calcTimeRemaining(ask.timePosted)
+            let timeRemaining = calcTimeRemaining(ask.containerID.timePosted)
             cell.timeRemainingLabel.text = "\(timeRemaining)"
             if ask.askRating > -1 {
                 cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
@@ -173,7 +173,7 @@ class AskTableViewController: UITableViewController {
             //this method can also be used on the number of reviews the user has given
             cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
             //calculations need to be done to get time REMAINING vice time posted:
-            let timeRemaining = calcTimeRemaining(compare.timePosted)
+            let timeRemaining = calcTimeRemaining(compare.containerID.timePosted)
             cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
             
             //set up the arrow image to point the right way:

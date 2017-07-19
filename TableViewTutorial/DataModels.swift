@@ -135,7 +135,10 @@ public var obligatoryReviewsRemaining: Int {
 
 public var localContainers: [Container] = []
 
-public var localFriends: [User] = [] // how can we modify this so that friend profiles are stored locally but thier private info is not?
+public var localFriendCollection: [PublicInfo] = [] // how can we modify this so that friend profiles are stored locally but thier private info is not?
+
+// keep in mind, a user has a friendNames array that only stores the friends' usernames
+// locally, we will store copies of the friends' user profiles so that we can display thier pictures, etc. Before displaying the friends table view, we will refresh this localFriendCollection by searching the database for each friend's profile, based on the list of usernames that is currently in the online user's friendCollection (which, once again is just a list of strings)
 
 // This will need to be stored locally for "app off" storage
 //  using either UserDefaults or CoreData functionality.
@@ -462,8 +465,9 @@ public func returnProfilePic(image: UIImage?) -> UIImage {
 
 public func createContainerID() -> ContainerIdentification {
     // this works because myUser always exists
-    return ContainerIdentification(userID: myUser.publicInfo.userName,
-                                   containerNumber: myUser.lowestAvailableContainerIDNumber())
+    return ContainerIdentification(userID: localMyUser.publicInfo.userName,
+                                   containerNumber: localMyUser.lowestAvailableContainerIDNumber())
+
 }
 
 public func unlockOneContainer() {
@@ -556,7 +560,7 @@ public let myTargetDemo = TargetDemo(minAge: 25, maxAge: 38, straightWomenPrefer
 
 public protocol Question { //this really should be isQuestion
     var type: askOrCompare {get set}
-    var timePosted: Date {get set}
+    //var timePosted: Date {get set}
     var numVotes: Int {get}
     // this should enable us to send reviews about this question up to the database:
     // We may need to create a dictionary at some point with the database primary keys of each containerID
@@ -590,14 +594,19 @@ public class Container {
         question = q
         reviewCollection = ReviewCollection(type: question.type)
         reportsCollection = []
-        myUser.containerCollection.append(self) // at some point I will also need a way to remove the containers
+        localMyUser.containerIDCollection.append(self.containerID) // at some point I will also need a way to remove the containers
+        // MARK: Does this yield the correct index location given the containerID?
+        localContainers.append(self)
     }
 
 }
 
 public struct ContainerIdentification {
+    // see if I can change these to let constants vice vars:
     var userID: String
     var containerNumber: Int
+    let timePosted: Date = Date() //sets timePosted to the current time at the time of Question creation.
+    
 }
 
 public struct Report {
@@ -988,10 +997,10 @@ open class Ask: Question {
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
 
-    init(title: String, photo: UIImage,caption: Caption, timePosted time: Date) {
+    init(title: String, photo: UIImage,caption: Caption) {
         askTitle = title
         askPhoto = photo
-        timePosted = time
+        //timePosted = time
         askCaption = caption
         containerID = createContainerID() //automatically creates a containerID when you make a new Ask
         print("containerID created for ask. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
@@ -1044,12 +1053,12 @@ open class Compare: Question {
     
     public var containerID: ContainerIdentification
     
-    open var timePosted: Date
+    //open var timePosted: Date // this is in ContainerID now
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
     
     // uses the timePosted to return a string of the timeRemaining
     var timeRemaining: String {
-        return calcTimeRemaining(timePosted)
+        return calcTimeRemaining(containerID.timePosted)
     }
     
     
@@ -1104,7 +1113,7 @@ open class Compare: Question {
         return numSW.numVotes + numSM.numVotes + numGW.numVotes + numGM.numVotes
     }
 
-    init(title1: String, photo1: UIImage, caption1: Caption, title2: String, photo2: UIImage, caption2: Caption, timePosted time: Date) {
+    init(title1: String, photo1: UIImage, caption1: Caption, title2: String, photo2: UIImage, caption2: Caption) {
         
         compareTitle1 = title1
         comparePhoto1 = photo1
@@ -1112,7 +1121,6 @@ open class Compare: Question {
         compareTitle2 = title2
         comparePhoto2 = photo2
         compareCaption2 = caption2
-        timePosted = time
         containerID = createContainerID()
         print("containerID created for compare. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
     }
@@ -1243,11 +1251,18 @@ public struct Caption {
 public protocol isAReview {  // I am still undecided whether to attach the whole user object to a review or just the username and some simple info
     // The big thing to decide is whether to attach the reviewing user's picture to the review because that's more memory
     // Maybe just reference the picture from the server if the user de
+    var reviewID: ReviewID {get}
     var reviewerName: String {get} // this might need to be displayName instead
     var reviewerDemo: demo {get}
     var reviewerAge: Int {get}
     var comments: String {get set}
     var reviewerInfo: PublicInfo {get set}
+}
+
+
+public struct ReviewID {
+    let containerID: ContainerIdentification
+    let reviewerID: String //this is just the reviewer's username
 }
 
 
@@ -1265,28 +1280,33 @@ public enum reportType: String {
 // This array is known as the Ask's "reviewCollection"
 
 public struct AskReview: isAReview {
+    
+    public var reviewID: ReviewID
     var selection: yesOrNo
     var strong: yesOrNo?
-    var reviewerInfo: PublicInfo
-    var reviewerName: String {return reviewerInfo.displayName }
-    var reviewerDemo: demo { return reviewerInfo.orientation }
-    var reviewerAge: Int { return reviewerInfo.age }
-    var comments: String
+    public var reviewerInfo: PublicInfo
+    public var reviewerName: String {return reviewerInfo.displayName }
+    public var reviewerDemo: demo { return reviewerInfo.orientation }
+    public var reviewerAge: Int { return reviewerInfo.age }
+    public var comments: String
     
-    init(selection sel: yesOrNo, strong strg: yesOrNo?, comments c: String) {
+    init(selection sel: yesOrNo, strong strg: yesOrNo?, comments c: String, containerID: ContainerIdentification) {
         selection = sel
         strong = strg
         comments = c
-        reviewerInfo = myUser.publicInfo
+        reviewerInfo = localMyUser.publicInfo
+        reviewID = ReviewID(containerID: containerID, reviewerID: reviewerInfo.userName)
+        
     }
     
     // this only exists to facilitate dummy reviews:
     // Normally we would never create a review for someone else, only for ourselves aka myUser
-    init(selection sel: yesOrNo, strong strg: yesOrNo?, reviewerInfo p: PublicInfo, comments c: String) {
+    init(selection sel: yesOrNo, strong strg: yesOrNo?, reviewerInfo p: PublicInfo, comments c: String, containerID: ContainerIdentification) {
         selection = sel
         strong = strg
         comments = c
-        reviewerInfo = p
+        reviewerInfo = localMyUser.publicInfo
+        reviewID = ReviewID(containerID: containerID, reviewerID: p.userName)
     }
 }
 
@@ -1295,32 +1315,36 @@ public struct AskReview: isAReview {
 // This array is known as the Compare's "reviewCollection"
 
 public struct CompareReview: isAReview {
+    
+    public var reviewID: ReviewID
     var selection: topOrBottom
     var strongYes: Bool
     var strongNo: Bool
-    var reviewerInfo: PublicInfo
-    var reviewerName: String {return reviewerInfo.displayName }
-    var reviewerDemo: demo { return reviewerInfo.orientation }
-    var reviewerAge: Int { return reviewerInfo.age }
-    var comments: String
+    public var reviewerInfo: PublicInfo
+    public var reviewerName: String {return reviewerInfo.displayName }
+    public var reviewerDemo: demo { return reviewerInfo.orientation }
+    public var reviewerAge: Int { return reviewerInfo.age }
+    public var comments: String
     
-    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, comments c: String) {
+    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, comments c: String, containerID: ContainerIdentification) {
         selection = sel
         strongYes = strgY
         strongNo = strgN
         comments = c
-        reviewerInfo = myUser.publicInfo
+        reviewerInfo = localMyUser.publicInfo
+        reviewID = ReviewID(containerID: containerID, reviewerID: reviewerInfo.userName)
 
     }
     
     // this only exists to facilitate dummy reviews:
     // Normally we would never create a review for someone else, only for ourselves aka myUser
-    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, reviewerInfo p: PublicInfo, comments c: String) {
+    init(selection sel: topOrBottom, strongYes strgY: Bool, strongNo strgN: Bool, reviewerInfo p: PublicInfo, comments c: String, containerID: ContainerIdentification) {
         selection = sel
         strongYes = strgY
         strongNo = strgN
         comments = c
         reviewerInfo = p
+        reviewID = ReviewID(containerID: containerID, reviewerID: p.userName)
     }
     
 }
@@ -1331,7 +1355,7 @@ public struct User {
     var publicInfo: PublicInfo // this is the information that gets appended to reviews that the user makes
     var targetDemo: TargetDemo
     var containerIDCollection: [ContainerIdentification]
-    var friendCollection: [String] = []
+    var friendNames: [String] = []
     
     func lowestAvailableContainerIDNumber() -> Int {
         var IDNumbers: [Int] = []

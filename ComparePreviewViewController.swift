@@ -183,7 +183,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 
                 if let iBE1 = currentCompare.imageBeingEdited1, let iBE2 = currentCompare.imageBeingEdited2 {
                     
-                    let newCompare = Compare(title1: iBE1.iBEtitle, photo1: iBE1.iBEimageBlurredCropped, caption1: iBE1.iBEcaption, title2: iBE2.iBEtitle, photo2: iBE2.iBEimageBlurredCropped, caption2: iBE2.iBEcaption, timePosted: Date())
+                    let newCompare = Compare(title1: iBE1.iBEtitle, photo1: iBE1.iBEimageBlurredCropped, caption1: iBE1.iBEcaption, title2: iBE2.iBEtitle, photo2: iBE2.iBEimageBlurredCropped, caption2: iBE2.iBEcaption)
                     
                     print("new compare created. Title 1 is: \(iBE1.iBEtitle)")
                 

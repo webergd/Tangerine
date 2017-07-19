@@ -44,17 +44,7 @@ class MainController: UIViewController {
             sd.loadDummyValues()
             print("all sample questions and reviews loaded")
             
-            ///////////////////////////
-            //                      ///
-            //   START HERE, WYATT  ///
-            //                      ///
-            ///////////////////////////
-            
-            
-            
-            // we need methods to merge lists in case the user modified anything from a different device. Keep in mind, something deleted from another device should be deleted from the local file, not replaced in the database file.
-            
-            // we need to pull some values that would normally be pushed, only becuase this is a simulation. We will only pull them once though.
+            // call refresh / update methods
             
             loaded = true
             

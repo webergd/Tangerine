@@ -34,6 +34,87 @@ public class SimulatedDatabase {
         return arrayOfContainerIDsToReturn
     }
     
+    func refreshReviews(unuploadedRevs: [isAReview]) {
+        for review in unuploadedRevs {
+            add(review: review)
+        }
+    }
+    
+    func add(review: isAReview) {
+        // find which container to add the review to
+        let indexOfTargetContainer: Int = indexOf(containerID: review.reviewID.containerID, in: containersArray)
+        containersArray[indexOfTargetContainer].reviewCollection.reviews.append(review)
+    }
+    
+    // the actual database will probably use primary keys instead of indeces like an array so we will flex as required when ammending the code.
+    func indexOf(containerID: ContainerIdentification, in array: [Container]) -> Int {
+        // find userID's index in the array:
+        var index: Int = 0
+        for container in array {
+            // This is nested so that only the userID will be checked first
+            //  and if there's no match, it moves on.
+            if container.containerID.userID == containerID.userID {
+                if container.containerID.containerNumber == containerID.containerNumber {
+                return index
+            
+                }
+            }
+            index += 1
+        }
+        print("containerID wasn't found in the containersArray")
+        fatalError()
+    }
+    
+    // this method takes a string of usernames to delete, a user who's friends they are, deletes the names from the user's list in the database, finds each of the users in the newly revised friend list, and adds them up into an array that it then returns to the user so that the localFriendCollection can be updated.
+    func refreshFriends(of username: String, undeletedFrnds: [String]) -> [PublicInfo] {
+        
+        // First, delete the undeleted friends:
+        let userIndex: Int = indexOfUser(userID: username, in: usersArray)
+        var newFriendList: [String] = usersArray[userIndex].friendNames
+        
+        for friendName in undeletedFrnds {
+            newFriendList = sd.delete(friend: friendName, from: newFriendList)
+        }
+        
+        // Next, return an array of updated publicInfo profiles of Users that are still friends
+        var friendCollectionToReturn: [PublicInfo] = []
+        for friendName in newFriendList {
+            let friendsUserIndex: Int = indexOfUser(userID: friendName, in: usersArray)
+            friendCollectionToReturn.append(usersArray[friendsUserIndex].publicInfo)
+        }
+        return friendCollectionToReturn
+    }
+    
+
+    func delete(friend toDelete: String, from friendList: [String]) -> [String] {
+        var friendListToReturn: [String] = friendList
+        var index: Int = 0 // this is just a counter for the loop
+        for someUser in friendList {
+            if toDelete == someUser {
+                friendListToReturn.remove(at: index)
+                return friendListToReturn
+            }
+            index += 1
+        }
+        print("unable to find friend name to delete in user's friend list")
+        return friendListToReturn
+    }
+    
+    func indexOfUser(userID: String, in array: [User])-> Int {
+        // find userID's index in the array:
+        var index: Int = 0
+        for user in array {
+            if user.publicInfo.userName == userID {
+                return index
+            }
+            index += 1
+        }
+        print("myUser wasn't found in the usersArray, therefore the dummy containers couldn't be appended to it")
+        fatalError()
+    }
+
+    
+    
     /////////////////////////////////
     /////     DUMMY VALUES:    //////
     /////////////////////////////////
