@@ -133,7 +133,7 @@ public var obligatoryReviewsRemaining: Int {
 // Some push to the database and others pull from it.
 // Reload these in MainController
 
-public var localContainers: [Container] = []
+public var localContainerCollection: [Container] = []
 
 public var localFriendCollection: [PublicInfo] = [] // how can we modify this so that friend profiles are stored locally but thier private info is not?
 
@@ -146,6 +146,8 @@ public var localFriendCollection: [PublicInfo] = [] // how can we modify this so
 //  it then reroutes user to a login / create new account page.
 // For now I will just bypass this by pulling from the simulated database since it is always available:
 public var localMyUser: User = sd.usersArray[indexOfUser(in: sd.usersArray, userID: "wyatt")]
+// we will need a flag somewhere that tells us whether the user profile has been updated without uploading those changes to the database, so that we know whether to merge the profile with the one online.
+// For now we will just assume myUser's profile was already in the database and is exactly how we want it to be.
 
 public var undeletedContainers: [ContainerIdentification] = []
 
@@ -155,6 +157,8 @@ public var unuploadedReviews: [isAReview] = []
 
 // should be an array of usernames
 public var undeletedFriends: [String] = []
+
+public var unacceptedFriends: [Friendship] = []
 
 // END OF LOCAL PROPERTIES
 
@@ -1349,6 +1353,17 @@ public struct CompareReview: isAReview {
     
 }
 
+public struct Friendship {
+    var user1: String
+    var user2: String
+    var friendshipID: String {
+        return user1 + "%" + user2
+    }
+    var requestPending: Bool
+}
+
+
+// This seems like it should no be in User; we don't store the containers under User anymore
 public struct User {
     var password: String
     var emailAddress: String
@@ -1357,6 +1372,7 @@ public struct User {
     var containerIDCollection: [ContainerIdentification]
     var friendNames: [String] = []
     
+    // we don't need container number. We just need username and timePosted
     func lowestAvailableContainerIDNumber() -> Int {
         var IDNumbers: [Int] = []
         for container in containerIDCollection {

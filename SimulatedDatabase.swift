@@ -13,25 +13,42 @@ import UIKit
 public var sd: SimulatedDatabase = SimulatedDatabase()
 
 public class SimulatedDatabase {
-    public var usersArray: [User] = []
-    public var containersArray: [Container] = []
+    var usersArray: [User] = []
+    var containersArray: [Container] = []
+    var friendshipsArray: [Friendship] = []
     
-    public func loadDummyValues() {
+    func loadDummyValues() {
         loadSampleUsers()
         loadSampleAsks()
         loadSampleAskReviews()
         loadSampleCompareReviews()
     }
     
-    // Searches the containersArray for a specific userID and then returns a list of containerID's
-    func getContainerIDs(username: String) -> [ContainerIdentification] {
-        var arrayOfContainerIDsToReturn: [ContainerIdentification] = []
-        for container in containersArray {
-            if container.containerID.userID == username {
-                arrayOfContainerIDsToReturn.append(container.containerID)
-            }
+    func refreshContainers(for username: String, undeletedContainers: [ContainerIdentification], unuploadedContainers: [Container]) -> [Container] {
+        // deletes the undeletedContainers from containersArray
+        for containerID in undeletedContainers {
+            delete(containerID: containerID)
         }
-        return arrayOfContainerIDsToReturn
+        // adds the unuploadedContainers to the containersArray
+        for container in unuploadedContainers {
+            upload(container: container)
+        }
+        // sends the updated containers in containersArray (that belong to the specific user) back down to the app
+        return getContainers(for: username)
+    }
+    
+    func delete(containerID: ContainerIdentification) {
+        containersArray.remove(at: index(of: containerID))
+    }
+    
+    func upload(container: Container) {
+        let locationIndex = index(of: container.containerID)
+        if locationIndex == -1 {
+        // this means the container doesn't already exist in the array
+            containersArray.append(container)
+        }
+        // otherwise do nothing because the container is already uploaded
+        
     }
     
     func refreshReviews(unuploadedRevs: [isAReview]) {
@@ -98,6 +115,32 @@ public class SimulatedDatabase {
         }
         print("unable to find friend name to delete in user's friend list")
         return friendListToReturn
+        
+        // we also need to delete myUser's name from the deleted friend's friendlist
+        
+        
+    }
+    // returns freinds, requested friends, and users who requested me as a friend
+    func getFriendNames(for username: String) -> ([String],[String],[String]) {
+        var friends: [String] = []
+        var iRequested: [String] = []
+        var requestedMe: [String] = []
+        
+        for friendship in friendshipsArray {
+              ///////////////////
+             //  START HERE:  //
+            ///////////////////
+
+            // sort the friendships with the user's name into the 3 buckets
+            // I need to find an efficient way to search for pairs
+            // Either that or I keep track of whether there is a pair to search for
+            //  -- pending should take care of that
+            // My only worry is a situation where I delete a friendship
+            //  but the system mistakenly only deletes one half, and now the 
+            //  other half is out floating in space.
+            // Maybe the database itself can have a periodic cleaning fuction
+            //  that checks for those and removes them.
+        }
     }
     
     func indexOfUser(userID: String, in array: [User])-> Int {
@@ -112,6 +155,43 @@ public class SimulatedDatabase {
         print("myUser wasn't found in the usersArray, therefore the dummy containers couldn't be appended to it")
         fatalError()
     }
+    
+    func index(of containerID: ContainerIdentification) -> Int {
+        var index: Int = 0
+        for container in containersArray {
+            if container.containerID.userID == containerID.userID {
+                if container.containerID.timePosted == containerID.timePosted {
+                    return index
+                }
+            }
+            index += 1
+        }
+        print("Index of container not found. Container not present in the array.")
+        return -1
+    }
+    
+    // Searches the containersArray for a specific userID and then returns a list of CONTAINER-ID's:
+    func getContainerIDs(for username: String) -> [ContainerIdentification] {
+        var arrayOfContainerIDsToReturn: [ContainerIdentification] = []
+        for container in containersArray {
+            if container.containerID.userID == username {
+                arrayOfContainerIDsToReturn.append(container.containerID)
+            }
+        }
+        return arrayOfContainerIDsToReturn
+    }
+    
+    // Searches the containersArray for a specific userID and then returns a list of CONTAINERS:
+    func getContainers(for username: String) -> [Container] {
+        var arrayOfContainersToReturn: [Container] = []
+        for container in containersArray {
+            if container.containerID.userID == username {
+                arrayOfContainersToReturn.append(container)
+            }
+        }
+        return arrayOfContainersToReturn
+    }
+    
 
     
     

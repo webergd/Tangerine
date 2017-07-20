@@ -40,6 +40,7 @@ public func refreshContainers() ->[Container] {
     // download the list of all of myUser's containerID's on the database:
     var databaseContainers = sd.getContainerIDs(username: localMyUser.publicInfo.userName)
     
+    localContainerCollection = sd.refreshContainers(/*needs parameters*/)
     
     // 1. delete the containtersToDelete in the sd.containers array
     //    then clear out the undeletedContainers array
