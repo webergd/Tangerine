@@ -82,25 +82,212 @@ public class SimulatedDatabase {
         fatalError()
     }
     
-    // this method takes a string of usernames to delete, a user who's friends they are, deletes the names from the user's list in the database, finds each of the users in the newly revised friend list, and adds them up into an array that it then returns to the user so that the localFriendCollection can be updated.
-    func refreshFriends(of username: String, undeletedFrnds: [String]) -> [PublicInfo] {
+    // this method takes a string of usernames to delete, a user who's friends they are, deletes the names from the user's list in the database, finds each of the users in the newly revised friend list, and adds them up into an array that it then returns to the user so that the localFriendCollection can be updated. It also uolod an array of friends who the user has accepted a re
+    
+    // uploads:
+    //  username
+    //  undeletedFriends
+    //  newlyAcceptedFriends
+    // downloads:
+    //  friends
+    //  friends I have requested (but haven't accepted me yet)
+    //  friends who requested me (but I haven't accepted yet)
+    func refreshFriends(of myUsername: String, undeletedFriends: [String], newlyAcceptedFriends: [String], requestedFriends: [String]) -> ([PublicInfo],[PublicInfo],[PublicInfo]) {
         
-        // First, delete the undeleted friends:
-        let userIndex: Int = indexOfUser(userID: username, in: usersArray)
-        var newFriendList: [String] = usersArray[userIndex].friendNames
         
-        for friendName in undeletedFrnds {
-            newFriendList = sd.delete(friend: friendName, from: newFriendList)
+        // These are used to intitally sort the users into. The names lists are then used to pull the users' PublicInfo from the database.
+        var friendsNames: [String] = []
+        var iRequestedNames: [String] = []
+        var requestedMeNames: [String] = []
+        
+        // These are the actual arrays this method will return:
+        var friends: [PublicInfo] = []
+        var iRequested: [PublicInfo] = []
+        var requestedMe: [PublicInfo] = []
+        
+        // friends' names in a friendship with myUser when myUser is in the given position:
+        // For example, if myUser's username appears in the user1 column of a friendship, we append the other person's name in that friendship 
+        //  (which is the username in the user2 column of the friendship) to the user2s array.
+        var user2s: [String] = []
+        var user1s: [String] = []
+        
+        // create primary keys for myUser%friend and friend%myUser
+        // (these are the lines of the friendship database that need to be deleted
+        /*
+        var deleteKeysAsUser1: [String] = []
+        var deleteKeysAsUser2: [String] = []
+        
+        for friendName in undeletedFriends {
+            deleteKeysAsUser1.append(username + "%" + friendName)
+            deleteKeysAsUser2.append(friendName + "%" + username)
+        }
+         */
+        
+        
+
+        
+        
+        // The result of this code block is to do two things:
+        // 1. Remove friendships from the database whose friendshipID's we specified in the two 'deleteKeysAsUser' arrays
+        // 2. Fill the myUserAsUser arrays with friends' usernames that appear in a friendship of the opposing position
+        // This will allow us to work only within these arrays for the rest of the logic in this method so that we don't have to search the whole database again.
+        // We end up with two arrays of strings of friends' names. The two arrays should be mostly redundant except for those cases in which one side
+        //  or the other has not yet accepted the friendship.
+        // If someone's name ends up in the user2s array but not the user1s, that means myUser has requested them but they have not yet accepted
+        // The reverse is true for someone's name in the user1s array. It means that person has requested to be friends with myUser
+        //  but myUser has not accepted them yet. We will use this to return our triple of three arrays of PublicInfo's by using the usernames
+        //  to pull the users' publicinfo properties from the users array.
+        var index: Int = 0
+        for friendship in friendshipsArray {
+            // check the user1 column to see if it is myUser
+            if friendship.user1 == myUsername {
+                // see if the other person's name in this friendship is in the 'to delete' list. If it is, delete it and return true.
+                if deleteFriendshipIfDesired(otherFriendName: friendship.user2, friendsToDelete: undeletedFriends, index: index) == false {
+                    // If it returned false, that means the user wasn't in the 'to delete' list, so we'll keep them and append their name to our list
+                    user2s.append(friendship.user2)
+                }
+            }
+            // now check the user2 column to see if myUser is there instead
+            if friendship.user2 == myUsername {
+                for friendName in newlyAcceptedFriends {
+                    if friendName == friendship.user1 {
+                        // we know that there is only one half of the friendship created so far, the one where otherUser is in user1 and myUser is in user2
+                        // The purposed of this is to create that other half:
+                        friendshipsArray.append(Friendship(user1: myUsername, user2: friendName))
+                        // There is a potential for something to get messed up and to create a redundant second friendship half. Which would end up looking like I requested them, even though the friends database says we are already friends also.
+                        // We will need something in the database routine cleanup procedures to check for redundant friendshipID's and delete one of them.
+                        user2s.append(friendship.user2) // this will allow us to know locally that this user is now our accepted friend.
+                    }
+                }
+                // since myUser is in the user2 column, once again, check to see if the name in the user1 column was on my delete list and delete as required.
+                if deleteFriendshipIfDesired(otherFriendName: friendship.user1, friendsToDelete: undeletedFriends, index: index) == false {
+                    // once again, if the username in position 1 of the friendship wasn't on the delete list, now append that name to the other array where we
+                    //  are keeping track of friendships in which myUser is in the second position (instead of the previous if statement where we're
+                    //  concerned with cases in which myUser is in the first position)
+                    user1s.append(friendship.user1)
+                }
+                
+            }
+            index += 1
+
+        }
+
+
+        
+        // sort the two arrays of friends' usernames in ascending order
+        // If we sort the user1s and user2s arrays alphbetically, this will probably be more efficient.
+        user1s = user1s.sorted { $0 < $1 }
+        user2s = user2s.sorted { $0 < $1 }
+        
+        // The next step is to use for loops and if statements to determine which values will go into the 3 arrays we are returning.
+        
+        // If a username appears on both lists, the user is friends with myUser
+        // If a username appears only on the user1s list, the user has requested myUser but has not yet been accepted
+        // If a username appears only on the user2s list, myUser has requested that person but the other person hasn't accepted it yet.
+        
+        // Populate the lists of usernames for each of the 3 catgories:
+        for username in user1s {
+            if user2s.contains(username) {
+                // It's a two-way friendship because the name appears on both lists, therefore the are friends.
+                friendsNames.append(username)
+                // This allows us to end up with only the names in the user2s list that don't also appear in the user1s lists:
+                if let indexInUser2s: Int = user2s.index(of: username) {
+                    user2s.remove(at: indexInUser2s)
+                }
+            } else {
+                // The name only appears in user1s, therefore myUser has not accepted this person yet
+                requestedMeNames.append(username)
+            }
+        }
+        iRequestedNames = user2s
+        
+        for requestedFriend in requestedFriends {
+            // If this is the first time the request has appeared, add the half-friendship (i.e. request) to the friendship table in the database
+            if !iRequestedNames.contains(requestedFriend) {
+                friendshipsArray.append(Friendship(user1: myUsername, user2: requestedFriend))
+                iRequestedNames.append(requestedFriend) // append it becuase this element was not added in the first sweep
+            }
+            // otherwise, leave it be.
+            // The previous loops have already identified the request and
         }
         
-        // Next, return an array of updated publicInfo profiles of Users that are still friends
-        var friendCollectionToReturn: [PublicInfo] = []
-        for friendName in newFriendList {
-            let friendsUserIndex: Int = indexOfUser(userID: friendName, in: usersArray)
-            friendCollectionToReturn.append(usersArray[friendsUserIndex].publicInfo)
+
+        // Sort the arrays of usernames by their display names:
+        friendsNames = sortUsersByDisplayName(listOfUsernames: friendsNames)
+        iRequestedNames = sortUsersByDisplayName(listOfUsernames: iRequestedNames)
+        requestedMeNames = sortUsersByDisplayName(listOfUsernames: requestedMeNames)
+
+        // Populate the arrays of PublicInfo's to return by searching the usersArray (which will be a table in the real database):
+        for user in usersArray {
+            let username = user.publicInfo.userName
+            
+            if friendsNames.contains(username) {
+                friends.append(user.publicInfo)
+                
+            } else if requestedMeNames.contains(username) {
+                requestedMe.append(user.publicInfo)
+                
+            } else if iRequestedNames.contains(username) {
+                iRequested.append(user.publicInfo)
+            }
         }
-        return friendCollectionToReturn
+
+        return (friends, iRequested, requestedMe)
+        
+        
+        // At some point we will need a way to hide requests from other users that we never plan to accept. The decision to be made at that point
+        //  is whether to delete the half-friendship (i.e. request) out of the system entirely (which will let the requesting user know that
+        //  the requested user rejected them since they will no longer show a pending request for them, or to simply store the request as hidden so that
+        //  the user who requested the friendship still sees it as pending, but the other user who never plans on accepting the request doesn't
+        //  have to keep looking at it. I think this second approach would use more data. I'd rather just delete the request out of the system.
+        // The downside to this would be that the rejected user might send another request to the user who rejected them, which could
+        //  get really annoying if they keep doing it. Most likely I should allow users to add to a blockedUsers array for themselves
+        //  which will prevent other users from even searching for them.
+        // The least memory-using solution is this:
+        //  If a user denies a friendship, give them the option to add that person to a "don't search for me" list.
+        //  This can be implemented later. For now, we'll let them send unlimited friend requests.
+        
+        
     }
+    
+    func sortUsersByDisplayName(listOfUsernames: [String]) -> [String] {
+        var listOfPublicInfos: [PublicInfo] = []
+        
+        for user in usersArray {
+            let usersPublicInfo = user.publicInfo
+            listOfPublicInfos.append(usersPublicInfo)
+        }
+
+        let sortedPublicInfos = listOfPublicInfos.sorted {
+            // this still needs to be tested
+            return $0.userName < $1.userName
+        }
+
+        var sortedUsernames: [String] = []
+        for pubInfo in sortedPublicInfos {
+            sortedUsernames.append(pubInfo.userName)
+        }
+        
+        return sortedUsernames
+    }
+    
+
+    
+    // we need a way to not crash when trying to delete a one sided friendship (like a request that we no longer want to have out there)
+    
+    // returns true if the friendship was deleted
+    func deleteFriendshipIfDesired(otherFriendName: String, friendsToDelete: [String], index: Int) -> Bool {
+        for friendName in friendsToDelete {
+            if friendName == otherFriendName {
+                friendshipsArray.remove(at: index)
+                return true // true means we deleted this half of the friendship
+            }
+        }
+        return false
+    }
+
+    
+    
     
 
     func delete(friend toDelete: String, from friendList: [String]) -> [String] {
@@ -119,29 +306,16 @@ public class SimulatedDatabase {
         // we also need to delete myUser's name from the deleted friend's friendlist
         
         
-    }
-    // returns freinds, requested friends, and users who requested me as a friend
-    func getFriendNames(for username: String) -> ([String],[String],[String]) {
-        var friends: [String] = []
-        var iRequested: [String] = []
-        var requestedMe: [String] = []
+        // My only worry is a situation where I delete a friendship
+        //  but the system mistakenly only deletes one half, and now the
+        //  other half is out floating in space.
+        // Maybe the database itself can have a periodic cleaning fuction
+        //  that checks for those and removes them.
+        // Also, if only one half exists, but it not pending, then it means that the other half was deleted and therefore the remaining half should also be deleted. We can locate these in the get freind names function also.
         
-        for friendship in friendshipsArray {
-              ///////////////////
-             //  START HERE:  //
-            ///////////////////
-
-            // sort the friendships with the user's name into the 3 buckets
-            // I need to find an efficient way to search for pairs
-            // Either that or I keep track of whether there is a pair to search for
-            //  -- pending should take care of that
-            // My only worry is a situation where I delete a friendship
-            //  but the system mistakenly only deletes one half, and now the 
-            //  other half is out floating in space.
-            // Maybe the database itself can have a periodic cleaning fuction
-            //  that checks for those and removes them.
-        }
+        
     }
+
     
     func indexOfUser(userID: String, in array: [User])-> Int {
         // find userID's index in the array:
@@ -208,24 +382,27 @@ public class SimulatedDatabase {
         
         let genericTargetDemo: TargetDemo = TargetDemo(minAge: 0, maxAge: 100, straightWomenPreferred: true, straightMenPreferred: true, gayWomenPreferred: true, gayMenPreferred: true)
         
+        let genericFriendNameList1: [String] = ["wyatt","guido","beast","uncleDanny","melissa"]
+        let genericFriendNameList2: [String] = ["wyatt", "zeenat", "morgan","ian","countryBear","bob"]
+        
         let user1: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "guido", displayName: "Guido", profilePicture: #imageLiteral(resourceName: "guido"), age: 37, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.8), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "guido", displayName: "Guido", profilePicture: #imageLiteral(resourceName: "guido"), age: 37, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.8), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
         let user2: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "beast", displayName: "Beast", profilePicture: #imageLiteral(resourceName: "beast"), age: 32, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.3), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "beast", displayName: "Beast", profilePicture: #imageLiteral(resourceName: "beast"), age: 32, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.3), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
         let user3: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "uncleDanny", displayName: "Uncle Danny", profilePicture: nil, age: 69, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.0), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "uncleDanny", displayName: "Uncle Danny", profilePicture: nil, age: 69, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.0), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
         let user4: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "melissa", displayName: "Melissa", profilePicture: #imageLiteral(resourceName: "melissa"), age: 32, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.0), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "melissa", displayName: "Melissa", profilePicture: #imageLiteral(resourceName: "melissa"), age: 32, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.0), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
         let user5: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "zeenat", displayName: "Zeenat", profilePicture: #imageLiteral(resourceName: "zeenat"), age: 29, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.2), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "zeenat", displayName: "Zeenat", profilePicture: #imageLiteral(resourceName: "zeenat"), age: 29, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.2), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
         let user6: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "morgan", displayName: "Morgan", profilePicture: #imageLiteral(resourceName: "morgan"), age: 26, orientation: .gayWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.9), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "morgan", displayName: "Morgan", profilePicture: #imageLiteral(resourceName: "morgan"), age: 26, orientation: .gayWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.9), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
         let user7: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "ian", displayName: "Ian", profilePicture: #imageLiteral(resourceName: "ian"), age: 21, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.2), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "ian", displayName: "Ian", profilePicture: #imageLiteral(resourceName: "ian"), age: 21, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.2), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
         let user8: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "countryBear", displayName: "Country Bear", profilePicture: nil, age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.8), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "countryBear", displayName: "Country Bear", profilePicture: nil, age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.8), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
         let user9: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "bob", displayName: "Bob", profilePicture: nil, age: 23, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.6), targetDemo: genericTargetDemo, containerCollection: [])
+                               publicInfo: PublicInfo(userName: "bob", displayName: "Bob", profilePicture: nil, age: 23, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.6), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
         
         // I put the reviewers in an array to avoid having to explicitly declare each user at the class level.
         // This way I just declared an empty (but not nil) array at the class level and then add to it within this method.
@@ -245,7 +422,7 @@ public class SimulatedDatabase {
         
         // this will need to be data pulled from the user's profile in the database, and stored locally:
         let myPublicInfo: PublicInfo = PublicInfo(userName: "wyatt", displayName: "Wyatt", profilePicture: #imageLiteral(resourceName: "wyatt"), age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 0, reviewerScore: 5.0)
-        let myUser: User = User(password: "", emailAddress: "kabar3@gmail.com", publicInfo: myPublicInfo, targetDemo: myTargetDemo, containerCollection: [])
+        let myUser: User = User(password: "", emailAddress: "kabar3@gmail.com", publicInfo: myPublicInfo, targetDemo: myTargetDemo, containerIDCollection: [], friendNames: ["guido","beast","melissa", "zeenat", "morgan","ian","countryBear"])
         
         // appended later because I am not my own friend
         usersArray.append(myUser)
@@ -273,14 +450,14 @@ public class SimulatedDatabase {
     
     public func loadSampleAsks() {
         
-        sampleContainers = [] // this clears out sampleContainers so that each time this method runs, more copies of the same containers aren't appended to it
+        containersArray = [] // this clears out the database so that each time this method runs, more copies of the same containers aren't appended to it
         
         formatter.dateFormat = "yyyy/MM/dd HH:mm"
         
         let photo1 = #imageLiteral(resourceName: "redReeboks")
         let caption1 = Caption(text: "", yLocation: 0.0)
         let time1 = formatter.date(from: "2016/08/09 00:01")! //force unwrap bc it's temp anyway
-        let ask1 = Ask(title: "Red Reeboks", photo: photo1, caption: caption1, timePosted: time1)
+        let ask1 = Ask(title: "Red Reeboks", photo: photo1, caption: caption1)
         let ask1SW = ask1.breakdown.straightWomen as! AskDemo
         let ask1GM = ask1.breakdown.gayMen as! AskDemo
         ask1SW.rating = 5
@@ -292,8 +469,8 @@ public class SimulatedDatabase {
         
         let photo2 = #imageLiteral(resourceName: "whiteConverse")
         let caption2 = Caption(text: "", yLocation: 0.0)
-        let time2 = formatter.date(from: "2016/08/09 00:11")!
-        let ask2 = Ask(title: "White Converse", photo: photo2,caption: caption2, timePosted: time2)
+        //let time2 = formatter.date(from: "2016/08/09 00:11")! // if this becomes an issue, we could create a secondary initializer for Asks and Compares that involves taking in a timePosted value to pass into the ContainerID rather than creating one on the spot
+        let ask2 = Ask(title: "White Converse", photo: photo2,caption: caption2)
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
@@ -301,8 +478,8 @@ public class SimulatedDatabase {
         
         let photo3 = #imageLiteral(resourceName: "violetVans")
         let caption3 = Caption(text: "", yLocation: 0.0)
-        let time3 = formatter.date(from: "2016/08/09 00:06")!
-        let ask3 = Ask(title: "Violet Vans", photo: photo3, caption: caption3, timePosted: time3)
+        //let time3 = formatter.date(from: "2016/08/09 00:06")!
+        let ask3 = Ask(title: "Violet Vans", photo: photo3, caption: caption3)
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
         ask3SM.numVotes = 90
@@ -330,7 +507,7 @@ public class SimulatedDatabase {
         
         let time1 = formatter.date(from: "2016/08/09 00:04")!
         
-        let compare1 = Compare(title1: title1, photo1: photo1, caption1: caption1, title2: title2, photo2: photo2, caption2: caption2, timePosted: time1)
+        let compare1 = Compare(title1: title1, photo1: photo1, caption1: caption1, title2: title2, photo2: photo2, caption2: caption2)
         let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
         let compare1SM = compare1.breakdown.straightMen as! CompareDemo
         let compare1GW = compare1.breakdown.gayWomen as! CompareDemo
@@ -360,7 +537,7 @@ public class SimulatedDatabase {
         
         let time2 = formatter.date(from: "2016/08/09 00:08")!
         
-        let compare2 = Compare(title1: title1a, photo1: photo1a, caption1: caption1a, title2: title2a, photo2: photo2a, caption2: caption2a, timePosted: time2)
+        let compare2 = Compare(title1: title1a, photo1: photo1a, caption1: caption1a, title2: title2a, photo2: photo2a, caption2: caption2a)
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
         let compare2SM = compare2.breakdown.straightMen as! CompareDemo
         
@@ -385,9 +562,27 @@ public class SimulatedDatabase {
         
         loadSampleUsers() // this ensures that the reviewersArray values are not nil
         
-        let askReview1 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly")
         
-        let askReview2 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot")
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        //    START HERE:
+        //
+        //
+        //  Just start moving through the code to all errors and adjust them to work with the database. 
+        //  Database methods should now be fully functional unless I forgot something.
+        //  In which case, just scroll back up and create the functionality.
+        //
+        ///////////////////////////////////////////////////////////////////////////////////////////////
+        
+        
+        
+        
+        
+        
+        
+        
+        let askReview1 = AskReview(selection: .no, strong: nil, comments: "raising eyebrows rapidly", reviewerInfo: usersArray[0].publicInfo)
+        
+        let askReview2 = AskReview(selection: .no, strong: nil, comments: "I can dream a hell of a lot", reviewerInfo: usersArray[1].publicInfo)
         
         let askReview3 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo")
         

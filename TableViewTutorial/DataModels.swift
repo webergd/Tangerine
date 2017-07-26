@@ -957,7 +957,6 @@ open class Ask: Question {
     //var askRating: Double
     let askPhoto: UIImage
     open var type: askOrCompare = .ask
-    open var timePosted: Date
     let askCaption: Caption
     public var containerID: ContainerIdentification // it seems stupid that this has to be public but the compiler is forcing me to make it that way
     
@@ -1004,7 +1003,6 @@ open class Ask: Question {
     init(title: String, photo: UIImage,caption: Caption) {
         askTitle = title
         askPhoto = photo
-        //timePosted = time
         askCaption = caption
         containerID = createContainerID() //automatically creates a containerID when you make a new Ask
         print("containerID created for ask. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
@@ -1353,13 +1351,15 @@ public struct CompareReview: isAReview {
     
 }
 
+
+// this struct should probably be in the database file, not down here
 public struct Friendship {
     var user1: String
     var user2: String
     var friendshipID: String {
-        return user1 + "%" + user2
+        return user1 + "%" + user2 // this value will serve as the primary key in the database
     }
-    var requestPending: Bool
+    //var requestPending: Bool
 }
 
 
