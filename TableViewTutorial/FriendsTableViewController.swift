@@ -120,9 +120,9 @@ class FriendsTableViewController: UITableViewController {
         cell.friendAgeLabel.text = String(friend.publicInfo.age)
         cell.friendRatingLabel.text = reviewerRatingToTangerines(rating: friend.publicInfo.reviewerScore)
         
-        // Don't color code friends by demo. We should know thier demo.
+        // Don't color code friends by orientation. We should know thier orientation.
         // And if we don't, then it's because they don't want us to know and that's thier private prerogative.
-        //cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: friend.publicInfo.orientation)
+        //cell.cellBackgroundView.backgroundColor = orientationSpecificColor(userOrientation: friend.publicInfo.orientation)
 
         return cell
 

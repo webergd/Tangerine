@@ -1221,7 +1221,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         // MARK: caption - will also need to initialize a caption string (using the photo editor)
         
-        print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.timePosted)")
+        print("New Ask Created! title: \(newAsk.askTitle), timePosted: \(newAsk.containerID.timePosted)")
 
         // Once the Ask is created it is appended to the main array within a Container:
         
@@ -1230,10 +1230,19 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         let containerToBeAppended = Container(question: newAsk)
         
+        localContainerCollection.append(containerToBeAppended)
+        unuploadedContainers.append(containerToBeAppended)
+        
+        // will need some kind of warning label if the user if offline
+        // "container stored locally only" or something like that
+        refreshContainers()
+        
+        
+        
         //usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
         
         // this is the line I added. It should add the new question to the myUser that's in the usersArray
-        usersArray[indexOfUser(in: usersArray, userID: newAsk.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
+        //usersArray[indexOfUser(in: usersArray, userID: newAsk.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
         
         
         
@@ -1258,6 +1267,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         let actionNo = UIAlertAction(title: "Enter a Title", style: .default) {
             UIAlertAction in
             // 'No' selection in this case should do nothing. It just clears the message and takes the user back to editing.
+            // maybe it should make the title text field the active element?
         }
         
         

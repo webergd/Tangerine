@@ -217,45 +217,38 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         if strongFlag == true { strong = selection }
         
         // unwrap the ask again to pull its containerID:
-        var containerIDtoSet: ContainerIdentification
-        if let thisAsk = ask {
-            containerIDtoSet = thisAsk.containerID
-        } else {
-            print("the ask was nil when creating the review")
-            fatalError()
-        }
         
-        let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text, containerID: containerIDtoSet)
-        // normally we would then send this review up to the server.
-        // Instead, for the sake of testing, we will add it to the user's reviews
-        // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
         if let thisAsk = ask {
 
-            // Figures out which array the userID is at, then returns the element at that index in the usersArray.
-            // In other words, it returns that user; not a copy, the actual user.
-            // This will need to be changed to get the user in the database once I'm using that.
+            let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text, containerID: thisAsk.containerID)
+            // normally we would then send this review up to the server.
+            // Instead, for the sake of testing, we will add it to the user's reviews
+            // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
+        
+
+                // Figures out which array the userID is at, then returns the element at that index in the usersArray.
+                // In other words, it returns that user; not a copy, the actual user.
+                // This will need to be changed to get the user in the database once I'm using that.
             
-            // This is basically what is happening here:
-            //  1. look up the user's id name in the usersArray,
-            //  2. look up the container number in that user's containerCollection,
-            //  3. append the new askReview to the container's review collection.
+                // This is basically what is happening here:
+                //  1. look up the user's id name in the usersArray,
+                //  2. look up the container number in that user's containerCollection,
+                //  3. append the new askReview to the container's review collection.
             
-            print("length of usersArray is: \(usersArray.count)")
-            print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisAsk.containerID.userID))")
-            //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
-            //print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
+                //print("length of usersArray is: \(usersArray.count)")
+                //print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisAsk.containerID.userID))")
+                //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
+                //print("index of container collection to replace \(thisAsk.containerID.containerNumber)")
             
-            print("inside the usersArray, myUser's containerCollection length is: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
-            print("on its own, myUser's containerCollection length is: \(myUser.containerCollection.count)")
+                //print("inside the usersArray, myUser's containerCollection length is: \(usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection.count)")
+                //print("on its own, myUser's containerCollection length is: \(myUser.containerCollection.count)")
             
-            print("trying to modify the review collection of myUser's container at index: \(thisAsk.containerID.containerNumber)")
+                //print("trying to modify the review collection of myUser's container at index: \(thisAsk.containerID.containerNumber)")
             
-            usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
-            //                              ^^^^^^
-            // we really just need to append this to unuploadedReviews
-            // and then call refreshReviews
+                //usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+            
             unuploadedReviews.append(createdReview)
-            // refreshReviews()
+            refreshReviews()
 
         } else {
             print("Fatal Error:")
@@ -271,6 +264,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     func loadNextQuestion() {
         assignedQuestions.removeFirst()
+        loadAssignedQuestions()
         if assignedQuestions[0].type == .compare {
             // need code to segue to CompareReviewVC without stacking it
             print("segue to ReviewCompareViewController")

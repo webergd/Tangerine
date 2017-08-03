@@ -51,13 +51,13 @@ class MainController: UIViewController {
 
         }
         
-        
+        loadAssignedQuestions()
         
         // This really should be done at the point the asks and compares are created:
         // // front load the queue with any new questions that we created in the app
-        for thisContainer in myUser.containerCollection {
-            assignedQuestions.append(thisContainer.question)
-        }
+        //for thisContainer in myUser.containerCollection {
+        //    assignedQuestions.append(thisContainer.question)
+        //}
         
         // add the dummy questions to the end of the question queue to be reviewed
         //for thisContainer in sampleContainers {
@@ -65,14 +65,15 @@ class MainController: UIViewController {
         //}
         
 
-        
+        /*
         for container in myUser.containerCollection {
             print("\(container.containerID.userID), \(container.containerID.containerNumber)")
         }
+        */
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        print("Number of elements in my containerCollection is now: \(myUser.containerCollection.count)")
+        print("Number of elements in my containerCollection is now: \(localContainerCollection.count)")
     }
     
     

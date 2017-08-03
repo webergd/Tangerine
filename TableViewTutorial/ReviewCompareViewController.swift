@@ -290,12 +290,16 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
         // this strongYes / strongNo logic will change if I implement strong no functionality (currently disabled)
         if commentsTextView.text == enterCommentConstant { commentsTextView.text = ""}
-        let createdReview: CompareReview = CompareReview(selection: selection, strongYes: strongFlag, strongNo: false, comments: commentsTextView.text)
         
-        // normally we would then send this review up to the server.
-        // Instead, for the sake of testing, we will add it to the user's reviews
-
+        // unwrap the compare again to pull its containerID:
         if let thisCompare = compare {
+        
+            let createdReview: CompareReview = CompareReview(selection: selection, strongYes: strongFlag, strongNo: false, comments: commentsTextView.text, containerID: thisCompare.containerID)
+        
+            // normally we would then send this review up to the server.
+            // Instead, for the sake of testing, we will add it to the user's reviews
+
+        
 
             // Figures out which array the userID is at, then returns the element at that index in the usersArray.
             // In other words, it returns that user; not a copy, the actual user.
@@ -306,15 +310,18 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             //  2. look up the container number in that user's containerCollection,
             //  3. append the new compareReview to the container's review collection.
             
-            print("length of usersArray is: \(usersArray.count)")
-            print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisCompare.containerID.userID))")
+            //print("length of usersArray is: \(usersArray.count)")
+            //print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisCompare.containerID.userID))")
             //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection.count)")
             //print("index of container collection to replace \(thisCompare.containerID.containerNumber)")
             
             
             // Make sure we are creating a CompareReview:    //////
             print("about to append review to the review collection")
-            usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+            //usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
+            
+            unuploadedReviews.append(createdReview)
+            refreshReviews()
 
         } else {
             print("Fatal Error:")
@@ -325,8 +332,6 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         //someUser.containerCollection[containerNumber].reviewCollection.reviews.append(createdReview)
         print("new review created.")
 
-        
-        
         loadNextQuestion()
 
     } // end of createReview
@@ -334,11 +339,12 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     func loadNextQuestion() {
         
         assignedQuestions.removeFirst()
+        loadAssignedQuestions()
         
         // UNCOMMENT THIS WHEN IMPLEMENTING SEGUE FUNCTIONALITY:
         
         if assignedQuestions[0].type == .ask {
-            // need code to segue to CompareReviewVC without stacking it
+            // need code to segue to CompareReviewVC without stacking it - I'm pretty sure this is done now
             print("segue to ReviewAskViewController")
             segueToReviewAskViewController()
 

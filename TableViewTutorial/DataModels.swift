@@ -37,7 +37,7 @@ public enum askOrCompare: String {
     case compare
 }
 
-public enum demo: String {
+public enum orientation: String {
     case straightWoman
     case straightMan
     case gayWoman
@@ -135,16 +135,18 @@ public var obligatoryReviewsRemaining: Int {
 
 public var localContainerCollection: [Container] = []
 
-public var localFriendCollection: [PublicInfo] = [] // how can we modify this so that friend profiles are stored locally but thier private info is not?
+public var localFriendCollection: [PublicInfo] = [] // how can we modify this so that friend profiles are stored locally but thier private info is not? - question alread answered- by storing only their publicInfo
 
 // keep in mind, a user has a friendNames array that only stores the friends' usernames
 // locally, we will store copies of the friends' user profiles so that we can display thier pictures, etc. Before displaying the friends table view, we will refresh this localFriendCollection by searching the database for each friend's profile, based on the list of usernames that is currently in the online user's friendCollection (which, once again is just a list of strings)
+//  ^^^^ better yet, I just stored the friends' publicInfo's in an array that we can use to populate a friend tableView without connecting online
 
 // This will need to be stored locally for "app off" storage
 //  using either UserDefaults or CoreData functionality.
 // I will need an if statement where if the UserDefaults data is nil,
 //  it then reroutes user to a login / create new account page.
 // For now I will just bypass this by pulling from the simulated database since it is always available:
+
 public var localMyUser: User = sd.usersArray[indexOfUser(in: sd.usersArray, userID: "wyatt")]
 // we will need a flag somewhere that tells us whether the user profile has been updated without uploading those changes to the database, so that we know whether to merge the profile with the one online.
 // For now we will just assume myUser's profile was already in the database and is exactly how we want it to be.
@@ -155,10 +157,13 @@ public var unuploadedContainers: [Container] = []
 
 public var unuploadedReviews: [isAReview] = []
 
-// should be an array of usernames
+// should be arrays of usernames
 public var undeletedFriends: [String] = []
+public var newlyAcceptedFriends: [String] = []
+public var newlyRequestedFriends: [String] = []
 
-public var unacceptedFriends: [Friendship] = []
+public var friendsIRequestedPending: [PublicInfo] = []
+public var friendsRequestedMePending: [PublicInfo] = []
 
 // END OF LOCAL PROPERTIES
 
@@ -436,7 +441,7 @@ public func reviewerRatingToTangerines(rating: Double) -> String {
 }
 
 
-public func demoToText(userDemo: demo) -> String {
+public func orientationToText(userDemo: orientation) -> String {
     switch userDemo {
     case .straightWoman: return "Straight Woman"
     case .straightMan: return "Straight Man"
@@ -448,8 +453,8 @@ public func demoToText(userDemo: demo) -> String {
 
 
 // an awesome website for color conversion is: http://uicolor.xyz/#/hex-to-ui
-public func demoSpecificColor(userDemo: demo) -> UIColor {
-    switch userDemo {
+public func orientationSpecificColor(userOrientation: orientation) -> UIColor {
+    switch userOrientation {
     case .straightWoman: return UIColor(red:0.92, green:0.63, blue:0.89, alpha:1.0) //pink
     case .straightMan: return UIColor(red:0.48, green:0.65, blue:0.93, alpha:1.0) //blue
     case .gayWoman: return UIColor(red:0.71, green:0.36, blue:0.89, alpha:1.0) //purple
@@ -520,7 +525,7 @@ public func indexOfUser(in array: [User], userID: String)-> Int {
 
 public func loadAssignedQuestions() {
     // pull the first element off of the array because we may have already reviewed it
-    assignedQuestions.removeFirst()
+    // assignedQuestions.removeFirst()
     for question in assignedQuestions {
         // Need to do this first:
         // check the age of the question here and throw it out if it's too old, then continue, i.e. start the loop over
@@ -528,7 +533,7 @@ public func loadAssignedQuestions() {
         
         // checks the assignedQuestions array size and trims off the front or adds to the back. A queue essentially.
         switch assignedQuestions.count {
-        case Int.min..<assignedQuestionsBufferSize: assignedQuestions.append(fetchNewQuestion())
+        case Int.min..<assignedQuestionsBufferSize: assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
         case assignedQuestionsBufferSize..<Int.max: assignedQuestions.removeFirst()
         default: print("assignedQuestions loaded new question(s) and is the appropriate size")
         }
@@ -539,12 +544,25 @@ public func loadAssignedQuestions() {
 // This counter is only for use with dummy Questions. It allows us to keep iterating through them.
 var questionCounter: Int = 0
 
-public func fetchNewQuestion() -> Question {
+public func fetchNewQuestion(usingSimulatedDatabase: Bool) -> Question {
     // This will have to pull info from the database. For now we will just use dummy questions.
-    if questionCounter > 4 {
-        questionCounter = 0 // we only have 5 sample questions so we need to go back to the start of the array
+    switch usingSimulatedDatabase {
+    case true:
+        questionCounter += 1 //increment questionCounter each time we send the user a question
+        // this wont work right if we're trying to review questions that the user creates at runtime.
+        if questionCounter > 4 {
+            questionCounter = 0 // we only have 5 sample questions so we need to go back to the start of the array
+            // clear out the usersSentTo lists for all of the dummy containers
+            for container in sd.containersArray {
+                container.usersSentTo = []
+            }
+        }
+    case false: print("false accidentally selected in fetchNewQuestion()")
     }
-    return sampleContainers[questionCounter].question
+
+    let question = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName)
+    
+    return question //sd.containersArray[questionCounter].question
 }
 
 /*
@@ -588,10 +606,12 @@ public class Container {
     
     // This keeps track of how many users we sent the container's question to:
     // We can use this to spread questions equally to the available reviewers.
-    var usersSentTo: Int = 0
+    var usersSentTo: [String] = []
+    var numberOfUsersSentTo: Int { return usersSentTo.count }
     
     var reviewCollection: ReviewCollection
     var reportsCollection: [Report]
+    var numReviews: Int { return reviewCollection.reviews.count }
     var numReports: Int { return reportsCollection.count }
     
     init(question q: Question) {
@@ -600,7 +620,19 @@ public class Container {
         reportsCollection = []
         localMyUser.containerIDCollection.append(self.containerID) // at some point I will also need a way to remove the containers
         // MARK: Does this yield the correct index location given the containerID?
-        localContainers.append(self)
+        localContainerCollection.append(self)
+    }
+    
+    // This additional initializer exists only for the sake of testing.
+    // It enables us to create containers using different usernames.
+    init(question q: Question, createdBy username: String) {
+        question = q
+        reviewCollection = ReviewCollection(type: question.type)
+        reportsCollection = []
+        
+        //localMyUser.containerIDCollection.append(self.containerID) // at some point I will also need a way to remove the containers
+        // MARK: Does this yield the correct index location given the containerID?
+        sd.containersArray.append(self)
     }
 
 }
@@ -608,7 +640,7 @@ public class Container {
 public struct ContainerIdentification {
     // see if I can change these to let constants vice vars:
     var userID: String
-    var containerNumber: Int
+    var containerNumber: Int // not planning on using this anymore
     let timePosted: Date = Date() //sets timePosted to the current time at the time of Question creation.
     
 }
@@ -642,11 +674,11 @@ public class ReviewCollection {
             return false // skips the rest of the code in this method
         }
 
-        // This switch statement checks which demo the reviewer was, and if we are
-        //  trying to pull from that demo, it returns true (since we already know they 
+        // This switch statement checks which orientation the reviewer was, and if we are
+        //  trying to pull from that demographic, it returns true (since we already know they
         //  are in the appropriate age range)
 
-        switch thisReview.reviewerDemo {
+        switch thisReview.reviewerOrientation {
         case .straightWoman:
             print("found a straight woman")
             if targetDemo.straightWomenPreferred {return true}
@@ -657,7 +689,7 @@ public class ReviewCollection {
         case .gayMan:
             if targetDemo.gayMenPreferred {return true}
         }
-        // the reviewer was in the age range but was not in any of my preferred demo's
+        // the reviewer was in the age range but was not in any of my preferred orientations
         return false
     }
     
@@ -677,7 +709,7 @@ public class ReviewCollection {
             print("filtering for target demo")
             for review in reviews {
                 if self.isTargetDemo(index: index, targetDemo: myTargetDemo) {
-                    print("appending a \(String(describing: review.reviewerDemo)) to the array")
+                    print("appending a \(String(describing: review.reviewerOrientation)) to the array")
                     filteredReviewsArray.append(review)
                 }
                 index += 1
@@ -694,7 +726,7 @@ public class ReviewCollection {
         
         return filteredReviewsArray
     }
-    // Returns aggregated data within the age and demographic specified in the arguments:
+    // Returns aggregated data within the age and orientation demographic specified in the arguments:
     func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedAskDataSet {
         
         //  Friends Only filter not yet implemented //
@@ -733,10 +765,10 @@ public class ReviewCollection {
             }
             
             
-            // This switch statement checks which demo the reviewer was, and if we aren't
+            // This switch statement checks which orientation demo the reviewer was, and if we aren't
             //  trying to pull from that demo, we go back to the beginning of the for loop.
             // If we are trying to pull from that demo, we increment that demo's count and move on.
-            switch review.reviewerDemo {
+            switch review.reviewerOrientation {
             case .straightWoman:
                 if straightWomen == false {continue reviewLoop}
                 countSW += 1
@@ -841,10 +873,10 @@ public class ReviewCollection {
             }
             
             
-            // This switch statement checks which demo the reviewer was, and if we aren't
+            // This switch statement checks which orientation demo the reviewer was, and if we aren't
             //  trying to pull from that demo, we go back to the beginning of the for loop.
             // If we are trying to pull from that demo, we increment that demo's count and move on.
-            switch review.reviewerDemo {
+            switch review.reviewerOrientation {
             case .straightWoman:
                 if straightWomen == false {continue reviewLoop}
                 countSW += 1
@@ -965,10 +997,11 @@ open class Ask: Question {
     
     // uses the timePosted to return a string of the timeRemaining
     var timeRemaining: String {
-        return calcTimeRemaining(timePosted)
+        return calcTimeRemaining(containerID.timePosted)
     }
     
     var askRating: Double {
+        // As of 2Aug17 we are not using this breakdown anymore. Reviews are stored in the holding container's ReviewCollection, not in the question itself.
         
         let numSW = breakdown.straightWomen as! AskDemo
         let numSM = breakdown.straightMen as! AskDemo
@@ -1255,7 +1288,7 @@ public protocol isAReview {  // I am still undecided whether to attach the whole
     // Maybe just reference the picture from the server if the user de
     var reviewID: ReviewID {get}
     var reviewerName: String {get} // this might need to be displayName instead
-    var reviewerDemo: demo {get}
+    var reviewerOrientation: orientation {get}
     var reviewerAge: Int {get}
     var comments: String {get set}
     var reviewerInfo: PublicInfo {get set}
@@ -1288,15 +1321,15 @@ public struct AskReview: isAReview {
     var strong: yesOrNo?
     public var reviewerInfo: PublicInfo
     public var reviewerName: String {return reviewerInfo.displayName }
-    public var reviewerDemo: demo { return reviewerInfo.orientation }
+    public var reviewerOrientation: orientation { return reviewerInfo.orientation }
     public var reviewerAge: Int { return reviewerInfo.age }
     public var comments: String
     
     init(selection sel: yesOrNo, strong strg: yesOrNo?, comments c: String, containerID: ContainerIdentification) {
         selection = sel
         strong = strg
-        comments = c
         reviewerInfo = localMyUser.publicInfo
+        comments = c
         reviewID = ReviewID(containerID: containerID, reviewerID: reviewerInfo.userName)
         
     }
@@ -1324,7 +1357,7 @@ public struct CompareReview: isAReview {
     var strongNo: Bool
     public var reviewerInfo: PublicInfo
     public var reviewerName: String {return reviewerInfo.displayName }
-    public var reviewerDemo: demo { return reviewerInfo.orientation }
+    public var reviewerOrientation: orientation { return reviewerInfo.orientation }
     public var reviewerAge: Int { return reviewerInfo.age }
     public var comments: String
     
@@ -1420,7 +1453,7 @@ public struct PublicInfo { //this will always be implemented as a part of a User
     var displayName: String
     var profilePicture: UIImage? 
     var age: Int // this should actually be birthday and then have a method to calculate age
-    var orientation: demo
+    var orientation: orientation
     var signUpDate: Date
     var reviewsRated: Int
     var reviewerScore: Double
@@ -1459,11 +1492,6 @@ public struct compareBeingEdited {
 
 
 
-// Applicable to dummy values scenario only. I believe the function it references also is but double check .
-public func myUserIndex() -> Int {
-    // find myUser's index in the usersArray:
-    return indexOfUser(in: usersArray, userID: myUser.publicInfo.userName)
-}
 
 
 

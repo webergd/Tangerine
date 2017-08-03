@@ -140,8 +140,8 @@ class CompareReviewsTableViewController: UITableViewController {
             cell.selectionImageView.image = selectionImage(selection: review.selection, compare: thisContainer.question as! Compare)
             cell.selectionTitleLabel.text = selectionTitle(selection: review.selection, compare: thisContainer.question as! Compare)
         }
-        // sets the cell background color according to the reviewers demo
-        cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: review.reviewerDemo)
+        // sets the cell background color according to the reviewers orientation
+        cell.cellBackgroundView.backgroundColor = orientationSpecificColor(userOrientation: review.reviewerOrientation)
         
         switch review.comments {
         case "": cell.commentExistsLabel.text = ""

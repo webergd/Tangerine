@@ -176,7 +176,7 @@ class AskReviewsTableViewController: UITableViewController {
         cell.reviewerAgeLabel.text = String(review.reviewerAge)
         cell.voteLabel.text = selectionToText(selection: review.selection)
         cell.strongExistsLabel.text = strongToText(strong: review.strong)
-        cell.cellBackgroundView.backgroundColor = demoSpecificColor(userDemo: review.reviewerDemo)
+        cell.cellBackgroundView.backgroundColor = orientationSpecificColor(userOrientation: review.reviewerOrientation)
 
         switch review.comments {
         case "": cell.commentExistsLabel.text = ""

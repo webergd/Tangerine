@@ -17,11 +17,21 @@ public class SimulatedDatabase {
     var containersArray: [Container] = []
     var friendshipsArray: [Friendship] = []
     
+    // During normal app operation this is not used. Only on deleting a container are its reviews entered into the reviewArchives table
+    // The reason for this is to store potentially useful data for follow on monetization.
+    var reviewArchivesArray: [isAReview] = []
+
+    
     func loadDummyValues() {
         loadSampleUsers()
         loadSampleAsks()
         loadSampleAskReviews()
         loadSampleCompareReviews()
+    }
+    
+    func myUserIndex() -> Int {
+        // find myUser's index in the usersArray:
+        return index(of: "wyatt", in: usersArray)
     }
     
     func refreshContainers(for username: String, undeletedContainers: [ContainerIdentification], unuploadedContainers: [Container]) -> [Container] {
@@ -38,6 +48,15 @@ public class SimulatedDatabase {
     }
     
     func delete(containerID: ContainerIdentification) {
+        
+        // this loop archives the reviews from the container's review collection prior to deleting the container completely. 
+        for review in containersArray[index(of: containerID)].reviewCollection.reviews {
+            reviewArchivesArray.append(review)
+        }
+
+        //update the user's containerID list:
+        usersArray[index(of: containerID.userID, in: usersArray)].containerIDCollection = getContainerIDs(for: containerID.userID)
+        
         containersArray.remove(at: index(of: containerID))
     }
     
@@ -46,6 +65,9 @@ public class SimulatedDatabase {
         if locationIndex == -1 {
         // this means the container doesn't already exist in the array
             containersArray.append(container)
+            
+            //update the user's containerID list:
+            usersArray[index(of: container.containerID.userID, in: usersArray)].containerIDCollection.append(container.containerID)
         }
         // otherwise do nothing because the container is already uploaded
         
@@ -59,30 +81,169 @@ public class SimulatedDatabase {
     
     func add(review: isAReview) {
         // find which container to add the review to
-        let indexOfTargetContainer: Int = indexOf(containerID: review.reviewID.containerID, in: containersArray)
+        let indexOfTargetContainer: Int = index(of: review.reviewID.containerID)
         containersArray[indexOfTargetContainer].reviewCollection.reviews.append(review)
     }
     
-    // the actual database will probably use primary keys instead of indeces like an array so we will flex as required when ammending the code.
-    func indexOf(containerID: ContainerIdentification, in array: [Container]) -> Int {
-        // find userID's index in the array:
-        var index: Int = 0
-        for container in array {
-            // This is nested so that only the userID will be checked first
-            //  and if there's no match, it moves on.
-            if container.containerID.userID == containerID.userID {
-                if container.containerID.containerNumber == containerID.containerNumber {
-                return index
-            
-                }
-            }
-            index += 1
-        }
-        print("containerID wasn't found in the containersArray")
-        fatalError()
+    func containerWithFewestReviews() {
+        // lets create a numReviews method in Container to help with this
     }
     
-    // this method takes a string of usernames to delete, a user who's friends they are, deletes the names from the user's list in the database, finds each of the users in the newly revised friend list, and adds them up into an array that it then returns to the user so that the localFriendCollection can be updated. It also uolod an array of friends who the user has accepted a re
+    
+    // Question Ranking Priority:
+    // 
+    // 1. Number of reviews is less than 3 - each container should get at least 3 reviews
+    // 2. Demo orientation matches one of the question's requested orienations
+    // 3. Lowest review age proximity to question range (the closer the reviewer is to the target age range, the better)
+    
+    // We need to just iterate through the database's containers array and find the best match. 
+    // Hold the containerID of the best match and if a better one comes along during our search, replace it with that.
+
+    // search to find a container whose creator's target demo encompasses the specified criteria:
+    func questionRequesting(orientation: orientation, age: Int, requesterName: String) -> Question {
+        
+        let preferredMaxReviewsConstant: Int = 3 // change this number to give priority handling to containers with less than this number of reviews
+        
+        // initialize the bestMatch with the first container in the table so as to have something to compare to:
+        var bestMatch: ContainerIdentification = containersArray[0].containerID
+        var bestMatchNumReviews: Int = containersArray[0].numReviews
+        //var bestHighReviewsMatch: ContainerIdentification = containersArray[0].containerID
+        
+        // first look for a question whose target demo fits the requesting user's demo:
+        for container in containersArray {
+            if container.usersSentTo.contains(requesterName) {
+                // we already sent this container's question to the requesting user
+                continue
+            }
+            // We will always consider a container if it has 0, 1, or 2 reviews (because preferredMaxReviewsConstant = 3)
+            // Will will consider a container with more reviews than that, only if we have not yet found a container will less reviews than preferredMaxReviewsConstant
+            // The whole point of this is that below a certain review number threshold, we need to prioritize getting the requesting user some reviews,
+            //  even if they are not necessarily exact matches.
+            
+            if bestMatchNumReviews < preferredMaxReviewsConstant {
+                if container.numReviews < preferredMaxReviewsConstant {
+                    // this means that the container has less than preferredMaxReviewsConstant number of reviews, so lets see if it's a better match than the current best match:
+                    bestMatch = updateBestMatch(container: container, bestMatch: bestMatch, orientation: orientation, age: age)
+                } else {
+                    // If we have already found a container with less than preferredMaxReviewsConstant number of reviews,
+                    //  and the current container has more than that, we don't even want to consider it.
+                    continue
+                }
+            } else {
+                // In this case, we have not yet found a container with less than preferredMaxReviewsConstant number of reviews so we 
+                //  will see if the container is a better match, regardless of whether it has >= preferredMaxReviewsConstant number of reviews or not
+                bestMatch = updateBestMatch(container: container, bestMatch: bestMatch, orientation: orientation, age: age)
+            }
+            // Finally, we update the bestMatchNumReviews property so that we can check it again at the beginning of the next loop iteration to
+            //  see if it is now below preferredMaxReviewsConstant number of reviews
+            bestMatchNumReviews = containersArray[index(of: bestMatch)].numReviews
+  
+        }
+
+        // This question is the one that is the best match. Ideally, it has less than preferredMaxReviewsConstant number of reviews.
+        // The only case in which the question being returned will have more than preferredMaxReviewsConstant is if there were no 
+        //  containers in the array with less than preferredMaxReviewsConstant number of reviews.
+        containersArray[index(of: bestMatch)].usersSentTo.append(requesterName)
+        return containersArray[index(of: bestMatch)].question
+        
+    }
+    
+    func updateBestMatch(container: Container, bestMatch: ContainerIdentification, orientation: orientation, age: Int) -> ContainerIdentification {
+        // Check orientation
+        // Then check age proximity
+        // Check number of reviews as a tie breaker
+        
+        // so far I have nothing in here that takes into consideration the number of users that the question has been sent to.
+        // This is worth thinking about because a question could potentially be sent to a ton of reviewers before any of them have a chance to review it, thereby depriving other questions from being sent to those reviewers instead.
+        // This would end up in an uneven spread, with some questions getting a ton of reviews, and others getting few to none
+        // It can't be the soul driver though since a question sent to a reviewer is by no means a guarantee that it will be reviewed.
+
+        // look up the current target orientation of the user who made the container:
+        let targetDemo: TargetDemo = usersArray[index(of: container.containerID.userID, in: usersArray)].targetDemo
+        
+        if desired(targetDemo: targetDemo, includes: orientation) {
+            // looks like our user is an orientation that the container creator wants reviews from
+            
+            // now let's find out how far away our user's age is from the container's desired age range:
+            let currentContainerAgeProximity: Int = ageProximity(actualAge: age, minAge: targetDemo.minAge, maxAge: targetDemo.maxAge)
+            
+            // if ageProximty is 0, and the numReviews is 0, return and stop the search because its not gonna get any better than that
+            if currentContainerAgeProximity == 0 && container.numReviews == 0 {
+                return container.containerID
+            }
+            // Otherwise, if the age proximity is closer than the best match so far, just replace the best match with this one and continue the search
+            
+            let bestMatchMinAge: Int = usersArray[index(of: bestMatch.userID, in: usersArray)].targetDemo.minAge
+            let bestMatchMaxAge: Int = usersArray[index(of: bestMatch.userID, in: usersArray)].targetDemo.minAge
+            let bestContainerAgeProximity: Int = ageProximity(actualAge: age, minAge: bestMatchMinAge, maxAge: bestMatchMaxAge)
+            
+            if  currentContainerAgeProximity < bestContainerAgeProximity {
+                // looks like we found a container with a closer age match, let's update our bestMatch property with the current container's ID:
+                return container.containerID
+            } else if currentContainerAgeProximity > bestContainerAgeProximity {
+                return bestMatch // this container is not as good as the current best match, just return the original one that was passed in
+            } else {
+                // The age proximities are equal, both containers perfectly meet match criteria, therefore we must now break the tie by checking which one has less reviews:
+                
+                let bestMatchNumReviews: Int = containersArray[index(of: bestMatch)].numReviews
+                let currentContainerNumReviews: Int = container.numReviews
+                
+                if currentContainerNumReviews < bestMatchNumReviews {
+                    // in this case, the currentContainer has less reviews than the bestMatch's container, so we update the bestMatch property with the current container's containerID
+                    return container.containerID
+                } else {
+                    // in this case, the current container's number of reviews are either equal to or greater than the best match, so we will just keep the best match that was passed in originally:
+                    return bestMatch
+                }
+            }
+        }
+        // in this case, the container creator didn't want reviews from the orientation of the user that we are considering giving this review to, so we will not update the best match, we will just return back the bestMatch that was passed in originally:
+        return bestMatch
+    }
+    
+    
+
+    // the demo enum should really be called the orientation enum - changed on 3Aug17
+
+    func desired(targetDemo: TargetDemo, includes orientation: orientation) -> Bool {
+        switch orientation {
+        case .gayMan: return targetDemo.gayMenPreferred
+        case .gayWoman: return targetDemo.gayWomenPreferred
+        case .straightMan: return targetDemo.straightMenPreferred
+        case .straightWoman: return targetDemo.straightWomenPreferred
+        }
+    }
+
+    // // // // // // //
+    //
+    //
+    // We are complete with making the simulated database return a good container for the user to review.
+    // For this, utilize the questionRequesting() method (seen above)
+    //
+    // Look at this assignQuestion() method and see if we actually need it.
+    // I believe the point that I am at is modifying the code in the ReviewAsk and ReviewCompare VC's
+    //  in order to utilize the new simulated database functionality. 
+    // I should also probably double check CameraVC and ComparePreviewVC to ensure that they are now
+    //   simulated db compliant. 
+    // I'm not sure if I modified those VC's yet or not.
+    //
+    // // // // // // //
+
+    
+    // returns the number of years that the actualAge is outside of the specified age range
+    func ageProximity(actualAge: Int, minAge: Int, maxAge: Int) -> Int {
+        
+        if actualAge < minAge {
+            return minAge - actualAge
+        } else if maxAge < actualAge {
+            return actualAge - maxAge
+        } else {
+            return 0
+        }
+    }
+
+
+    // this method takes a string of usernames to delete, a user who's friends they are, deletes the names from the user's list in the database, finds each of the users in the newly revised friend list, and adds them up into an array that it then returns to the user so that the localFriendCollection can be updated. It also uploads an array of friends who the user has accepted a re
     
     // uploads:
     //  username
@@ -253,8 +414,9 @@ public class SimulatedDatabase {
     func sortUsersByDisplayName(listOfUsernames: [String]) -> [String] {
         var listOfPublicInfos: [PublicInfo] = []
         
-        for user in usersArray {
-            let usersPublicInfo = user.publicInfo
+        for username in listOfUsernames {
+            let usersPublicInfo = usersArray[index(of: username, in: usersArray)].publicInfo
+
             listOfPublicInfos.append(usersPublicInfo)
         }
 
@@ -270,9 +432,8 @@ public class SimulatedDatabase {
         
         return sortedUsernames
     }
-    
 
-    
+
     // we need a way to not crash when trying to delete a one sided friendship (like a request that we no longer want to have out there)
     
     // returns true if the friendship was deleted
@@ -316,8 +477,8 @@ public class SimulatedDatabase {
         
     }
 
-    
-    func indexOfUser(userID: String, in array: [User])-> Int {
+    // find the index of a user within the given array of users by searching for the user's ID:
+    func index(of userID: String, in array: [User])-> Int {
         // find userID's index in the array:
         var index: Int = 0
         for user in array {
@@ -330,6 +491,7 @@ public class SimulatedDatabase {
         fatalError()
     }
     
+    // find the index of a container within the containersArray by searching for the container's containerID:
     func index(of containerID: ContainerIdentification) -> Int {
         var index: Int = 0
         for container in containersArray {
@@ -485,9 +647,6 @@ public class SimulatedDatabase {
         ask3SM.numVotes = 90
         let container3 = Container(question: ask3)
         
-        //I think this is a pointless line of code:
-        //asks += [ask1,ask2,ask3]  //+= just appends them, I believe
-        //print("Asks: \(asks)")
         containersArray.append(container1)
         containersArray.append(container2)
         containersArray.append(container3)
@@ -561,95 +720,119 @@ public class SimulatedDatabase {
     public func loadSampleAskReviews() {
         
         loadSampleUsers() // this ensures that the reviewersArray values are not nil
+
+  
+        // I must have changed these around a bunch:
+        for container in containersArray {
+            if container.containerType == .ask {
+            
+                let askReview1 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview1)
+                
+                let askReview2 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview2)
         
+                let askReview3 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview3)
         
-        ///////////////////////////////////////////////////////////////////////////////////////////////
-        //    START HERE:
-        //
-        //
-        //  Just start moving through the code to all errors and adjust them to work with the database. 
-        //  Database methods should now be fully functional unless I forgot something.
-        //  In which case, just scroll back up and create the functionality.
-        //
-        ///////////////////////////////////////////////////////////////////////////////////////////////
+                let askReview4 = AskReview(selection: .no, strong: .yes, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview4)
         
+                let askReview5 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview5)
         
+                let askReview6 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview6)
         
+                let askReview7 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview7)
         
+                let askReview8 = AskReview(selection: .yes, strong: nil, reviewerInfo: usersArray[7].publicInfo, comments: "You suck at preflighting", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview8)
         
-        
-        
-        
-        let askReview1 = AskReview(selection: .no, strong: nil, comments: "raising eyebrows rapidly", reviewerInfo: usersArray[0].publicInfo)
-        
-        let askReview2 = AskReview(selection: .no, strong: nil, comments: "I can dream a hell of a lot", reviewerInfo: usersArray[1].publicInfo)
-        
-        let askReview3 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo")
-        
-        let askReview4 = AskReview(selection: .no, strong: .yes, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML")
-        
-        let askReview5 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice")
-        
-        let askReview6 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best")
-        
-        let askReview7 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?")
-        
-        let askReview8 = AskReview(selection: .yes, strong: nil, reviewerInfo: usersArray[7].publicInfo, comments: "You suck at preflighting")
-        
-        let askReview9 = AskReview(selection: .yes, strong: .yes, reviewerInfo: usersArray[8].publicInfo, comments: "My name is Bob?")
-        
-        // this loop adds all the reviews to each ask container since 0 through 2 are Asks
-        //  we only know this because we loaded 0 through 2 as asks
-        for x in 0...2  {
-            containersArray[x].reviewCollection.reviews.append(askReview1)
-            containersArray[x].reviewCollection.reviews.append(askReview2)
-            containersArray[x].reviewCollection.reviews.append(askReview3)
-            containersArray[x].reviewCollection.reviews.append(askReview4)
-            containersArray[x].reviewCollection.reviews.append(askReview5)
-            containersArray[x].reviewCollection.reviews.append(askReview6)
-            containersArray[x].reviewCollection.reviews.append(askReview7)
-            containersArray[x].reviewCollection.reviews.append(askReview8)
-            containersArray[x].reviewCollection.reviews.append(askReview9)
+                let askReview9 = AskReview(selection: .yes, strong: .yes, reviewerInfo: usersArray[8].publicInfo, comments: "My name is Bob?", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(askReview9)
+
+            }
+            
         }
-        
-        
+    
     }
+    
     
     // requires loadSampleCompares() to be called first in order to work.
     
     public func loadSampleCompareReviews() {
-        let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly")
         
-        let compareReview2 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot")
+        for container in containersArray {
+            if container.containerType == .compare {
         
-        let compareReview3 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[2].publicInfo, comments: "Gooooooo")
+                let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview1)
         
-        let compareReview4 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML")
+                let compareReview2 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview2)
         
-        let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice")
+                let compareReview3 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[2].publicInfo, comments: "Gooooooo", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview3)
         
-        let compareReview6 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best")
+                let compareReview4 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview4)
         
-        let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?")
+                let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview5)
         
-        // this loop adds all the reviews to each compare container since 3 through 4 are Compares
-        for x in 3...4  {
-            containersArray[x].reviewCollection.reviews.append(compareReview1)
-            containersArray[x].reviewCollection.reviews.append(compareReview2)
-            containersArray[x].reviewCollection.reviews.append(compareReview3)
-            containersArray[x].reviewCollection.reviews.append(compareReview4)
-            containersArray[x].reviewCollection.reviews.append(compareReview5)
-            containersArray[x].reviewCollection.reviews.append(compareReview6)
-            containersArray[x].reviewCollection.reviews.append(compareReview7)
+                let compareReview6 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[5].publicInfo, comments: "Oregon is the best", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview6)
+        
+                let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
+                
+                container.reviewCollection.reviews.append(compareReview7)
+            }
         }
         
         let thisIndex: Int = myUserIndex()
         
-        // this loads the sample containers into the myUser that is in the usersArray
-        // All of this as usual is dummy stuff that needs to be deleted on beta
-        usersArray[thisIndex].containerCollection = sampleContainers // this needs to be switched to containerID's instead of containers
-        
-        
+        // this loads the sample containerIDs into the myUser that is in the usersArray
+        for container in containersArray {
+        usersArray[thisIndex].containerIDCollection.append(container.containerID)
+    
+        }
     }
 
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

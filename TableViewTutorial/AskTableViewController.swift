@@ -23,7 +23,7 @@ class AskTableViewController: UITableViewController {
     // In the actual implementation, the variable 'containers' is going to need to be pulled from the server
     // In this implementation I am just loading it with dummy reviews
     
-    var containers: [Container] = myUser.containerCollection // this is an array that will hold Asks and Compares
+    var containers: [Container] = localContainerCollection // this is an array that will hold Asks and Compares
     var sortedContainers = [Container]()
     
 
@@ -41,7 +41,7 @@ class AskTableViewController: UITableViewController {
         //loadSampleAskReviews()
         //loadSampleCompareReviews()
         // this appends the dummy values to this VC's containers property
-        containers = localMyUser.containerCollection
+        containers = localContainerCollection
         // the fact that this sorts the containers array by timestamp is the reason the dummy values are always at the top (they are the oldest)
         sortedContainers = containers.sorted { $0.question.containerID.timePosted.timeIntervalSince1970 < $1.question.containerID.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         

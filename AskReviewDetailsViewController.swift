@@ -81,8 +81,8 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
                 ageLabel.text = String(thisReview.reviewerAge)
                 
                 // MARK: Hide this label if user is a friend
-                demoLabel.text = demoToText(userDemo: thisReview.reviewerDemo)
-                demoLabel.textColor = demoSpecificColor(userDemo: thisReview.reviewerDemo)
+                demoLabel.text = orientationToText(userDemo: thisReview.reviewerOrientation)
+                demoLabel.textColor = orientationSpecificColor(userOrientation: thisReview.reviewerOrientation)
                 
                 ratingLabel.text = reviewerRatingToTangerines(rating: thisReview.reviewerInfo.reviewerScore)
                 selectionLabel.text = selectionToText(selection: thisReview.selection)

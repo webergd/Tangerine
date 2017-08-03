@@ -190,6 +190,14 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                     // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
                     let containerToBeAppended = Container(question: newCompare)
                 
+                    //////////////////////////////////
+                    //          START HERE:         //
+                    //                              //
+                    //   Just keep smashing bugs    //
+                    //      Now go to work.         //
+                    //                              //
+                    //////////////////////////////////
+                    
                     
                     // this is the line I added. It should add the new question to the myUser that's in the usersArray
                     usersArray[indexOfUser(in: usersArray, userID: newCompare.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
