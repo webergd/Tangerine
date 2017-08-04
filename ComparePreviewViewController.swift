@@ -189,22 +189,14 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                 
                     // Creates a new container containing the newCompare and a flag that tells the container it is holding a Compare, as well as a new ReviewCollection that is initialized.
                     let containerToBeAppended = Container(question: newCompare)
-                
-                    //////////////////////////////////
-                    //          START HERE:         //
-                    //                              //
-                    //   Just keep smashing bugs    //
-                    //      Now go to work.         //
-                    //                              //
-                    //////////////////////////////////
                     
                     
-                    // this is the line I added. It should add the new question to the myUser that's in the usersArray
-                    usersArray[indexOfUser(in: usersArray, userID: newCompare.containerID.userID)].containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
-
-                    // This ensures that the container number will correspond with the container's location in the containerArray:
-                    // myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
-                    print("new compare added to myUser.containerCollection at index: \(containerToBeAppended.containerID.containerNumber)")
+                    localContainerCollection.append(containerToBeAppended)
+                    unuploadedContainers.append(containerToBeAppended)
+                    
+                    // will need some kind of warning label if the user if offline
+                    // "container stored locally only" or something like that
+                    refreshContainers()
                 
                     assignedQuestions.append(containerToBeAppended.question) //puts the new question in the reviewQueue
                     

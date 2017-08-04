@@ -52,6 +52,7 @@ class MainController: UIViewController {
         }
         
         loadAssignedQuestions()
+        refreshEverything()
         
         // This really should be done at the point the asks and compares are created:
         // // front load the queue with any new questions that we created in the app

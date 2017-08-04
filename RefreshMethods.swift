@@ -39,6 +39,7 @@ public func refreshEverything() {
     refreshContainers()
     refreshFriends()
     refreshReviews()
+    refreshReports()
     refreshUserProfile()
 }
 
@@ -64,6 +65,8 @@ public func refreshContainers() {
 
 public func refreshReviews() {
     sd.refreshReviews(unuploadedRevs: unuploadedReviews)
+    // if successful, then clear out unuploadedReviews // should do this for all 'unuploaded' arrays one real db is implemented
+    unuploadedReviews = []
 }
 
 public func refreshFriends() {
@@ -82,10 +85,21 @@ public func refreshUserProfile() {
 }
 
 public func refreshAssignedQuestions() {
-    
+    //
+    //
+    //
+    //      NEED CODE
+    //
+    //
+    //
+    //
 }
 
-
+public func refreshReports() {
+    sd.refreshReports(unuploadedReps: unuploadedReports)
+    // if successful, then clear out unuploadedReports // should do this for all 'unuploaded' arrays one real db is implemented
+    unuploadedReports = []
+}
 
 
 

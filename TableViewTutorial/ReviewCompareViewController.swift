@@ -504,13 +504,14 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
 
         if thisReportType == .cancel { return }
         
-        let thisReport: Report = Report(type: thisReportType)
         
         
         if let thisCompare = compare {
             
-            // this will need to be changed to a database update later
-            usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reportsCollection.append(thisReport)
+            let thisReport: Report = Report(type: thisReportType, containerID: thisCompare.containerID)
+
+            unuploadedReports.append(thisReport)
+            refreshReports()
             
         } else {
             print("Fatal Error:")

@@ -157,6 +157,8 @@ public var unuploadedContainers: [Container] = []
 
 public var unuploadedReviews: [isAReview] = []
 
+public var unuploadedReports: [Report] = []
+
 // should be arrays of usernames
 public var undeletedFriends: [String] = []
 public var newlyAcceptedFriends: [String] = []
@@ -524,18 +526,34 @@ public func indexOfUser(in array: [User], userID: String)-> Int {
 
 
 public func loadAssignedQuestions() {
+    
+    print("assignedQuestions.count= \(assignedQuestions.count)")
+    // load one question into the assignedQuestions queue to ensure the loop executes at least once:
+    assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
+    print("assignedQuestions.count= \(assignedQuestions.count)")
+    
     // pull the first element off of the array because we may have already reviewed it
     // assignedQuestions.removeFirst()
-    for question in assignedQuestions {
+    
+    //print("assignedQuestionsBufferSize = \(assignedQuestionsBufferSize)")
+    for _ in assignedQuestions {
+        
+        //assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
         // Need to do this first:
         // check the age of the question here and throw it out if it's too old, then continue, i.e. start the loop over
         // We will use the "question" local variable here. Don't change it to a _
         
         // checks the assignedQuestions array size and trims off the front or adds to the back. A queue essentially.
         switch assignedQuestions.count {
-        case Int.min..<assignedQuestionsBufferSize: assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
-        case assignedQuestionsBufferSize..<Int.max: assignedQuestions.removeFirst()
-        default: print("assignedQuestions loaded new question(s) and is the appropriate size")
+        case Int.min..<assignedQuestionsBufferSize:
+            assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
+            print("added a new question to the assignedQuestions queue")
+            print("assignedQuestions.count= \(assignedQuestions.count)")
+        case assignedQuestionsBufferSize..<Int.max:
+            assignedQuestions.removeFirst()
+        default:
+            print("in default case of switch statement... assignedQuestions.count= \(assignedQuestions.count)")
+            print("assignedQuestions loaded new question(s) and is the appropriate size")
         }
     }
     
@@ -546,12 +564,13 @@ var questionCounter: Int = 0
 
 public func fetchNewQuestion(usingSimulatedDatabase: Bool) -> Question {
     // This will have to pull info from the database. For now we will just use dummy questions.
+    print("fetching new question")
     switch usingSimulatedDatabase {
     case true:
         questionCounter += 1 //increment questionCounter each time we send the user a question
         // this wont work right if we're trying to review questions that the user creates at runtime.
-        if questionCounter > 4 {
-            questionCounter = 0 // we only have 5 sample questions so we need to go back to the start of the array
+        if questionCounter > sd.containersArray.count - 1 {
+            questionCounter = 0 // at this point we've reviewed everything in the containersArray and need to go back to the beginning to keep testing the reviewOthers fucntionality
             // clear out the usersSentTo lists for all of the dummy containers
             for container in sd.containersArray {
                 container.usersSentTo = []
@@ -562,8 +581,48 @@ public func fetchNewQuestion(usingSimulatedDatabase: Bool) -> Question {
 
     let question = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName)
     
+    print("new question's userID is \(question.containerID.userID)")
+    print("new question's timePosted is \(question.containerID.timePosted)")
+    
     return question //sd.containersArray[questionCounter].question
 }
+
+
+////////////////////////////////////////
+//             START HERE:             //
+//
+// Apparently the system is only loading 2 elements into the assignedQuestions queue.
+// More testing is needed to understand why the switch statement in loadAssignedQuestions() is not
+//  ensuring that the queue is not being fully loaded to the point where it meets the limit in the
+//  specified buffer constant (which is currently set to 3.
+// I don't think I'm misunderstanding the meaning of .count ..?
+
+// In addition, the print statement output in mainController viewDidAppear is saying that my local container
+//  collection is only being loaded with 3 elements instead of 5 like it should be.
+// Is there an issue with the dummy compares in the simulated database?
+
+// Also, the containerID of what is being loaded into assignedQuestions appears to be the same every time.
+// The time stamp is the same for each one.
+// I suspect this is happening for one of two reasons:
+// 1. The dummy questions are all being created so quickly that they have the same timestamp and thus the same containerID
+// 2. The question delivery algorothm is sending the same question again and again because it is the best match
+//  and the list that each container has that is supposed to keep track of who the container was sent to and prevent 
+//  duplicates is not doing its job.
+
+// Bottom line, more testing is needed to see what is going on when mainController loads.
+// Then move on to the review controllers because it keeps showing the same question after each swipe.
+
+
+
+
+
+
+
+
+
+
+
+
 
 /*
 public struct DemoPreferences {
@@ -647,6 +706,7 @@ public struct ContainerIdentification {
 
 public struct Report {
     var type: reportType
+    var containerID: ContainerIdentification
 }
 
 public class ReviewCollection {

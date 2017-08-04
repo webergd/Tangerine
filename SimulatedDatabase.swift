@@ -79,10 +79,22 @@ public class SimulatedDatabase {
         }
     }
     
+    func refreshReports(unuploadedReps: [Report]) {
+        for report in unuploadedReps {
+            add(report: report)
+        }
+    }
+    
     func add(review: isAReview) {
         // find which container to add the review to
         let indexOfTargetContainer: Int = index(of: review.reviewID.containerID)
         containersArray[indexOfTargetContainer].reviewCollection.reviews.append(review)
+    }
+    
+    func add(report: Report) {
+        // find which container to add the review to
+        let indexOfTargetContainer: Int = index(of: report.containerID)
+        containersArray[indexOfTargetContainer].reportsCollection.append(report)
     }
     
     func containerWithFewestReviews() {

@@ -424,13 +424,15 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
         if thisReportType == .cancel { return }
 
-        let thisReport: Report = Report(type: thisReportType)
+        
         
         
         if let thisAsk = ask {
             
-            // this will need to be changed to a database update later
-            usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reportsCollection.append(thisReport)
+            let thisReport: Report = Report(type: thisReportType, containerID: thisAsk.containerID)
+            
+            unuploadedReports.append(thisReport)
+            refreshReports()
             
         } else {
             print("Fatal Error:")
