@@ -60,7 +60,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         strongFlag = false
         strongImageView.isHidden = true
         
-        // unwraps the Ask that the tableView sent over:
+        // unwraps the Ask that the tableView sent over: ..what tableView? Is this an old comment from a different VC?
         if let thisAsk = ask {
             
             if let thisImageView = self.imageView,
@@ -91,6 +91,46 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if assignedQuestions.count < 1 {
+            
+            if lastAssignedQuestionsRefreshSuccessful == false {
+                loadAssignedQuestions() // first reattempt to load the array again
+            } else {
+                // loadAssignedQuestions never encountered a nil value from the database and therefore
+                //  the reason for the array being out of questions is a lack of connectivity, not a lack of questions left to review
+                // Notify user of connectivity problem and reroute the user back to the mainVC.
+            }
+            
+            // There are no more questions left to review.
+            // We have to make sure that they didn't just go on airplane mode or lose reception. 
+            // We have to ensure the database is legitimately out of questions.
+            // Tell the user that, unlock all of their containers, and reroute them back to the main menu.
+            
+            // Maybe we have a flag that tells us whether the last time to refresh the assignedQuestions array was successful or not
+            // If it wasn't, we should try one more time before unlocking the containers.
+            // If it WAS successful, just don't unlock containers at all but tell them unable to reach server. 
+            
+            ////////////////////////////////////////////////////////////////////////////
+            //
+            // START HERE:
+            //
+            // We need to start working with locked containers. 
+            // Implement some locked container functionality and then come back to this ^^^ statement to give the user a freebee
+            //  if they reviewed everything already. This also needs to be cut and pasted into the ReviewCompareVC
+            // The biggest places locked containers will come into play are:
+            // 
+            // 1. Every review created should count toward unlocking one of myUser's containers - use unuploadedReviews, don't wait for connectivity
+            // 2. Update the labels at the bottom of the reviewVC's
+            // 3. Display a lock icon in the tableView cells
+            // 4. Decide what should happen if user taps on a locked cell. Message box with no segue? No review data displayed in VC but still segue to it?
+            // 5. Question creation (both CameraVC and ComparePreviewVC) - I may already have the requisite reviews added there, not 100% sure
+            //
+            ///////////////////////////////////////////////////////////////////////////
+            
+            
+        }
+        
         
         // first check and see if it's not an ask
         if assignedQuestions[0].type == .compare {

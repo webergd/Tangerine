@@ -25,6 +25,7 @@ public class SimulatedDatabase {
     func loadDummyValues() {
         loadSampleUsers()
         loadSampleAsks()
+        loadSampleCompares()
         loadSampleAskReviews()
         loadSampleCompareReviews()
     }
@@ -112,7 +113,7 @@ public class SimulatedDatabase {
     // Hold the containerID of the best match and if a better one comes along during our search, replace it with that.
 
     // search to find a container whose creator's target demo encompasses the specified criteria:
-    func questionRequesting(orientation: orientation, age: Int, requesterName: String) -> Question {
+    func questionRequesting(orientation: orientation, age: Int, requesterName: String) -> Question? {
         
         let preferredMaxReviewsConstant: Int = 3 // change this number to give priority handling to containers with less than this number of reviews
         
@@ -123,10 +124,52 @@ public class SimulatedDatabase {
         
         // first look for a question whose target demo fits the requesting user's demo:
         for container in containersArray {
+            
+            
+            
+            /*
+            if container.containerType == .ask {
+                let q = container.question as! Ask
+                print("container title: \(q.askTitle)")
+                print("container has already been sent to these users: \(container.usersSentTo)")
+                
+            }
+            
+            if container.containerType == .compare {
+                let q = container.question as! Compare
+                print("container titles: \(q.compareTitle1) and \(q.compareTitle2)")
+                print("container has already been sent to these users: \(container.usersSentTo)")
+                
+            }
+            
+            print("time posted: \(container.containerID.timePosted)")
+            */
+            
+            
             if container.usersSentTo.contains(requesterName) {
                 // we already sent this container's question to the requesting user
-                continue
+                print("username \(requesterName) already present in usersarrays")
+                
+                // this forces the loop to stop considering the current bestMatch, in case it was loaded as the first element.
+                
+                let indexOfNextQuestion: Int = index(of: bestMatch) + 1
+                
+                if containersArray.count - 1 >= indexOfNextQuestion {
+                    // normally we just reinitialize the best match as the next question in line and go back up to the top of the loop
+                    bestMatch = self.containersArray[indexOfNextQuestion].containerID
+                    bestMatchNumReviews = self.containersArray[self.index(of: bestMatch)].numReviews
+                    continue
+                } else {
+                    // In this case, we have run to the end of the containersArray and not found any containers that the user hasn't already reviewed
+                    // There are no more containers to review so we will return nil so that the local code can inform the user.
+                    return nil
+                }
+                
+                
+                
             }
+            
+            print("-- container being considered for appending to assignedQuestions array --")
             // We will always consider a container if it has 0, 1, or 2 reviews (because preferredMaxReviewsConstant = 3)
             // Will will consider a container with more reviews than that, only if we have not yet found a container will less reviews than preferredMaxReviewsConstant
             // The whole point of this is that below a certain review number threshold, we need to prioritize getting the requesting user some reviews,
@@ -631,7 +674,8 @@ public class SimulatedDatabase {
         let photo1 = #imageLiteral(resourceName: "redReeboks")
         let caption1 = Caption(text: "", yLocation: 0.0)
         let time1 = formatter.date(from: "2016/08/09 00:01")! //force unwrap bc it's temp anyway
-        let ask1 = Ask(title: "Red Reeboks", photo: photo1, caption: caption1)
+        let ask1 = Ask(dummyValueTime: time1, title: "Red Reeboks", photo: photo1, caption: caption1)
+        //let ask1 = Ask( title: "Red Reeboks", photo: photo1, caption: caption1)
         let ask1SW = ask1.breakdown.straightWomen as! AskDemo
         let ask1GM = ask1.breakdown.gayMen as! AskDemo
         ask1SW.rating = 5
@@ -643,25 +687,24 @@ public class SimulatedDatabase {
         
         let photo2 = #imageLiteral(resourceName: "whiteConverse")
         let caption2 = Caption(text: "", yLocation: 0.0)
-        //let time2 = formatter.date(from: "2016/08/09 00:11")! // if this becomes an issue, we could create a secondary initializer for Asks and Compares that involves taking in a timePosted value to pass into the ContainerID rather than creating one on the spot
-        let ask2 = Ask(title: "White Converse", photo: photo2,caption: caption2)
+        let time2 = formatter.date(from: "2016/08/09 00:11")! // if this becomes an issue, we could create a secondary initializer for Asks and Compares that involves taking in a timePosted value to pass into the ContainerID rather than creating one on the spot
+        let ask2 = Ask(dummyValueTime: time2, title: "White Converse", photo: photo2,caption: caption2)
         let ask2GW = ask2.breakdown.gayWomen as! AskDemo
         ask2GW.rating = 6
         ask2GW.numVotes = 5
         let container2 = Container(question: ask2)
-        
         let photo3 = #imageLiteral(resourceName: "violetVans")
         let caption3 = Caption(text: "", yLocation: 0.0)
-        //let time3 = formatter.date(from: "2016/08/09 00:06")!
-        let ask3 = Ask(title: "Violet Vans", photo: photo3, caption: caption3)
+        let time3 = formatter.date(from: "2016/08/09 00:06")!
+        let ask3 = Ask(dummyValueTime: time3, title: "Violet Vans", photo: photo3, caption: caption3)
         let ask3SM = ask3.breakdown.straightMen as! AskDemo
         ask3SM.rating = 9.8
         ask3SM.numVotes = 90
         let container3 = Container(question: ask3)
-        
-        containersArray.append(container1)
-        containersArray.append(container2)
-        containersArray.append(container3)
+        self.containersArray.append(container1)
+        self.containersArray.append(container2)
+        self.containersArray.append(container3)
+
     }
     
     
@@ -677,8 +720,8 @@ public class SimulatedDatabase {
         let caption2 = Caption(text: "", yLocation: 0.0)
         
         let time1 = formatter.date(from: "2016/08/09 00:04")!
-        
-        let compare1 = Compare(title1: title1, photo1: photo1, caption1: caption1, title2: title2, photo2: photo2, caption2: caption2)
+
+        let compare1 = Compare(dummyValueTime: time1, title1: title1, photo1: photo1, caption1: caption1, title2: title2, photo2: photo2, caption2: caption2)
         let compare1SW = compare1.breakdown.straightWomen as! CompareDemo
         let compare1SM = compare1.breakdown.straightMen as! CompareDemo
         let compare1GW = compare1.breakdown.gayWomen as! CompareDemo
@@ -708,7 +751,7 @@ public class SimulatedDatabase {
         
         let time2 = formatter.date(from: "2016/08/09 00:08")!
         
-        let compare2 = Compare(title1: title1a, photo1: photo1a, caption1: caption1a, title2: title2a, photo2: photo2a, caption2: caption2a)
+        let compare2 = Compare(dummyValueTime: time2, title1: title1a, photo1: photo1a, caption1: caption1a, title2: title2a, photo2: photo2a, caption2: caption2a)
         let compare2SW = compare2.breakdown.straightWomen as! CompareDemo
         let compare2SM = compare2.breakdown.straightMen as! CompareDemo
         

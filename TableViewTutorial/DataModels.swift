@@ -99,9 +99,11 @@ public var assignedQuestions: [Question] = []
 // I will need a method in this file to load this up that the ReviewAsk and ReviewCompare can call on.
 // The method should check the age of the questions and purge them and reload new ones if they are too old.
 // The method should also check the length of the array and append new questions until its back to where we want.
-public let assignedQuestionsBufferSize: Int = 3
+public let assignedQuestionsBufferLimit: Int = 3
 // We will use the above constant to set the length of the assignQuestions array.
 // The name of the method that references it will be below and called loadAssignedQuestions()
+
+public var lastAssignedQuestionsRefreshSuccessful: Bool = false
 
 // This will hold the containerID of Questions that the user created but has not performed the requisite number of reviews
 //  yet in order to be allowed to view the results.
@@ -477,8 +479,9 @@ public func returnProfilePic(image: UIImage?) -> UIImage {
 public func createContainerID() -> ContainerIdentification {
     // this works because myUser always exists
     return ContainerIdentification(userID: localMyUser.publicInfo.userName,
-                                   containerNumber: localMyUser.lowestAvailableContainerIDNumber())
-
+                                   containerNumber: localMyUser.lowestAvailableContainerIDNumber(), timePosted: Date())
+    // ^^ This shouldn't need a timePosted parameter being passed in. The compiler started asking for it after I 
+    //  created a second initializer method for the asks and compares to take a dummy time.
 }
 
 public func unlockOneContainer() {
@@ -527,92 +530,88 @@ public func indexOfUser(in array: [User], userID: String)-> Int {
 
 public func loadAssignedQuestions() {
     
-    print("assignedQuestions.count= \(assignedQuestions.count)")
-    // load one question into the assignedQuestions queue to ensure the loop executes at least once:
-    assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
-    print("assignedQuestions.count= \(assignedQuestions.count)")
+    lastAssignedQuestionsRefreshSuccessful = true
     
-    // pull the first element off of the array because we may have already reviewed it
-    // assignedQuestions.removeFirst()
+    if assignedQuestions.count == assignedQuestionsBufferLimit {
+        return
+    }
     
-    //print("assignedQuestionsBufferSize = \(assignedQuestionsBufferSize)")
-    for _ in assignedQuestions {
-        
-        //assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
-        // Need to do this first:
-        // check the age of the question here and throw it out if it's too old, then continue, i.e. start the loop over
-        // We will use the "question" local variable here. Don't change it to a _
-        
-        // checks the assignedQuestions array size and trims off the front or adds to the back. A queue essentially.
-        switch assignedQuestions.count {
-        case Int.min..<assignedQuestionsBufferSize:
-            assignedQuestions.append(fetchNewQuestion(usingSimulatedDatabase: true))
+    print("assignedQuestions.count= \(assignedQuestions.count)")
+    while assignedQuestions.count < assignedQuestionsBufferLimit {
+        if let newQuestion = fetchNewQuestion(recycleQuestions: true) {
+            assignedQuestions.append(newQuestion)
             print("added a new question to the assignedQuestions queue")
             print("assignedQuestions.count= \(assignedQuestions.count)")
-        case assignedQuestionsBufferSize..<Int.max:
-            assignedQuestions.removeFirst()
-        default:
-            print("in default case of switch statement... assignedQuestions.count= \(assignedQuestions.count)")
-            print("assignedQuestions loaded new question(s) and is the appropriate size")
+        } else {
+            lastAssignedQuestionsRefreshSuccessful = false // this tells the system that the assignedQuestions array is not filled to capacity
+            return
         }
     }
     
+    while assignedQuestions.count > assignedQuestionsBufferLimit {
+        assignedQuestions.removeFirst()
+        print("assignedQuestions had too many elements, removed the first element")
+        print("assignedQuestionsBufferLimit = \(assignedQuestionsBufferLimit)")
+        print("assignedQuestions.count= \(assignedQuestions.count)")
+    }
+    
+    // what about the situation where the user has literally reviewed every question in the database?
+    // It IS technically possible, especially early on...
+    //
+    // Realistically what needs to happen is the same as tinder. It just shows a blank screen that says nothing available to review.
+    // At this point we must also unlock all of the user's personal questions because without questions to review,
+    //  they'll never be able to view their results otherwise.
 }
 
 // This counter is only for use with dummy Questions. It allows us to keep iterating through them.
-var questionCounter: Int = 0
+//var questionCounter: Int = 0
 
-public func fetchNewQuestion(usingSimulatedDatabase: Bool) -> Question {
+public func fetchNewQuestion(recycleQuestions: Bool) -> Question? {
     // This will have to pull info from the database. For now we will just use dummy questions.
     print("fetching new question")
-    switch usingSimulatedDatabase {
+    
+    let question: Question? = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName)
+
+    if let thisQuestion = question {
+        print("new question's timePosted is \(thisQuestion.containerID.timePosted)")
+        return thisQuestion
+    }
+    
+    // anything below this will happen if fetchNewQuestion returned nil (i.e. there are no more q's in the db for myUser to review):
+    
+    switch recycleQuestions {
     case true:
-        questionCounter += 1 //increment questionCounter each time we send the user a question
+        //print("questionCounter = \(questionCounter)")
+        //questionCounter += 1 //increment questionCounter each time we send the user a question
         // this wont work right if we're trying to review questions that the user creates at runtime.
-        if questionCounter > sd.containersArray.count - 1 {
-            questionCounter = 0 // at this point we've reviewed everything in the containersArray and need to go back to the beginning to keep testing the reviewOthers fucntionality
+        //if questionCounter > sd.containersArray.count {
+            //print("resetting questionCounter to 0")
+            //questionCounter = 0 // at this point we've reviewed everything in the containersArray and need to go back to the beginning to keep testing the reviewOthers fucntionality
             // clear out the usersSentTo lists for all of the dummy containers
-            for container in sd.containersArray {
-                container.usersSentTo = []
+        print("clearing all usersSentTo arrays")
+        for container in sd.containersArray {
+            container.usersSentTo = []
+            if let thisQuestion = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName) {
+                return thisQuestion
+            } else {
+                print("ERROR: RecycleQuestions is set to true, however database is still returning nil *******")
+                return nil
             }
         }
-    case false: print("false accidentally selected in fetchNewQuestion()")
+    case false:
+        print("RecycleQuestions is set to false. No more questions to review")
+        return nil
     }
 
-    let question = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName)
+    return nil
     
-    print("new question's userID is \(question.containerID.userID)")
-    print("new question's timePosted is \(question.containerID.timePosted)")
+    //let question = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName)
     
-    return question //sd.containersArray[questionCounter].question
+    //print("new question's userID is \(question.containerID.userID)")
+    //print("new question's timePosted is \(question.containerID.timePosted)")
+    
+    //return question //sd.containersArray[questionCounter].question
 }
-
-
-////////////////////////////////////////
-//             START HERE:             //
-//
-// Apparently the system is only loading 2 elements into the assignedQuestions queue.
-// More testing is needed to understand why the switch statement in loadAssignedQuestions() is not
-//  ensuring that the queue is not being fully loaded to the point where it meets the limit in the
-//  specified buffer constant (which is currently set to 3.
-// I don't think I'm misunderstanding the meaning of .count ..?
-
-// In addition, the print statement output in mainController viewDidAppear is saying that my local container
-//  collection is only being loaded with 3 elements instead of 5 like it should be.
-// Is there an issue with the dummy compares in the simulated database?
-
-// Also, the containerID of what is being loaded into assignedQuestions appears to be the same every time.
-// The time stamp is the same for each one.
-// I suspect this is happening for one of two reasons:
-// 1. The dummy questions are all being created so quickly that they have the same timestamp and thus the same containerID
-// 2. The question delivery algorothm is sending the same question again and again because it is the best match
-//  and the list that each container has that is supposed to keep track of who the container was sent to and prevent 
-//  duplicates is not doing its job.
-
-// Bottom line, more testing is needed to see what is going on when mainController loads.
-// Then move on to the review controllers because it keeps showing the same question after each swipe.
-
-
 
 
 
@@ -700,7 +699,9 @@ public struct ContainerIdentification {
     // see if I can change these to let constants vice vars:
     var userID: String
     var containerNumber: Int // not planning on using this anymore
-    let timePosted: Date = Date() //sets timePosted to the current time at the time of Question creation.
+    // MARK: this should be changed back to a let constant when beta is launched.
+    // It is only var so that we can change it for the dummy Questions
+    var timePosted: Date = Date() //sets timePosted to the current time at the time of Question creation.
     
 }
 
@@ -1097,8 +1098,21 @@ open class Ask: Question {
         askTitle = title
         askPhoto = photo
         askCaption = caption
-        containerID = createContainerID() //automatically creates a containerID when you make a new Ask
-        print("containerID created for ask. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
+        self.containerID = createContainerID() //automatically creates a containerID when you make a new Ask
+        print("containerID created for ask. userID: \(self.containerID.userID), containerNumber: \(self.containerID.containerNumber), timePosted: \(self.containerID.timePosted)")
+        
+    }
+    // This extra init method is for dummy Asks where we assign the object a hard coded timePosted rather that obtaining it at the time of creation.
+    // This is because the dummy values are created in such quick succession that they all have the same timePosted and thus end up with the same ContainerIDs
+    init(dummyValueTime timePosted: Date, title: String, photo: UIImage,caption: Caption) {
+        askTitle = title
+        askPhoto = photo
+        askCaption = caption
+        self.containerID = createContainerID() //automatically creates a containerID when you make a new Ask
+        // switch the containerID's timePosted to our hard coded value parameter:
+        containerID.timePosted = timePosted
+        print("containerID created for ask. userID: \(self.containerID.userID), containerNumber: \(self.containerID.containerNumber), timePosted: \(self.containerID.timePosted)")
+        
     }
 }
 
@@ -1147,8 +1161,8 @@ open class Compare: Question {
     let compareCaption2: Caption
     
     public var containerID: ContainerIdentification
-    
     //open var timePosted: Date // this is in ContainerID now
+    
     let breakdown = Breakdown(straightWomen: CompareDemo(), straightMen: CompareDemo(), gayWomen: CompareDemo(), gayMen: CompareDemo())
     
     // uses the timePosted to return a string of the timeRemaining
@@ -1217,13 +1231,24 @@ open class Compare: Question {
         comparePhoto2 = photo2
         compareCaption2 = caption2
         containerID = createContainerID()
-        print("containerID created for compare. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber)")
+        print("containerID created for compare. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber), timePosted: \(self.containerID.timePosted)")
+    }
+    // This extra init method is for dummy Asks where we assign the object a hard coded timePosted rather that obtaining it at the time of creation.
+    // This is because the dummy values are created in such quick succession that they all have the same timePosted and thus end up with the same ContainerIDs
+    init(dummyValueTime timePosted: Date, title1: String, photo1: UIImage, caption1: Caption, title2: String, photo2: UIImage, caption2: Caption) {
+    
+        compareTitle1 = title1
+        comparePhoto1 = photo1
+        compareCaption1 = caption1
+        compareTitle2 = title2
+        comparePhoto2 = photo2
+        compareCaption2 = caption2
+        containerID = createContainerID()
+        // switch the containerID's timePosted to our hard coded value parameter:
+        containerID.timePosted = timePosted
+        print("containerID created for compare. userID: \(containerID.userID), containerNumber: \(containerID.containerNumber), timePosted: \(self.containerID.timePosted)")
     }
 }
-
-
-
-
 
 // MARK: BREAKDOWN
 // Here we set up the necessary structure to organize and store
