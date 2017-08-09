@@ -103,27 +103,26 @@ public let assignedQuestionsBufferLimit: Int = 3
 // We will use the above constant to set the length of the assignQuestions array.
 // The name of the method that references it will be below and called loadAssignedQuestions()
 
-public var lastAssignedQuestionsRefreshSuccessful: Bool = false
+public var unreviewedContainersRemainInDatabase: Bool = false
 
 // This will hold the containerID of Questions that the user created but has not performed the requisite number of reviews
 //  yet in order to be allowed to view the results.
-public var lockedContainers: [ContainerIdentification] = []
+
 // We will have to check in AskTableView whether the container has been unlocked before we can display the results
 
 
 // MARK: OBLIGATORY REVIEWS
-// This keeps track of how many reviews need to be performed to open the next container:
-public var obligatoryReviewsToUnlockNextContainer: Int = 0
+
 
 // Sets the number of reviews required to unlock a container:
 public let obligatoryReviewsPerContainer: Int = 3
 
 public var obligatoryReviewsRemaining: Int {
     // The reason for the minus one is because obligatoryReviewsToUnlockNextContainer adds the reviews for the first container
-    var additionalContainers: Int = lockedContainers.count - 1
+    var additionalContainers: Int = localMyUser.lockedContainers.count - 1
     // If additionalContainers were allowed to drop below zero, we would get a negative value for obligatoryReviewsRemaining
     if additionalContainers < 0 { additionalContainers = 0 }
-    return obligatoryReviewsToUnlockNextContainer + (additionalContainers * obligatoryReviewsPerContainer)
+    return localMyUser.obligatoryReviewsToUnlockNextContainer + (additionalContainers * obligatoryReviewsPerContainer)
 }
 // There is also a function in DataModels that adds more obligatory reviews when a new Question is created.
 
@@ -268,6 +267,25 @@ extension TimeInterval { //got this off the internet to convert an NSTimeInterva
         //use this way if I want seconds to display also:
         //return String(format:"%02d:%02d:%02d", Int((self/3600.0)%24), Int((self/60.0)%60), Int((self)%60))
     }
+}
+
+
+func ageIfBorn(on birthday: Date) -> Int {
+    
+    // ensure the date string is passed in the following format
+    
+    let currentCalendar = Calendar.current
+
+    guard let birthday = currentCalendar.ordinality(of: .day, in: .era, for: birthday) else {
+        return 0
+    }
+    
+    guard let today = currentCalendar.ordinality(of: .day, in: .era, for: Date()) else {
+        return 0
+    }
+    
+    let age = (today - birthday) / 365
+    return age
 }
 
 // calculates the caption's autolayout constraint for its distance from the top of the imageView it is being displayed over.
@@ -486,24 +504,25 @@ public func createContainerID() -> ContainerIdentification {
 
 public func unlockOneContainer() {
     // Take the first container off the locked list
-    lockedContainers.removeFirst()
+    localMyUser.lockedContainers.removeFirst()
     // reset the number of reviews required to unlock the next one
-    obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+    localMyUser.obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+    refreshUserProfile()
 }
 
 public func addLockedContainer(containerID: ContainerIdentification) {
     // This should only happen if there are not yet any locked containers:
-    if obligatoryReviewsToUnlockNextContainer == 0 {
-        obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+    if localMyUser.obligatoryReviewsToUnlockNextContainer == 0 {
+        localMyUser.obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
     }
     
-    lockedContainers.append(containerID)
+    localMyUser.lockedContainers.append(containerID)
 }
 
 public func removeOneObligatoryReview() {
-    if obligatoryReviewsToUnlockNextContainer > 0 {
-        obligatoryReviewsToUnlockNextContainer =  obligatoryReviewsToUnlockNextContainer - 1
-        if obligatoryReviewsToUnlockNextContainer == 0 {
+    if localMyUser.obligatoryReviewsToUnlockNextContainer > 0 {
+        localMyUser.obligatoryReviewsToUnlockNextContainer =  localMyUser.obligatoryReviewsToUnlockNextContainer - 1
+        if localMyUser.obligatoryReviewsToUnlockNextContainer == 0 {
             unlockOneContainer()
         }
     }
@@ -530,7 +549,7 @@ public func indexOfUser(in array: [User], userID: String)-> Int {
 
 public func loadAssignedQuestions() {
     
-    lastAssignedQuestionsRefreshSuccessful = true
+    unreviewedContainersRemainInDatabase = true
     
     if assignedQuestions.count == assignedQuestionsBufferLimit {
         return
@@ -543,7 +562,7 @@ public func loadAssignedQuestions() {
             print("added a new question to the assignedQuestions queue")
             print("assignedQuestions.count= \(assignedQuestions.count)")
         } else {
-            lastAssignedQuestionsRefreshSuccessful = false // this tells the system that the assignedQuestions array is not filled to capacity
+            unreviewedContainersRemainInDatabase = false // this tells the system that the assignedQuestions array is not filled to capacity
             return
         }
     }
@@ -634,8 +653,7 @@ public struct DemoPreferences {
 }
 */
 
-// These settings will be toggled by the user, eventually
-public let myTargetDemo = TargetDemo(minAge: 25, maxAge: 38, straightWomenPreferred: true, straightMenPreferred: false, gayWomenPreferred: false, gayMenPreferred: true)
+
 
 
 public protocol Question { //this really should be isQuestion
@@ -769,7 +787,7 @@ public class ReviewCollection {
         case .targetDemo:
             print("filtering for target demo")
             for review in reviews {
-                if self.isTargetDemo(index: index, targetDemo: myTargetDemo) {
+                if self.isTargetDemo(index: index, targetDemo: localMyUser.targetDemo) {
                     print("appending a \(String(describing: review.reviewerOrientation)) to the array")
                     filteredReviewsArray.append(review)
                 }
@@ -778,7 +796,7 @@ public class ReviewCollection {
         case .friends:
             print("filtering for friends")
             for review in reviews {
-                if self.isFriend(index: index, targetDemo: myTargetDemo) {
+                if self.isFriend(index: index, targetDemo: localMyUser.targetDemo) {
                     filteredReviewsArray.append(review)
                 }
                 index += 1
@@ -788,7 +806,14 @@ public class ReviewCollection {
         return filteredReviewsArray
     }
     // Returns aggregated data within the age and orientation demographic specified in the arguments:
-    func pullConsolidatedAskData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedAskDataSet {
+    func pullConsolidatedAskData(requestedDemo: TargetDemo, friendsOnly: Bool)-> ConsolidatedAskDataSet {
+
+            let lowestAge: Int = requestedDemo.minAge
+            let highestAge: Int = requestedDemo.maxAge
+            let straightWomen: Bool = requestedDemo.straightWomenPreferred
+            let straightMen: Bool = requestedDemo.straightMenPreferred
+            let gayWomen: Bool = requestedDemo.gayWomenPreferred
+            let gayMen: Bool = requestedDemo.gayWomenPreferred
         
         //  Friends Only filter not yet implemented //
         // What I forsee for this is to outsource a function that checks to see if a review is from a friend
@@ -901,7 +926,16 @@ public class ReviewCollection {
     // What we do with this data is the meat of the entire app. It's why people are using it. For this data.
     // Also, though outside of the scope of the above comments, we need a way to save Containers for offline use on a local file. 
     
-    func pullConsolidatedCompareData(from lowestAge: Int, to highestAge: Int, straightWomen: Bool, straightMen: Bool, gayWomen: Bool, gayMen: Bool, friendsOnly: Bool)-> ConsolidatedCompareDataSet {
+    func pullConsolidatedCompareData(requestedDemo: TargetDemo, friendsOnly: Bool)-> ConsolidatedCompareDataSet {
+        
+        let lowestAge: Int = requestedDemo.minAge
+        let highestAge: Int = requestedDemo.maxAge
+        let straightWomen: Bool = requestedDemo.straightWomenPreferred
+        let straightMen: Bool = requestedDemo.straightMenPreferred
+        let gayWomen: Bool = requestedDemo.gayWomenPreferred
+        let gayMen: Bool = requestedDemo.gayWomenPreferred
+        
+        
         
         //  Friends Only filter not yet implemented //
         //  See pullConsolidatedAskData method for lengthier comment on this //
@@ -1003,7 +1037,13 @@ public class ReviewCollection {
     }
 }
 
-public struct ConsolidatedAskDataSet {
+public protocol isConsolidatedDataSet {
+    // this exists only so that I can have one pullConsolidatedData method
+}
+
+
+
+public struct ConsolidatedAskDataSet: isConsolidatedDataSet {
     let percentYes: Int
     var percentNo: Int { return 100 - percentYes }
     let percentStrongYes: Int
@@ -1019,7 +1059,7 @@ public struct ConsolidatedAskDataSet {
 
 
 
-public struct ConsolidatedCompareDataSet {
+public struct ConsolidatedCompareDataSet: isConsolidatedDataSet {
     let percentTop: Int
     var percentBottom: Int { return 100 - percentTop }
     let percentStrongYesTop: Int
@@ -1039,6 +1079,58 @@ public struct ConsolidatedCompareDataSet {
         default: return .itsATie // the only other case could be 50% so this is why it's a tie.
         }
     }
+}
+
+public enum dataFilterType: String {
+    case targetDemo = "targetDemo"
+    case friends = "friends"
+    case allReviews = "allReviews"
+}
+
+public func pullConsolidatedData(from container: Container, filteredBy filterType: dataFilterType) -> isConsolidatedDataSet {
+    var minAge: Int = 0
+    var maxAge: Int = 100
+    var straightWomen: Bool = true
+    var straightMen: Bool = true
+    var gayWomen: Bool = true
+    var gayMen: Bool = true
+    var friendsOnly: Bool
+    
+    switch filterType {
+    case .targetDemo:
+        minAge = localMyUser.targetDemo.minAge
+        maxAge = localMyUser.targetDemo.maxAge
+        straightWomen = localMyUser.targetDemo.straightWomenPreferred
+        straightMen = localMyUser.targetDemo.straightMenPreferred
+        gayWomen = localMyUser.targetDemo.gayWomenPreferred
+        gayMen = localMyUser.targetDemo.gayMenPreferred
+        friendsOnly = false
+    case .friends:
+        friendsOnly = true
+    case .allReviews:
+        friendsOnly = false
+        
+    }
+
+    let requestedDemo: TargetDemo = TargetDemo(
+        minAge: minAge,
+        maxAge: maxAge,
+        straightWomenPreferred: straightWomen,
+        straightMenPreferred: straightMen,
+        gayWomenPreferred: gayWomen,
+        gayMenPreferred: gayMen)
+    
+    var targetDemoDataSet: isConsolidatedDataSet
+    
+    switch container.containerType {
+    case .ask:
+        targetDemoDataSet = container.reviewCollection.pullConsolidatedAskData(requestedDemo: requestedDemo, friendsOnly: friendsOnly)
+    case .compare:
+        targetDemoDataSet = container.reviewCollection.pullConsolidatedCompareData(requestedDemo: requestedDemo, friendsOnly: friendsOnly)
+    }
+    
+    // to use this on the receiving end, we will have to cast this to the right type of consolidated data set (ask or compare).
+    return targetDemoDataSet
 }
 
 // an "Ask" is an object containing a single image to be rated
@@ -1416,7 +1508,6 @@ public struct AskReview: isAReview {
         reviewerInfo = localMyUser.publicInfo
         comments = c
         reviewID = ReviewID(containerID: containerID, reviewerID: reviewerInfo.userName)
-        
     }
     
     // this only exists to facilitate dummy reviews:
@@ -1425,7 +1516,7 @@ public struct AskReview: isAReview {
         selection = sel
         strong = strg
         comments = c
-        reviewerInfo = localMyUser.publicInfo
+        reviewerInfo = p
         reviewID = ReviewID(containerID: containerID, reviewerID: p.userName)
     }
 }
@@ -1488,7 +1579,24 @@ public struct User {
     var publicInfo: PublicInfo // this is the information that gets appended to reviews that the user makes
     var targetDemo: TargetDemo
     var containerIDCollection: [ContainerIdentification]
-    var friendNames: [String] = []
+    var friendNames: [String]
+    var lockedContainers: [ContainerIdentification]
+    // This keeps track of how many reviews need to be performed to open the next container:
+    var obligatoryReviewsToUnlockNextContainer: Int
+    
+    init(password: String, emailAddress: String,
+        publicInfo: PublicInfo){
+        
+        self.password = password
+        self.emailAddress = emailAddress
+        self.publicInfo = publicInfo
+        self.targetDemo = TargetDemo() // creates a generic TargetDemo with all demos and ages enabled
+        
+        containerIDCollection = []
+        friendNames = []
+        lockedContainers = []
+        obligatoryReviewsToUnlockNextContainer = 0
+    }
     
     // we don't need container number. We just need username and timePosted
     func lowestAvailableContainerIDNumber() -> Int {
@@ -1531,17 +1639,68 @@ public struct TargetDemo {
     var straightMenPreferred: Bool
     var gayWomenPreferred: Bool
     var gayMenPreferred: Bool
+    
+    init(){
+        // A target demo defaults to accepting everyone upon creation
+        // User can adjust their settings later as appropriate
+        minAge = 18
+        maxAge = 150
+        straightWomenPreferred = true
+        straightMenPreferred = true
+        gayWomenPreferred = true
+        gayMenPreferred = true
+    }
+    
+    init(minAge: Int, maxAge: Int, straightWomenPreferred: Bool, straightMenPreferred: Bool, gayWomenPreferred: Bool, gayMenPreferred: Bool){
+        // In this initializer we can create a specific TargetDemo
+        self.minAge = minAge
+        self.maxAge = maxAge
+        self.straightWomenPreferred = straightWomenPreferred
+        self.straightMenPreferred = straightMenPreferred
+        self.gayWomenPreferred = gayWomenPreferred
+        self.gayMenPreferred = gayMenPreferred
+    }
+    
 }
 
 public struct PublicInfo { //this will always be implemented as a part of a User
     var userName: String
     var displayName: String
-    var profilePicture: UIImage? 
-    var age: Int // this should actually be birthday and then have a method to calculate age
+    var profilePicture: UIImage?
+    var birthday: Date
+    var age: Int { return ageIfBorn(on: birthday) }
     var orientation: orientation
     var signUpDate: Date
     var reviewsRated: Int
     var reviewerScore: Double
+    
+    init(userName: String, displayName: String, profilePicture: UIImage?, birthday: String, orientation: orientation){
+        
+        self.userName = userName
+        self.displayName = displayName
+        
+        if let thisProfilePicture = profilePicture {
+            self.profilePicture = thisProfilePicture
+        } else {
+            self.profilePicture = #imageLiteral(resourceName: "generic_user")
+        }
+        
+        // convert the string birthday into a date birthday and store to user's properties:
+        formatter.dateFormat = "MMM dd, yyyy"
+        if let thisBirthday: Date = formatter.date(from: birthday) {
+            self.birthday = thisBirthday // just set their birthday to right now instead - this is going to need tweaking
+        } else {
+            print("ageIfBorn(on birthday: String): -- Cannot compute age. Birthday passed in incorrect format.")
+            // not sure if we should throw some kind of error here.
+            self.birthday = Date() // just set their birthday to right now instead - this is going to need tweaking
+        }
+
+        self.orientation = orientation
+        
+        signUpDate = Date() // aka right now
+        reviewsRated = 0 // because the user is brand new
+        reviewerScore = 0.0 // because the user is brand new
+    }
 }
 
 

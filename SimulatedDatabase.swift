@@ -597,29 +597,65 @@ public class SimulatedDatabase {
     
     func loadSampleUsers(){
         
-        let genericTargetDemo: TargetDemo = TargetDemo(minAge: 0, maxAge: 100, straightWomenPreferred: true, straightMenPreferred: true, gayWomenPreferred: true, gayMenPreferred: true)
+        //let genericTargetDemo: TargetDemo = TargetDemo(minAge: 0, maxAge: 100, straightWomenPreferred: true, straightMenPreferred: true, gayWomenPreferred: true, gayMenPreferred: true)
         
         let genericFriendNameList1: [String] = ["wyatt","guido","beast","uncleDanny","melissa"]
         let genericFriendNameList2: [String] = ["wyatt", "zeenat", "morgan","ian","countryBear","bob"]
         
-        let user1: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "guido", displayName: "Guido", profilePicture: #imageLiteral(resourceName: "guido"), age: 37, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.8), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
-        let user2: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "beast", displayName: "Beast", profilePicture: #imageLiteral(resourceName: "beast"), age: 32, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.3), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
+        var user1: User = User(password: "123", emailAddress: "yut@yut.com",
+                               publicInfo: PublicInfo(userName: "guido", displayName: "Guido", profilePicture: #imageLiteral(resourceName: "guido"), birthday: "Aug 27,1979", orientation: .straightMan))
+        user1.publicInfo.reviewsRated = 10
+        user1.publicInfo.reviewerScore = 4.8
+        user1.friendNames =  genericFriendNameList2
+        
+        var user2: User = User(password: "123", emailAddress: "yut@yut.com",
+                               publicInfo: PublicInfo(userName: "beast", displayName: "Beast", profilePicture: #imageLiteral(resourceName: "beast"), birthday: "Aug 28, 1984", orientation: .straightMan))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 3.3
+        user2.friendNames =  genericFriendNameList2
+        
         let user3: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "uncleDanny", displayName: "Uncle Danny", profilePicture: nil, age: 69, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.0), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
+                               publicInfo: PublicInfo(userName: "uncleDanny", displayName: "Uncle Danny", profilePicture: nil, birthday: "Apr 20, 1947", orientation: .straightMan))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 1.0
+        user2.friendNames =  genericFriendNameList2
+        
         let user4: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "melissa", displayName: "Melissa", profilePicture: #imageLiteral(resourceName: "melissa"), age: 32, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 4.0), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList2)
+                               publicInfo: PublicInfo(userName: "melissa", displayName: "Melissa", profilePicture: #imageLiteral(resourceName: "melissa"), birthday: "Jul 11, 1985", orientation: .straightWoman))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 4.0
+        user2.friendNames =  genericFriendNameList2
+        
         let user5: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "zeenat", displayName: "Zeenat", profilePicture: #imageLiteral(resourceName: "zeenat"), age: 29, orientation: .straightWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.2), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
+                               publicInfo: PublicInfo(userName: "zeenat", displayName: "Zeenat", profilePicture: #imageLiteral(resourceName: "zeenat"), birthday: "Jul 30, 1988", orientation: .straightWoman))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 2.2
+        user2.friendNames =  genericFriendNameList1
+        
         let user6: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "morgan", displayName: "Morgan", profilePicture: #imageLiteral(resourceName: "morgan"), age: 26, orientation: .gayWoman, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.9), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
+                               publicInfo: PublicInfo(userName: "morgan", displayName: "Morgan", profilePicture: #imageLiteral(resourceName: "morgan"), birthday: "Jun 29, 1990", orientation: .gayWoman))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 2.9
+        user2.friendNames =  genericFriendNameList1
+        
         let user7: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "ian", displayName: "Ian", profilePicture: #imageLiteral(resourceName: "ian"), age: 21, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 1.2), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
+                               publicInfo: PublicInfo(userName: "ian", displayName: "Ian", profilePicture: #imageLiteral(resourceName: "ian"), birthday: "Feb 14, 1995", orientation: .gayMan))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 1.2
+        user2.friendNames =  genericFriendNameList1
+        
         let user8: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "countryBear", displayName: "Country Bear", profilePicture: nil, age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 3.8), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
+                               publicInfo: PublicInfo(userName: "countryBear", displayName: "Country Bear", profilePicture: nil, birthday: "Jun 1, 1984", orientation: .straightMan))
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 3.8
+        user2.friendNames =  genericFriendNameList1
+        
         let user9: User = User(password: "123", emailAddress: "yut@yut.com",
-                               publicInfo: PublicInfo(userName: "bob", displayName: "Bob", profilePicture: nil, age: 23, orientation: .gayMan, signUpDate: Date(), reviewsRated: 10, reviewerScore: 2.6), targetDemo: genericTargetDemo, containerIDCollection: [], friendNames: genericFriendNameList1)
+                               publicInfo: PublicInfo(userName: "bob", displayName: "Bob", profilePicture: nil, birthday: "Jun 1, 1994", orientation: .gayMan))
+
+        user2.publicInfo.reviewsRated = 10
+        user2.publicInfo.reviewerScore = 2.6
+        user2.friendNames =  genericFriendNameList1
         
         // I put the reviewers in an array to avoid having to explicitly declare each user at the class level.
         // This way I just declared an empty (but not nil) array at the class level and then add to it within this method.
@@ -634,14 +670,25 @@ public class SimulatedDatabase {
         usersArray.append(user9)
         
         
-        // dummy value as usual, we will keep friendsArray though.
+        // dummy value as usual, we will keep friendsArray though. - I don't think this is necessary anymore
         friendsArray = usersArray
         
         // this will need to be data pulled from the user's profile in the database, and stored locally:
-        let myPublicInfo: PublicInfo = PublicInfo(userName: "wyatt", displayName: "Wyatt", profilePicture: #imageLiteral(resourceName: "wyatt"), age: 33, orientation: .straightMan, signUpDate: Date(), reviewsRated: 0, reviewerScore: 5.0)
-        let myUser: User = User(password: "", emailAddress: "kabar3@gmail.com", publicInfo: myPublicInfo, targetDemo: myTargetDemo, containerIDCollection: [], friendNames: ["guido","beast","melissa", "zeenat", "morgan","ian","countryBear"])
+        var myPublicInfo: PublicInfo = PublicInfo(userName: "wyatt", displayName: "Wyatt", profilePicture: #imageLiteral(resourceName: "wyatt"), birthday: "Jul 8, 1983", orientation: .straightMan)
+        myPublicInfo.reviewerScore = 5.0
+
+        var myUser: User = User(password: "", emailAddress: "kabar3@gmail.com", publicInfo: myPublicInfo)
         
-        // appended later because I am not my own friend
+        myUser.friendNames = ["guido","beast","melissa", "zeenat", "morgan","ian","countryBear"]
+        // These settings will be toggled by the user, eventually
+        myUser.targetDemo.minAge = 25
+        myUser.targetDemo.maxAge = 38
+        myUser.targetDemo.straightWomenPreferred = true
+        myUser.targetDemo.straightMenPreferred = false
+        myUser.targetDemo.gayWomenPreferred = false
+        myUser.targetDemo.gayMenPreferred = true
+
+        // appended later because I am not my own friend - probably don't need this anymore after sim db implementation
         usersArray.append(myUser)
         
         
@@ -774,7 +821,7 @@ public class SimulatedDatabase {
     // requires loadSampleAsks() to be called first in order to work.
     public func loadSampleAskReviews() {
         
-        loadSampleUsers() // this ensures that the reviewersArray values are not nil
+        //loadSampleUsers() // this ensures that the reviewersArray values are not nil
 
   
         // I must have changed these around a bunch:
@@ -782,7 +829,7 @@ public class SimulatedDatabase {
             if container.containerType == .ask {
             
                 let askReview1 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly", containerID: container.containerID)
-                
+
                 container.reviewCollection.reviews.append(askReview1)
                 
                 let askReview2 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[1].publicInfo, comments: "I can dream a hell of a lot", containerID: container.containerID)
@@ -817,6 +864,7 @@ public class SimulatedDatabase {
                 
                 container.reviewCollection.reviews.append(askReview9)
 
+
             }
             
         }
@@ -832,6 +880,7 @@ public class SimulatedDatabase {
             if container.containerType == .compare {
         
                 let compareReview1 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, reviewerInfo: usersArray[0].publicInfo, comments: "raising eyebrows rapidly", containerID: container.containerID)
+
                 
                 container.reviewCollection.reviews.append(compareReview1)
         

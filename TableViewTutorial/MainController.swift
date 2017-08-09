@@ -52,7 +52,12 @@ class MainController: UIViewController {
         }
         
         loadAssignedQuestions()
+        
+        
+        
+        //print("first reviewer's username is: \(sd.containersArray[0].reviewCollection.reviews[0].reviewerName)")
         refreshEverything()
+
         
         // This really should be done at the point the asks and compares are created:
         // // front load the queue with any new questions that we created in the app

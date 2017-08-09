@@ -51,14 +51,23 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
-   func configureView() -> Void {
+   
+    func configureView() -> Void {
         print("configuring compare view")
+        
+        guard let container = container else {
+            print("container was nil")
+            return
+        }
         // unwraps the compare that the tableView sent over:
+    
         guard let thisCompare = self.container?.question as! Compare? else {
             print("the compare is nil")
             return
         }
+        
             // unwraps images from the compare and sends to IBOutlets
+    
             if let thisImageView = self.topImageView {
                 thisImageView.image = thisCompare.comparePhoto1
             }
@@ -76,19 +85,26 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
                 thisLabel.text = "\(thisCompare.timeRemaining)"
             }
     
-            // In the future, there will need to be a way to tell this method which data to pull based on 
-            //  the user's preferred display type, be it target demo or friend, or maybe even all.
-            // For now, we will use target demo.
-            // It should be just a simple if statement or two to set values that go into this.
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
 
     
+    // Configure TARGET DEMO data display:
     
-            if let thisDataSet = targetDemoDataSet,
-                let thisTopScoreLabel = self.votes1Label,
+        let targetDemoDataSet = pullConsolidatedData(from: container, filteredBy: .targetDemo) as! ConsolidatedCompareDataSet
+        
+    /*let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(
+        from: localMyUser.targetDemo.minAge,
+        to: localMyUser.targetDemo.maxAge,
+        straightWomen: localMyUser.targetDemo.straightWomenPreferred,
+        straightMen: localMyUser.targetDemo.straightMenPreferred,
+        gayWomen: localMyUser.targetDemo.gayWomenPreferred,
+        gayMen: localMyUser.targetDemo.gayMenPreferred,
+        friendsOnly: false)
+    */
+    
+            if let thisTopScoreLabel = self.votes1Label,
                 let thisBottomScoreLabel = self.votes2Label {
-                    thisTopScoreLabel.text = "\(thisDataSet.percentTop) %"
-                    thisBottomScoreLabel.text = "\(thisDataSet.percentBottom) %"
+                    thisTopScoreLabel.text = "\(targetDemoDataSet.percentTop) %"
+                    thisBottomScoreLabel.text = "\(targetDemoDataSet.percentBottom) %"
             }
 
     
@@ -145,8 +161,6 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
             return
         }
         
-        
-
         // shouldn't this technically use the helper view's frame.height rather than the imageView?
         if let thisCaptionTopConstraint = self.topCaptionTextFieldTopConstraint {
             thisCaptionTopConstraint.constant = calcCaptionTextFieldTopConstraint(imageViewFrameHeight: topImageView.frame.height, captionYLocation: thisCompare.compareCaption1.yLocation)

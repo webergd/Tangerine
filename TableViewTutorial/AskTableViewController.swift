@@ -83,6 +83,9 @@ class AskTableViewController: UITableViewController {
         for container in sortedContainers {
             let indexPath = IndexPath(row: index, section: 0)
             if container.containerType == .ask {
+                
+                //print("first reviewer's username is: \(container.reviewCollection.reviews[0].reviewerName)")
+                
                 // cellForRowAtIndexPath returns an optional cell so we use 'if let' and then cast it as an optional ask cell
                 // one of the times it returns nil is when the cell isn't visible
                 if let cell = tableView.cellForRow(at: indexPath) as! AskTableViewCell? {

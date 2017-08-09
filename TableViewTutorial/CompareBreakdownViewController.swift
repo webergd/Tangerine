@@ -148,6 +148,11 @@ class CompareBreakdownViewController: UIViewController {
     
     func configureView() {
         print("configuring compare view")
+
+        guard let container = container else {
+            print("container was nil")
+            return
+        }
         
         // unwraps the compare that the tableView sent over:
         if let thisCompare = self.container?.question as! Compare? {
@@ -170,11 +175,20 @@ class CompareBreakdownViewController: UIViewController {
             
             // Configure TARGET DEMO data display:
             
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
+            let targetDemoDataSet = pullConsolidatedData(from: container, filteredBy: .targetDemo) as! ConsolidatedCompareDataSet
+            
+            /*let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(
+                from: localMyUser.targetDemo.minAge,
+                to: localMyUser.targetDemo.maxAge,
+                straightWomen: localMyUser.targetDemo.straightWomenPreferred,
+                straightMen: localMyUser.targetDemo.straightMenPreferred,
+                gayWomen: localMyUser.targetDemo.gayWomenPreferred,
+                gayMen: localMyUser.targetDemo.gayMenPreferred,
+                friendsOnly: false)
+            */
  
             
-            if let thisDataSet = targetDemoDataSet,
-                let thisNumReviewsLabel = targetDemoNumReviewsLabel,
+            if let thisNumReviewsLabel = targetDemoNumReviewsLabel,
                 let thisWinningImageView = targetDemoWinningImageView,
                 let thisWinningTitleLabel = targetDemoWinningTitleLabel,
                 let thisVotePercentageTopLabel = targetDemoVotePercentageTop,
@@ -192,7 +206,7 @@ class CompareBreakdownViewController: UIViewController {
                 let thisBottomStrongBarTrailingConstraint = targetDemoBottomStrongBarTrailingConstraint,
                 let thisStrongBottomLabelTrailingConstraint = targetDemoStrongBottomLabelTrailingConstraint {
                 
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: targetDemoDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
                             winningImageView: thisWinningImageView,
                             winningTitleLabel: thisWinningTitleLabel,
@@ -214,11 +228,12 @@ class CompareBreakdownViewController: UIViewController {
             
             // Configure FRIENDS data display:
             
-            let friendsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true)
+            let friendsDataSet = pullConsolidatedData(from: container, filteredBy: .friends) as! ConsolidatedCompareDataSet
+            
+            //let friendsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true)
             
             
-            if let thisDataSet = friendsDataSet,
-                let thisNumReviewsLabel = friendsNumReviewsLabel,
+            if let thisNumReviewsLabel = friendsNumReviewsLabel,
                 let thisWinningImageView = friendsWinningImageView,
                 let thisWinningTitleLabel = friendsWinningTitleLabel,
                 let thisVotePercentageTopLabel = friendsVotePercentageTop,
@@ -239,7 +254,7 @@ class CompareBreakdownViewController: UIViewController {
                 // There is probably a way to avoid calling this next line in its entirety.
                 // Violates the DRY principle but it does work..
                 // Although it is technically just a method call
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: friendsDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
                             winningImageView: thisWinningImageView,
                             winningTitleLabel: thisWinningTitleLabel,
@@ -261,11 +276,13 @@ class CompareBreakdownViewController: UIViewController {
             
             // Configure ALL REVIEWS data display:
             
-            let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false)
+            
+            let allReviewsDataSet = pullConsolidatedData(from: container, filteredBy: .allReviews) as! ConsolidatedCompareDataSet
+            
+            //let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedCompareData(from: 0, to: 150, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false)
             
             
-            if let thisDataSet = allReviewsDataSet,
-                let thisNumReviewsLabel = allReviewsNumReviewsLabel,
+            if let thisNumReviewsLabel = allReviewsNumReviewsLabel,
                 let thisWinningImageView = allReviewsWinningImageView,
                 let thisWinningTitleLabel = allReviewsWinningTitleLabel,
                 let thisVotePercentageTopLabel = allReviewsVotePercentageTop,
@@ -283,7 +300,7 @@ class CompareBreakdownViewController: UIViewController {
                 let thisBottomStrongBarTrailingConstraint = allReviewsBottomStrongBarTrailingConstraint,
                 let thisStrongBottomLabelTrailingConstraint = allReviewsStrongBottomLabelTrailingConstraint   {
                 
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: allReviewsDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
                             winningImageView: thisWinningImageView,
                             winningTitleLabel: thisWinningTitleLabel,

@@ -75,7 +75,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 thisCaptionTextField.text = thisAsk.askCaption.text
                 thisCaptionTopConstraint.constant = thisImageView.frame.height * thisAsk.askCaption.yLocation
 
-                thisLockedContainersLabel.text = "🗝" + String(describing: lockedContainers.count)
+                thisLockedContainersLabel.text = "🗝" + String(describing: localMyUser.lockedContainers.count)
                 thisObligatoryReviewsRemainingLabel.text = "📋" + String(describing: obligatoryReviewsRemaining)
 
             }
@@ -94,7 +94,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
         if assignedQuestions.count < 1 {
             
-            if lastAssignedQuestionsRefreshSuccessful == false {
+            if unreviewedContainersRemainInDatabase == false {
                 loadAssignedQuestions() // first reattempt to load the array again
             } else {
                 // loadAssignedQuestions never encountered a nil value from the database and therefore
@@ -115,7 +115,6 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             //
             // START HERE:
             //
-            // We need to start working with locked containers. 
             // Implement some locked container functionality and then come back to this ^^^ statement to give the user a freebee
             //  if they reviewed everything already. This also needs to be cut and pasted into the ReviewCompareVC
             // The biggest places locked containers will come into play are:
@@ -123,8 +122,12 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             // 1. Every review created should count toward unlocking one of myUser's containers - use unuploadedReviews, don't wait for connectivity
             // 2. Update the labels at the bottom of the reviewVC's
             // 3. Display a lock icon in the tableView cells
-            // 4. Decide what should happen if user taps on a locked cell. Message box with no segue? No review data displayed in VC but still segue to it?
+            // 4. Decide what should happen if user taps on a locked cell. Message box with no segue? The message box could tell user how many reviews are necessary to unlock it. No review data displayed in VC but still segue to it?
             // 5. Question creation (both CameraVC and ComparePreviewVC) - I may already have the requisite reviews added there, not 100% sure
+            // 6. If a user deletes a locked container, the containerID should also be removed from the locked containers list
+            //
+            //      Don't fuck with friends functionality yet. Locked containers is first.
+            //
             //
             ///////////////////////////////////////////////////////////////////////////
             

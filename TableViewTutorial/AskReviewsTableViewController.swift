@@ -55,7 +55,7 @@ class AskReviewsTableViewController: UITableViewController {
         if let thisContainer = self.container,
             let thisSortType = self.sortType {
             
-            print("storing the sorted arrat to currentReviews")
+            print("storing the sorted array to currentReviews")
             currentReviews = thisContainer.reviewCollection.filterReviews(by: thisSortType) as! [AskReview]
             
             

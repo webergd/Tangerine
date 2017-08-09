@@ -88,6 +88,14 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     func configureView() {
         print("configuring ask view")
         
+        // from this point until the end of the configureView method, "container" refers to the local unwrapped version of container
+        guard let container = container else {
+            print("container was nil")
+            return
+        }
+        
+        print("first reviewer's username is: \(container.reviewCollection.reviews[0].reviewerName)")
+        
 
         // unwraps the ask that the tableView sent over:
         if let thisAsk = self.container?.question as! Ask? {
@@ -130,13 +138,14 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             // configure the target demo data display:
             print("configuring TARGET DEMO display **********")
             
+            let targetDemoDataSet = pullConsolidatedData(from: container, filteredBy: .targetDemo) as! ConsolidatedAskDataSet
             
-            let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
+            //let targetDemoDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: myTargetDemo.minAge, to: myTargetDemo.maxAge, straightWomen: myTargetDemo.straightWomenPreferred, straightMen: myTargetDemo.straightMenPreferred, gayWomen: myTargetDemo.gayWomenPreferred, gayMen: myTargetDemo.gayMenPreferred, friendsOnly: false)
             
             
-            if let thisDataSet = targetDemoDataSet, let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisYesLabelLeadingConstraint = targetDemoYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = targetDemoStrongLabelTrailingConstraint   {
+            if let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisYesLabelLeadingConstraint = targetDemoYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = targetDemoStrongLabelTrailingConstraint   {
                 
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: targetDemoDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
@@ -150,12 +159,15 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             print("configuring FRIEND display **********")
             
             // configure the friend data display: (as of now without friend filtering this just shows all reviews)
-            let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true) //friendsOnly value doesn't do anything yet - need to add this functionality to the pullConsolidatedAskData method
+            
+            let friendsDataSet = pullConsolidatedData(from: container, filteredBy: .friends) as! ConsolidatedAskDataSet
+            
+            //let friendDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: true) //friendsOnly value doesn't do anything yet - need to add this functionality to the pullConsolidatedAskData method
 
             
-            if let thisDataSet = friendDataSet, let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let this100Bar = friends100Bar, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsBarTrailingConstraint, let thisYesLabelLeadingConstraint = friendsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = friendsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = friendsStrongLabelTrailingConstraint   {
+            if let thisTotalReviewsLabel = friendsTotalReviewsLabel, let thisYesPercentageLabel = friendsYesPercentage, let this100Bar = friends100Bar, let thisStrongYesPercentageLabel = friendsStrongYesPercentage, let thisYesTrailingConstraint = friendsBarTrailingConstraint, let thisYesLabelLeadingConstraint = friendsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = friendsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = friendsStrongLabelTrailingConstraint   {
                 
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: friendsDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,
@@ -171,12 +183,15 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
             print("configuring ALL REVIEWS display **********")
             
-            let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false) // the only difference between this and the above is the friendsOnly Bool setting
+            let allReviewsDataSet = pullConsolidatedData(from: container, filteredBy: .allReviews) as! ConsolidatedAskDataSet
+            
+            
+            //let allReviewsDataSet = self.container?.reviewCollection.pullConsolidatedAskData(from: 0, to: 100, straightWomen: true, straightMen: true, gayWomen: true, gayMen: true, friendsOnly: false) // the only difference between this and the above is the friendsOnly Bool setting
             
             // this multiple if-let is just unwrapping the outlets so we can jam them into the displayData method.
-            if let thisDataSet = allReviewsDataSet, let thisTotalReviewsLabel = allReviewsTotalReviewsLabel, let thisYesPercentageLabel = allReviewsYesPercentage, let this100Bar = allReviews100Bar, let thisStrongYesPercentageLabel = allReviewsStrongYesPercentage, let thisYesTrailingConstraint = allReviewsBarTrailingConstraint, let thisYesLabelLeadingConstraint = allReviewsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = allReviewsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = allReviewsStrongLabelTrailingConstraint {
+            if let thisTotalReviewsLabel = allReviewsTotalReviewsLabel, let thisYesPercentageLabel = allReviewsYesPercentage, let this100Bar = allReviews100Bar, let thisStrongYesPercentageLabel = allReviewsStrongYesPercentage, let thisYesTrailingConstraint = allReviewsBarTrailingConstraint, let thisYesLabelLeadingConstraint = allReviewsYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = allReviewsStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = allReviewsStrongLabelTrailingConstraint {
                 
-                displayData(dataSet: thisDataSet,
+                displayData(dataSet: allReviewsDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
                             strongYesPercentageLabel: thisStrongYesPercentageLabel,

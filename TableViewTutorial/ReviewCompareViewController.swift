@@ -99,7 +99,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             if let thisLockedContainersLabel = self.lockedContainersLabel,
                 let thisObligatoryReviewsRemainingLabel = self.obligatoryReviewsRemainingLabel {
 
-                thisLockedContainersLabel.text = "🗝" + String(describing: lockedContainers.count)
+                thisLockedContainersLabel.text = "🗝" + String(describing: localMyUser.lockedContainers.count)
                 thisObligatoryReviewsRemainingLabel.text = String(describing: obligatoryReviewsRemaining) + "📋"
 
             }
