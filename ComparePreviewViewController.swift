@@ -172,6 +172,7 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
         }
     }
     
+    // Aka: createCompare()
     func checkIfBothImagesAreLocked() {
         if topButtonLocked == true && bottomButtonLocked == true {
             // do stuff to create the compare
@@ -193,6 +194,9 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
                     
                     localContainerCollection.append(containerToBeAppended)
                     unuploadedContainers.append(containerToBeAppended)
+                    
+                    localMyUser.addLockedContainer(containerID: containerToBeAppended.containerID)
+                    refreshUserProfile()
                     
                     // will need some kind of warning label if the user if offline
                     // "container stored locally only" or something like that

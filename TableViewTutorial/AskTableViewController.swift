@@ -25,13 +25,7 @@ class AskTableViewController: UITableViewController {
     
     var containers: [Container] = localContainerCollection // this is an array that will hold Asks and Compares
     var sortedContainers = [Container]()
-    
 
-    
-    
- 
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -41,6 +35,8 @@ class AskTableViewController: UITableViewController {
         //loadSampleAskReviews()
         //loadSampleCompareReviews()
         // this appends the dummy values to this VC's containers property
+        refreshContainers()
+        refreshUserProfile()
         containers = localContainerCollection
         // the fact that this sorts the containers array by timestamp is the reason the dummy values are always at the top (they are the oldest)
         sortedContainers = containers.sorted { $0.question.containerID.timePosted.timeIntervalSince1970 < $1.question.containerID.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
@@ -68,16 +64,11 @@ class AskTableViewController: UITableViewController {
     
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
     override func viewDidAppear(_ animated: Bool) {
-        // MARK: There is an issue here with 
-        // the way that the table is reloading after we introduce
-        // a cell from an ask that was made by the CameraViewController
-        // It may have something to do with the way that we are 
-        // loading up the questions array (local) from the main array (public)
-        // ###################################################
+
         
         // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
         
-        
+        // It seems like we might want to call viewDidLoad() here to make sure the cells are as up to date as possible....
         
         var index = 0
         for container in sortedContainers {
@@ -128,45 +119,50 @@ class AskTableViewController: UITableViewController {
     //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        let container = sortedContainers[indexPath.row]
+        let reviewCollection = container.reviewCollection
+        let isLocked: Bool = container.isLocked()
+        
         // here we build a single ask cell:
-        if sortedContainers[indexPath.row].containerType == .ask {
-            
+        if container.containerType == .ask {
             let cellIdentifier: String = "AskTableViewCell"
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! AskTableViewCell
-            let ask = sortedContainers[indexPath.row].question as! Ask
+            let ask = container.question as! Ask
+            let targetDemoDataSet = pullConsolidatedData(from: container, filteredBy: .targetDemo) as! ConsolidatedAskDataSet
             print("indexPath.row= \(indexPath.row)")
             cell.titleLabel.text = ask.askTitle
             //print("Cell title: \(cell.titleLabel.text)")
             
-            
-            /*
-            if let rowImage = cell.photoImageView.image {
-                print("Photo orientation is up? (in the row): \(rowImage.imageOrientation == UIImageOrientation.up)")
-            } else {
-                print("row image was nil - unable to determine orientation")
-            }
-            */
-                
-            // MARK: need to send value to the numVotesLabel
-            cell.numVotesLabel.text = "(\(ask.numVotes) votes)"
             let timeRemaining = calcTimeRemaining(ask.containerID.timePosted)
             cell.timeRemainingLabel.text = "\(timeRemaining)"
-            if ask.askRating > -1 {
-                cell.ratingLabel.text = "\(ask.askRating.roundToPlaces(1))"
+            
+            if reviewCollection.reviews.count > 0 {
+                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes"
+                if isLocked == true {
+                    cell.ratingLabel.text = "🗝"
+                } else {
+                    cell.ratingLabel.text = "\(targetDemoDataSet.percentYes)%"
+                }
             } else {
-                cell.ratingLabel.text = "?"
+                cell.numVotesLabel.text = "No Votes Yet"
+                if isLocked == true {
+                    cell.ratingLabel.text = "🗝"
+                } else {
+                    cell.ratingLabel.text = "?"
+                }
             }
+
             cell.photoImageView.image = ask.askPhoto
 
             return cell
             
         // here we build a dual compare cell:
-        } else  if sortedContainers[indexPath.row].containerType == .compare {
+        } else  if container.containerType == .compare {
             
             let cellIdentifier: String = "CompareTableViewCell"
             let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareTableViewCell
-            let compare = sortedContainers[indexPath.row].question as! Compare
-            
+            let compare = container.question as! Compare
+            let targetDemoDataSet = pullConsolidatedData(from: container, filteredBy: .targetDemo) as! ConsolidatedCompareDataSet
             cell.image1.image = compare.comparePhoto1
             cell.image2.image = compare.comparePhoto2
             cell.title1Label.text = compare.compareTitle1
@@ -174,7 +170,25 @@ class AskTableViewController: UITableViewController {
             
             //need a method to change score label to thousands if too big (eg 45,700 to 45.7K)
             //this method can also be used on the number of reviews the user has given
-            cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
+            
+            if reviewCollection.reviews.count > 0 {
+                // we don't have a numVotes label for compare cell yet but we need one
+                //cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes)"
+                if isLocked == true {
+                    cell.scoreLabel.text = "🗝"
+                } else {
+                    cell.scoreLabel.text = "\(targetDemoDataSet.percentTop)% to \(targetDemoDataSet.percentBottom)%"
+                }
+            } else {
+                //cell.numVotesLabel.text = "No Votes Yet"
+                if isLocked == true {
+                    cell.scoreLabel.text = "🗝"
+                } else {
+                    cell.scoreLabel.text = "? to ?"
+                }
+            }
+            
+            //cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
             //calculations need to be done to get time REMAINING vice time posted:
             let timeRemaining = calcTimeRemaining(compare.containerID.timePosted)
             cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
@@ -272,6 +286,15 @@ class AskTableViewController: UITableViewController {
     
         if let indexPath = self.tableView.indexPathForSelectedRow {
             let passedContainer = sortedContainers[indexPath.row]
+
+            if passedContainer.isLocked() == true {
+                print("selected container is locked")
+                return
+                
+                // we need a way to actually cock block the segue, not just the data being passed
+            }
+ 
+            
             if passedContainer.containerType == .ask {
                 let controller = segue.destination as! AskViewController
                 // Pass the selected object to the new view controller:
@@ -282,22 +305,30 @@ class AskTableViewController: UITableViewController {
                 controller.container = passedContainer 
             }
         }
+    }
+    
+    override func shouldPerformSegue(withIdentifier identifier: String?, sender: Any?) -> Bool {
+        print("shouldperformSegue called")
         
-        //}
+        guard let indexPath = self.tableView.indexPathForSelectedRow else {
+            print("no Question value exists for cell selected")
+            return false
+        }
         
- 
- 
-            /*
-            if let indexPath = self.tableView.indexPathForSelectedRow {
-                let passedAsk = asks[indexPath.row]
-                //print("rating in AskTableVC before passing is: \(passedAsk.askRating)")
-                let controller = segue.destinationViewController as! AskViewController
-                // Pass the selected object to the new view controller:
-                controller.ask = passedAsk
+        let passedContainer = sortedContainers[indexPath.row]
+        
+        
+        if let ident = identifier {
+            if ident == "tableViewToAskVCSegue" || ident == "tableViewToCompareVCSegue" {
+                if passedContainer.isLocked() == true {
+                    tableView.deselectRow(at: indexPath, animated: true)
+                    return false
+                } else {
+                    return true
+                }
             }
-        //} */   //extranous bs
-   
-   
+        }
+        return true
     }
 }
  

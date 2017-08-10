@@ -1188,30 +1188,12 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         /*
         ////////////////////////////////////////
-        
-        There is currently a disconnect between the myUser object that we have, and the 
-         myUser object that is stored in the usersArray. In reality, we will need to pull the
-         myUser object from the database whenever we want to modify any of its properties
-         so every instance in which myUser appears on its own and is modified, actually needs to be replaced
-         with some version of:
-         
-         usersArray[indexOfUser(in: usersArray, userID: newAsk.containerID.userID)]
-         usersArray[indexOfUser(in: usersArray, userID: "wyatt")]
-        
-        The reason this will always return the myUser object in the usersAray is because the indexOfUser() function
-         looks for the specific username in the usersArray and returns its index so that the actual object can
-         be accessed by passing that index int value into the array to get whatever user is at that index.
-        In the case where I just type in "wyatt", it's simple. 
-        In the case where I pass in newAsk.containerID.userID, it works because since myUser is wyatt, every new ask
-         or compare will be added to the containerCollection of wyatt automatically because the system sees that user
-         as "me" and it knows that reviews are created by "me."
-         
+
         A case can be made for having a local copy of myUser independent from the myUser object in the database, but it should only be 
          referenced to get simple information like preferences, username, etc. Anytime we read or write to any of myUser's
          properties involving myUser's containerCollection, we need to be pushing or pulling from the database, aka the usersArray
          in this case for simulation purposes in the absence of the database.
          
-
         ////////////////////////////////////////
         */
 
@@ -1233,8 +1215,11 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         localContainerCollection.append(containerToBeAppended)
         unuploadedContainers.append(containerToBeAppended)
         
+        localMyUser.addLockedContainer(containerID: containerToBeAppended.containerID)
+        refreshUserProfile()
+        
         // will need some kind of warning label if the user if offline
-        // "container stored locally only" or something like that
+        // "container stored locally only" or something like that. "Question will be posted for review when network connection is reestablished."
         refreshContainers()
         
         
@@ -1250,6 +1235,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //myUser.containerCollection[containerToBeAppended.containerID.containerNumber] = containerToBeAppended
         print("new ask added to myUser.containerCollection at index: \(containerToBeAppended.containerID.containerNumber)")
 
+        // This is a sim-ism:
         assignedQuestions.append(containerToBeAppended.question) //puts the new question in the reviewQueue
         
         //let testAsk = containerCollection.last as! Ask

@@ -111,27 +111,27 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             // If it wasn't, we should try one more time before unlocking the containers.
             // If it WAS successful, just don't unlock containers at all but tell them unable to reach server. 
             
-            ////////////////////////////////////////////////////////////////////////////
+   
+            // 6. If a user deletes a locked container, the containerID should also be removed from the locked containers list
+            
+            ////////////////////////////////////////////////
             //
             // START HERE:
             //
-            // Implement some locked container functionality and then come back to this ^^^ statement to give the user a freebee
-            //  if they reviewed everything already. This also needs to be cut and pasted into the ReviewCompareVC
-            // The biggest places locked containers will come into play are:
+            // Build functionality to display coverView with a label that lets user know they are out of reviews.
+            // Then unlock all of thier containers etc as mentioned above. ^^^
+            // Then make it so they can tap the coverView to be sent back to the mainMenu.
             // 
-            // 1. Every review created should count toward unlocking one of myUser's containers - use unuploadedReviews, don't wait for connectivity
-            // 2. Update the labels at the bottom of the reviewVC's
-            // 3. Display a lock icon in the tableView cells
-            // 4. Decide what should happen if user taps on a locked cell. Message box with no segue? The message box could tell user how many reviews are necessary to unlock it. No review data displayed in VC but still segue to it?
-            // 5. Question creation (both CameraVC and ComparePreviewVC) - I may already have the requisite reviews added there, not 100% sure
-            // 6. If a user deletes a locked container, the containerID should also be removed from the locked containers list
+            // After that is done, rebuild the Ask and Compare TableView cells.
+            // A big thing they need is a display bar for target demo (or maybe all reviews).
+            // They also need a label that tells the user how many reviews they have to do to unlock the container.
+            // It would be nice to give them a black background.
+            // It would also be nice to give the locked cells a slightly lighter background.
+            // Compare images - maybe I should decrease Alpha of the losing image
             //
-            //      Don't fuck with friends functionality yet. Locked containers is first.
-            //
-            //
-            ///////////////////////////////////////////////////////////////////////////
+            ////////////////////////////////////
             
-            
+       
         }
         
         
@@ -291,6 +291,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 //usersArray[indexOfUser(in: usersArray, userID: thisAsk.containerID.userID)].containerCollection[thisAsk.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
             
             unuploadedReviews.append(createdReview)
+            localMyUser.removeOneObligatoryReview()
+            refreshUserProfile()
             refreshReviews()
 
         } else {

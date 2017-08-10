@@ -502,34 +502,7 @@ public func createContainerID() -> ContainerIdentification {
     //  created a second initializer method for the asks and compares to take a dummy time.
 }
 
-public func unlockOneContainer() {
-    // Take the first container off the locked list
-    localMyUser.lockedContainers.removeFirst()
-    // reset the number of reviews required to unlock the next one
-    localMyUser.obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
-    refreshUserProfile()
-}
 
-public func addLockedContainer(containerID: ContainerIdentification) {
-    // This should only happen if there are not yet any locked containers:
-    if localMyUser.obligatoryReviewsToUnlockNextContainer == 0 {
-        localMyUser.obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
-    }
-    
-    localMyUser.lockedContainers.append(containerID)
-}
-
-public func removeOneObligatoryReview() {
-    if localMyUser.obligatoryReviewsToUnlockNextContainer > 0 {
-        localMyUser.obligatoryReviewsToUnlockNextContainer =  localMyUser.obligatoryReviewsToUnlockNextContainer - 1
-        if localMyUser.obligatoryReviewsToUnlockNextContainer == 0 {
-            unlockOneContainer()
-        }
-    }
-    
-    // if it's not greater than zero, that means it should be at zero, meaning we don't have to do anything because there shouldn't be any locked containers
-
-}
 
 public func indexOfUser(in array: [User], userID: String)-> Int {
     // find userID's index in the array:
@@ -711,6 +684,21 @@ public class Container {
         sd.containersArray.append(self)
     }
 
+    
+    func isLocked() -> Bool {
+        refreshUserProfile() // ensure lockedContainers list is as up to date as possible
+        let lockedContainers: [ContainerIdentification] = localMyUser.lockedContainers
+        for someContainerID in lockedContainers {
+            if someContainerID.userID == containerID.userID {
+                if someContainerID.timePosted == containerID.timePosted {
+                    // this means that the containerID was found in the locked list
+                    return true
+                }
+            }
+        }
+        // if we get to this point, it means we searched the locked list and didn't find the containerID
+        return false
+    }
 }
 
 public struct ContainerIdentification {
@@ -1573,7 +1561,7 @@ public struct Friendship {
 
 
 // This seems like it should no be in User; we don't store the containers under User anymore
-public struct User {
+public class User {
     var password: String
     var emailAddress: String
     var publicInfo: PublicInfo // this is the information that gets appended to reviews that the user makes
@@ -1597,6 +1585,38 @@ public struct User {
         lockedContainers = []
         obligatoryReviewsToUnlockNextContainer = 0
     }
+    
+    func unlockOneContainer() {
+        // Take the first container off the locked list
+        lockedContainers.removeFirst()
+        // reset the number of reviews required to unlock the next one
+        if lockedContainers.count > 0 {
+            obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+        } else {
+            obligatoryReviewsToUnlockNextContainer = 0
+        }
+        refreshUserProfile()
+    }
+    
+    func addLockedContainer(containerID: ContainerIdentification) {
+        // This should only happen if there are not yet any locked containers:
+        if obligatoryReviewsToUnlockNextContainer == 0 {
+            obligatoryReviewsToUnlockNextContainer = obligatoryReviewsPerContainer
+        }
+        
+        lockedContainers.append(containerID)
+    }
+    
+    func removeOneObligatoryReview() {
+        if obligatoryReviewsToUnlockNextContainer > 0 {
+            obligatoryReviewsToUnlockNextContainer =  obligatoryReviewsToUnlockNextContainer - 1
+            if obligatoryReviewsToUnlockNextContainer == 0 {
+                unlockOneContainer()
+            }
+        }
+        // if it's not greater than zero, that means it should be at zero, meaning we don't have to do anything because there shouldn't be any locked containers
+    }
+    
     
     // we don't need container number. We just need username and timePosted
     func lowestAvailableContainerIDNumber() -> Int {

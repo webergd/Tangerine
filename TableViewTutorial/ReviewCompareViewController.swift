@@ -321,6 +321,8 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             //usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
             
             unuploadedReviews.append(createdReview)
+            localMyUser.removeOneObligatoryReview()
+            refreshUserProfile()
             refreshReviews()
 
         } else {

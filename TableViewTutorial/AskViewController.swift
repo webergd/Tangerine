@@ -94,7 +94,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             return
         }
         
-        print("first reviewer's username is: \(container.reviewCollection.reviews[0].reviewerName)")
+        //print("first reviewer's username is: \(container.reviewCollection.reviews[0].reviewerName)")
         
 
         // unwraps the ask that the tableView sent over:

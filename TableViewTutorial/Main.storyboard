@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16F73" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="12121" systemVersion="16G29" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" colorMatched="YES" initialViewController="QjX-Vt-UNj">
     <device id="retina4_7" orientation="portrait">
         <adaptation id="fullscreen"/>
     </device>
@@ -833,7 +833,7 @@
                                     <outlet property="ratingLabel" destination="kNl-FB-rvD" id="4Xy-MQ-G6n"/>
                                     <outlet property="timeRemainingLabel" destination="Jyp-85-UrU" id="qwJ-6p-kJG"/>
                                     <outlet property="titleLabel" destination="O7h-Oo-Isu" id="ufc-WC-Tmf"/>
-                                    <segue destination="Uo7-IC-beQ" kind="show" id="rJ2-tF-DKB"/>
+                                    <segue destination="Uo7-IC-beQ" kind="show" identifier="tableViewToAskVCSegue" id="rJ2-tF-DKB"/>
                                 </connections>
                             </tableViewCell>
                             <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="CompareTableViewCell" rowHeight="150" id="Bwm-rb-oas" customClass="CompareTableViewCell" customModule="TableViewTutorial" customModuleProvider="target">
@@ -968,7 +968,7 @@
                                     <outlet property="title2Label" destination="heT-Hj-udc" id="ahn-Li-6k2"/>
                                     <outlet property="winnerOutline1" destination="sax-RC-Ivt" id="9f3-NT-nnh"/>
                                     <outlet property="winnerOutline2" destination="OT0-Ch-PRB" id="2tE-Hh-fNa"/>
-                                    <segue destination="ycp-pp-npb" kind="show" id="uI3-5X-YnU"/>
+                                    <segue destination="ycp-pp-npb" kind="show" identifier="tableViewToCompareVCSegue" id="uI3-5X-YnU"/>
                                 </connections>
                             </tableViewCell>
                         </prototypes>
@@ -3374,7 +3374,21 @@
                         <subviews>
                             <view hidden="YES" alpha="0.84999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="1SH-2h-1SN" userLabel="CoverView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No questions to review at this time. Tap to return to main menu." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iW1-EW-QG8">
+                                        <rect key="frame" x="0.0" y="250.5" width="375" height="167"/>
+                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                        <nil key="textColor"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="iW1-EW-QG8" firstAttribute="centerX" secondItem="1SH-2h-1SN" secondAttribute="centerX" id="1xe-aD-Owh"/>
+                                    <constraint firstItem="iW1-EW-QG8" firstAttribute="width" secondItem="1SH-2h-1SN" secondAttribute="width" id="3J6-zv-ng1"/>
+                                    <constraint firstItem="iW1-EW-QG8" firstAttribute="centerY" secondItem="1SH-2h-1SN" secondAttribute="centerY" id="W0z-pQ-ojE"/>
+                                    <constraint firstItem="iW1-EW-QG8" firstAttribute="height" secondItem="1SH-2h-1SN" secondAttribute="height" multiplier="0.25" id="seO-xq-ycx"/>
+                                </constraints>
                             </view>
                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" text="Enter optional comments here." textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="yCD-9y-o5z">
                                 <rect key="frame" x="37.5" y="280" width="300" height="133.5"/>
