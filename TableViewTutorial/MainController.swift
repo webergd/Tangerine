@@ -90,20 +90,26 @@ class MainController: UIViewController {
     }
     
     @IBAction func reviewOthersButtonTapped(_ sender: Any) {
-        // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
-        if assignedQuestions[0].type == .ask {
+        
+        if assignedQuestions.count < 1 {
+            print("assignedQuestions has no elements, loading ReviewAskVC to display coverView and then tap to return")
             let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewAskViewController") as! ReviewAskViewController
             self.navigationController?.pushViewController(nextVC, animated: true)
-        } else if assignedQuestions[0].type == .compare {
-            let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewCompareViewController") as! ReviewCompareViewController
-            self.navigationController?.pushViewController(nextVC, animated: true)
         } else {
-            print("assignedQuestions array is null")
-            fatalError()
+        
+            if assignedQuestions[0].type == .ask {
+                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewAskViewController") as! ReviewAskViewController
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            } else if assignedQuestions[0].type == .compare {
+                let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "reviewCompareViewController") as! ReviewCompareViewController
+                self.navigationController?.pushViewController(nextVC, animated: true)
+            } else {
+                print("assignedQuestions array is null")
+                fatalError()
         }
-        // pushes askBreakdownViewController onto the nav stack
+
         
-        
+        }
     }
     
     

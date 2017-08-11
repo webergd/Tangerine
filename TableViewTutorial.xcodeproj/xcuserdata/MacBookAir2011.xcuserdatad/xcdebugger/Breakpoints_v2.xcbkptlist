@@ -169,12 +169,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TableViewTutorial/ReviewAskViewController.swift"
-            timestampString = "524075744.74573"
+            timestampString = "524167419.43098"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "357"
-            endingLineNumber = "357"
-            landmarkName = "showStrongImage()"
+            startingLineNumber = "358"
+            endingLineNumber = "358"
+            landmarkName = "userSwiped(gesture:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -185,28 +185,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TableViewTutorial/ReviewAskViewController.swift"
-            timestampString = "523991797.16077"
+            timestampString = "524167419.43098"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "244"
-            endingLineNumber = "244"
-            landmarkName = "textViewShouldReturn(_:)"
-            landmarkType = "7">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TableViewTutorial/ReviewCompareViewController.swift"
-            timestampString = "522006467.855505"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
-            landmarkName = "viewDidLoad()"
+            startingLineNumber = "241"
+            endingLineNumber = "241"
+            landmarkName = "keyboardWillHide(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
@@ -217,28 +201,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "TableViewTutorial/ReviewAskViewController.swift"
-            timestampString = "523991797.16077"
+            timestampString = "524167419.43098"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "242"
-            endingLineNumber = "242"
-            landmarkName = "ReviewAskViewController"
-            landmarkType = "3">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "TableViewTutorial/MainController.swift"
-            timestampString = "523994476.954957"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "94"
-            endingLineNumber = "94"
-            landmarkName = "reviewOthersButtonTapped(_:)"
+            startingLineNumber = "239"
+            endingLineNumber = "239"
+            landmarkName = "keyboardWillHide(_:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

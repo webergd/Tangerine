@@ -145,7 +145,16 @@ public class SimulatedDatabase {
             print("time posted: \(container.containerID.timePosted)")
             */
             
+            if container.usersSentTo.contains(requesterName) {
+                continue
+            }
             
+            if containersArray[index(of: bestMatch)].usersSentTo.contains(requesterName) {
+                bestMatch = container.containerID
+                bestMatchNumReviews = container.numReviews
+            }
+
+            /*
             if container.usersSentTo.contains(requesterName) {
                 // we already sent this container's question to the requesting user
                 print("username \(requesterName) already present in usersarrays")
@@ -162,12 +171,15 @@ public class SimulatedDatabase {
                 } else {
                     // In this case, we have run to the end of the containersArray and not found any containers that the user hasn't already reviewed
                     // There are no more containers to review so we will return nil so that the local code can inform the user.
+                    
+                    print("returning nil for sd.questionRequesting because user has reviewed all Questions")
                     return nil
                 }
                 
                 
                 
             }
+            */
             
             print("-- container being considered for appending to assignedQuestions array --")
             // We will always consider a container if it has 0, 1, or 2 reviews (because preferredMaxReviewsConstant = 3)
@@ -198,6 +210,16 @@ public class SimulatedDatabase {
         // This question is the one that is the best match. Ideally, it has less than preferredMaxReviewsConstant number of reviews.
         // The only case in which the question being returned will have more than preferredMaxReviewsConstant is if there were no 
         //  containers in the array with less than preferredMaxReviewsConstant number of reviews.
+        
+        
+
+        if containersArray[index(of: bestMatch)].usersSentTo.contains(requesterName) {
+            // in this case we went through the whole array and everything we found had already been reviewed by the user requesting
+            print("best match was also reviewed by myUser")
+            print("returning nil")
+            return nil
+        }
+
         containersArray[index(of: bestMatch)].usersSentTo.append(requesterName)
         return containersArray[index(of: bestMatch)].question
         

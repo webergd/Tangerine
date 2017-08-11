@@ -110,6 +110,7 @@ public var unreviewedContainersRemainInDatabase: Bool = false
 
 // We will have to check in AskTableView whether the container has been unlocked before we can display the results
 
+public var tapCoverViewToSegue: Bool = false
 
 // MARK: OBLIGATORY REVIEWS
 
@@ -288,6 +289,61 @@ func ageIfBorn(on birthday: Date) -> Int {
     return age
 }
 
+func display(coverView: UIView, mainView: UIView) {
+    // this would look better if we animated a fade in of the coverView (and a fade out lower down)
+    print("displaying coverView")
+    coverView.isHidden = false
+    mainView.bringSubview(toFront: coverView)
+}
+
+func hide(coverView: UIView, mainView: UIView) {
+    mainView.sendSubview(toBack: coverView)
+    coverView.isHidden = true
+}
+
+public protocol isReviewVC {
+    func loadNextQuestion()
+}
+
+func informUserNoQuestions(coverView: UIView, coverViewLabel: UILabel, mainView: UIView, viewController: isReviewVC ) {
+    //animate coverview darkening
+    coverView.alpha = 0.1
+    UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+        display(coverView: coverView, mainView: mainView)
+        coverView.alpha = 1.0
+    }, completion: {
+        finished in
+        
+    })
+    coverViewLabel.text = "Connecting to Server"
+    coverViewLabel.isHidden = false
+    if unreviewedContainersRemainInDatabase == false {
+        loadAssignedQuestions() // first reattempt to load the array again
+        if unreviewedContainersRemainInDatabase == true {
+            //we were able to loadAssignedQuestions successfully this time, just reload the view.
+            coverViewLabel.isHidden = false
+            hide(coverView: coverView, mainView: mainView)
+            viewController.loadNextQuestion()
+        } else {
+            print("database is out of questions")
+            // we know for sure that the database has no more questions in it to review
+            tapCoverViewToSegue = true
+            coverViewLabel.text = "You have reviewed all currently available photos! Congratulations! Tap to return to main menu."
+            // we want to unlock all of the user's containers because with nothing to review, they won't be able to unlock them any other way
+            localMyUser.lockedContainers = []
+            localMyUser.obligatoryReviewsToUnlockNextContainer = 0
+            
+        }
+    } else {
+        // loadAssignedQuestions never encountered a nil value from the database and therefore
+        //  the reason for the array being out of questions is a lack of connectivity, not a lack of questions left to review
+        // Notify user of connectivity problem and reroute the user back to the mainVC.
+        tapCoverViewToSegue = true
+        coverViewLabel.text = "Connectivity issues are preventing retrieval of more photos. Tap to return to main menu"
+    }
+} // end informUserNoAvailableQuestions()
+
+
 // calculates the caption's autolayout constraint for its distance from the top of the imageView it is being displayed over.
 // Normally this constraint will actually be within a View that is acting as a container for the imageView, scrollView, and captionTextField
 public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, captionYLocation: CGFloat) -> CGFloat {
@@ -306,6 +362,7 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 }
 
 
+// This function sets up an image with its accompanying caption correctly
 public func load(imageView: UIImageView?, with image: UIImage?, within helperView: UIView?, caption: Caption, captionTextField: UITextField?, captionTopConstraint: NSLayoutConstraint?) {
     if let thisImageView = imageView,
         let thisHelperView = helperView,
@@ -530,7 +587,7 @@ public func loadAssignedQuestions() {
     
     print("assignedQuestions.count= \(assignedQuestions.count)")
     while assignedQuestions.count < assignedQuestionsBufferLimit {
-        if let newQuestion = fetchNewQuestion(recycleQuestions: true) {
+        if let newQuestion = fetchNewQuestion(recycleQuestions: false) {
             assignedQuestions.append(newQuestion)
             print("added a new question to the assignedQuestions queue")
             print("assignedQuestions.count= \(assignedQuestions.count)")
@@ -583,13 +640,19 @@ public func fetchNewQuestion(recycleQuestions: Bool) -> Question? {
         print("clearing all usersSentTo arrays")
         for container in sd.containersArray {
             container.usersSentTo = []
+            
+            /*
             if let thisQuestion = sd.questionRequesting(orientation: localMyUser.publicInfo.orientation, age: localMyUser.publicInfo.age, requesterName: localMyUser.publicInfo.userName) {
                 return thisQuestion
             } else {
                 print("ERROR: RecycleQuestions is set to true, however database is still returning nil *******")
                 return nil
             }
+            */
+        
         }
+        print("calling fetchNewQuestion again")
+        return fetchNewQuestion(recycleQuestions: true)
     case false:
         print("RecycleQuestions is set to false. No more questions to review")
         return nil

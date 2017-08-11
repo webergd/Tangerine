@@ -11,10 +11,11 @@
 import UIKit
 //import QuartzCore // I only did this to try and show rounded corners in interface builder
 
-class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
+class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate, isReviewVC {
     
     @IBOutlet var mainView: UIView!
     @IBOutlet weak var coverView: UIView!
+    @IBOutlet weak var coverViewLabel: UILabel!
     
     // TopView's outlets:
     @IBOutlet weak var topView: UIView!
@@ -69,13 +70,15 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     
     var strongFlag: Bool = false
     
+    //var tapCoverViewToSegue: Bool = false
+    
     let enterCommentConstant: String = "Enter optional comments here."
     let backgroundCirclesAlphaValue: CGFloat = 0.75
     var strongOriginalSize: CGFloat = 70.0 // this is a placeholder value, updated in viewDidLoad()
     
     func configureView() {
-        print("configuring ReviewAsk view")
-        
+        print("configuring ReviewCompare view")
+
         // unwraps the Ask that the tableView sent over:
         if let thisCompare = compare {
             
@@ -116,66 +119,90 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        // first check and see if it's not a compare
-        if assignedQuestions[0].type == .ask {
+        // This allows user to tap coverView to segue to main menu (if we run out of quetions):
+        let tapCoverViewGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedCoverView(_:) ))
+        coverView.addGestureRecognizer(tapCoverViewGesture)
+        
+        loadAssignedQuestions()
+        
+        if assignedQuestions.count < 1 {
+            informUserNoAvailableQuestions()
+        } else {
+        
+            // setting this to false prevents a segue when the coverView is being displayed due to text editing
+            tapCoverViewToSegue = false
+            coverView.alpha = 0.85
+        
+            // make sure the coverView wasn't still displayed from a previous showing of this view:
+            hide(coverView: coverView, mainView: mainView)
+        
+        
+        
+        
+            // first check and see if it's not a compare
+            if assignedQuestions[0].type == .ask {
             segueToReviewAskViewController()
-        }
+            }
         
-        makeCircle(view: topLeftBackgroundView)
-        makeCircle(view: topCenterBackgroundView)
-        makeCircle(view: topRightBackgroundView)
-        makeCircle(view: bottomRightBackgroundView)
-        makeCircle(view: bottomCenterBackgroundView)
-        makeCircle(view: bottomLeftBackgroundView)
+            makeCircle(view: topLeftBackgroundView)
+            makeCircle(view: topCenterBackgroundView)
+            makeCircle(view: topRightBackgroundView)
+            makeCircle(view: bottomRightBackgroundView)
+            makeCircle(view: bottomCenterBackgroundView)
+            makeCircle(view: bottomLeftBackgroundView)
 
-        // we may or may not need this for ReviewCompareVC
-        strongOriginalSize = strongImageView.frame.size.height
+            // we may or may not need this for ReviewCompareVC
+            strongOriginalSize = strongImageView.frame.size.height
         
-        commentsTextView.translatesAutoresizingMaskIntoConstraints = false
+            commentsTextView.translatesAutoresizingMaskIntoConstraints = false
         
-        compare = assignedQuestions[0] as? Compare
-        // The above line causes configureView to be called.
+            compare = assignedQuestions[0] as? Compare
+            // The above line causes configureView to be called.
         
-        // This makes the text view have rounded corners.
-        commentsTextView.clipsToBounds = true
-        commentsTextView.layer.cornerRadius = 10.0
-        commentsTextView.delegate = self
-        //setTextViewYPosition()
+            // This makes the text view have rounded corners.
+            commentsTextView.clipsToBounds = true
+            commentsTextView.layer.cornerRadius = 10.0
+            commentsTextView.delegate = self
+            //setTextViewYPosition()
         
         // Hides keyboard when user taps outside of text view
-        self.hideKeyboardWhenTappedAround()
+            self.hideKeyboardWhenTappedAround()
+            // This implicitly includes tapping the coverView, even though the only time we actually explicitly refer to tapping the coverView is when
+            //  we run out of questions.
         
-        // This will move the caption text box out of the way when the keyboard pops up:
-        NotificationCenter.default.addObserver(self, selector: #selector(ReviewCompareViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+            // This will move the caption text box out of the way when the keyboard pops up:
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewCompareViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
         
-        // This will move the caption text box back down when the keyboard goes away:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+            // This will move the caption text box back down when the keyboard goes away:
+            NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
 
-        topScrollView.delegate = self
-        bottomScrollView.delegate = self
+            topScrollView.delegate = self
+            bottomScrollView.delegate = self
 
         
-        //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
-        //askView.addGestureRecognizer(swipeViewGesture)
+            //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
+            //askView.addGestureRecognizer(swipeViewGesture)
         
         
-        // Gesture Recognizers for swiping up and down
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeUp.direction = UISwipeGestureRecognizerDirection.up
-        self.view.addGestureRecognizer(swipeUp)
+            // Gesture Recognizers for swiping up and down
+            let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeUp.direction = UISwipeGestureRecognizerDirection.up
+            self.view.addGestureRecognizer(swipeUp)
         
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeDown.direction = UISwipeGestureRecognizerDirection.down
-        self.view.addGestureRecognizer(swipeDown)
+            let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeDown.direction = UISwipeGestureRecognizerDirection.down
+            self.view.addGestureRecognizer(swipeDown)
         
-        // For tapping the images to select them:
-        let tapTopImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedTop(_:) ))
-        topImageView.addGestureRecognizer(tapTopImageGesture)
+            // For tapping the images to select them:
+            let tapTopImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedTop(_:) ))
+            topImageView.addGestureRecognizer(tapTopImageGesture)
         
-        let tapBottomImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedBottom(_:) ))
-        bottomImageView.addGestureRecognizer(tapBottomImageGesture)
+            let tapBottomImageGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedBottom(_:) ))
+            bottomImageView.addGestureRecognizer(tapBottomImageGesture)
+        
 
+        }
     }
     
 
@@ -200,15 +227,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         commentsTextView.becomeFirstResponder() // This makes the keyboard pop up right away
     }
 
-    
-    
     // KEYBOARD METHODS:
 
     // Write a method here to display the comment text View:
     func displayTextView() {
-        // this would look better if we animated a fade in of the coverView (and a fade out lower down)
-        coverView.isHidden = false
-        mainView.bringSubview(toFront: coverView)
+        display(coverView: coverView, mainView: mainView)
+        //coverView.isHidden = false
+        //mainView.bringSubview(toFront: coverView)
         mainView.bringSubview(toFront: commentsTextView)
 
     }
@@ -252,8 +277,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
  
         }
         mainView.sendSubview(toBack: commentsTextView)
-        mainView.sendSubview(toBack: coverView)
-        coverView.isHidden = true
+        //mainView.sendSubview(toBack: coverView)
+        //coverView.isHidden = true
+        hide(coverView: coverView, mainView: mainView)
         self.view.layoutIfNeeded()
     }
     
@@ -295,28 +321,8 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         if let thisCompare = compare {
         
             let createdReview: CompareReview = CompareReview(selection: selection, strongYes: strongFlag, strongNo: false, comments: commentsTextView.text, containerID: thisCompare.containerID)
-        
-            // normally we would then send this review up to the server.
-            // Instead, for the sake of testing, we will add it to the user's reviews
-
-        
-
-            // Figures out which array the userID is at, then returns the element at that index in the usersArray.
-            // In other words, it returns that user; not a copy, the actual user.
-            // This will need to be changed to get the user in the database once I'm using that.
             
-            // This is basically what is happening here:
-            //  1. look up the user's id name in the usersArray,
-            //  2. look up the container number in that user's containerCollection,
-            //  3. append the new compareReview to the container's review collection.
-            
-            //print("length of usersArray is: \(usersArray.count)")
-            //print("indexOfUser returned: \(indexOfUser(in: usersArray, userID: thisCompare.containerID.userID))")
-            //print("length of containerCollection: \(usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection.count)")
-            //print("index of container collection to replace \(thisCompare.containerID.containerNumber)")
-            
-            
-            // Make sure we are creating a CompareReview:    //////
+            // Make sure we are creating a CompareReview:
             print("about to append review to the review collection")
             //usersArray[indexOfUser(in: usersArray, userID: thisCompare.containerID.userID)].containerCollection[thisCompare.containerID.containerNumber].reviewCollection.reviews.append(createdReview)
             
@@ -343,20 +349,64 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         assignedQuestions.removeFirst()
         loadAssignedQuestions()
         
-        // UNCOMMENT THIS WHEN IMPLEMENTING SEGUE FUNCTIONALITY:
-        
-        if assignedQuestions[0].type == .ask {
-            // need code to segue to CompareReviewVC without stacking it - I'm pretty sure this is done now
-            print("segue to ReviewAskViewController")
-            segueToReviewAskViewController()
+        if assignedQuestions.count < 1 {
+            
+            informUserNoAvailableQuestions()
 
+        } else {
+            if assignedQuestions[0].type == .ask {
+                // need code to segue to CompareReviewVC without stacking it - I'm pretty sure this is done now
+                print("segue to ReviewAskViewController")
+                segueToReviewAskViewController()
+
+            }
+            compare = assignedQuestions[0] as? Compare
         }
-        
-        compare = assignedQuestions[0] as? Compare
-        // MARK: Also need code to pull a new review from the database 
-        //  and maintain the proper length of assignedReviews
     }
-
+    
+    func informUserNoAvailableQuestions(){
+        informUserNoQuestions(coverView: coverView, coverViewLabel: coverViewLabel, mainView: mainView, viewController: self)
+    }
+    /*
+    func informUserNoAvailableQuestions() {
+        //animate coverview darkening
+        coverView.alpha = 0.1
+        UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+            display(coverView: self.coverView, mainView: self.mainView)
+            self.coverView.alpha = 1.0
+        }, completion: {
+            finished in
+            
+        })
+        coverView.alpha = 0.98
+        coverViewLabel.text = "Connecting to Server"
+        coverViewLabel.isHidden = false
+        if unreviewedContainersRemainInDatabase == false {
+            loadAssignedQuestions() // first reattempt to load the array again
+            if unreviewedContainersRemainInDatabase == true {
+                //we were able to loadAssignedQuestions successfully this time, just reload the view.
+                coverViewLabel.isHidden = false
+                hide(coverView: coverView, mainView: mainView)
+                loadNextQuestion()
+            } else {
+                print("database is out of questions")
+                // we know for sure that the database has no more questions in it to review
+                tapCoverViewToSegue = true
+                coverViewLabel.text = "You have reviewed all currently available photos! Congratulations! Tap to return to main menu."
+                // we want to unlock all of the user's containers because with nothing to review, they won't be able to unlock them any other way
+                localMyUser.lockedContainers = []
+                localMyUser.obligatoryReviewsToUnlockNextContainer = 0
+                
+            }
+        } else {
+            // loadAssignedQuestions never encountered a nil value from the database and therefore
+            //  the reason for the array being out of questions is a lack of connectivity, not a lack of questions left to review
+            // Notify user of connectivity problem and reroute the user back to the mainVC.
+            tapCoverViewToSegue = true
+            coverViewLabel.text = "Connectivity issues are preventing retrieval of more photos. Tap to return to main menu"
+        }
+    } // end informUserNoAvailableQuestions()
+ */
     
     
     func userSwiped(gesture: UIGestureRecognizer) {
@@ -391,6 +441,8 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
 
         
     } //end of userSwiped
+    
+    // This should be moved to datamodels
     
     // Makes the view that's passed in into a circle
     func makeCircle(view: UIView){
@@ -558,6 +610,22 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     
     @IBAction func menuButtonTapped(_ sender: Any) {
         // This may need to be adjusted depending on how we segue between asks and compares
+        returnToMainMenu()
+    }
+    
+    
+    func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
+        print("user tapped coverView")
+        if tapCoverViewToSegue == true {
+            returnToMainMenu()
+        } else {
+            commentsTextView.resignFirstResponder()
+        }
+        // otherwise, do nothing
+        
+    }
+    
+    func returnToMainMenu() {
         self.navigationController?.popViewController(animated: true)
     }
     

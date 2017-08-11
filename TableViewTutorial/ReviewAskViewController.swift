@@ -10,11 +10,12 @@
 
 import UIKit
 
-class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate {
+class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextViewDelegate, isReviewVC {
     
     
     @IBOutlet var mainView: UIView!
     @IBOutlet weak var coverView: UIView!
+    @IBOutlet weak var coverViewLabel: UILabel!
     
     @IBOutlet weak var helperView: UIView!
     @IBOutlet weak var scrollView: UIScrollView!
@@ -23,22 +24,13 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     @IBOutlet weak var askCaptionTopConstraint: NSLayoutConstraint!
     
     @IBOutlet weak var selectionImageView: UIImageView!
-
     @IBOutlet weak var strongImageView: UIImageView!
-
-
-
-
     @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
-
     @IBOutlet weak var commentsTextView: UITextView!
-    
-    
     
     @IBOutlet weak var lockedContainersLabel: UILabel!
     @IBOutlet weak var obligatoryReviewsRemainingLabel: UILabel!
     
-
     override var prefersStatusBarHidden: Bool {
         return true
     }
@@ -92,25 +84,21 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        // This allows user to tap coverView to segue to main menu (if we run out of quetions):
+        let tapCoverViewGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userTappedCoverView(_:) ))
+        coverView.addGestureRecognizer(tapCoverViewGesture)
+        
         if assignedQuestions.count < 1 {
+            informUserNoAvailableQuestions()
+        } else {
             
-            if unreviewedContainersRemainInDatabase == false {
-                loadAssignedQuestions() // first reattempt to load the array again
-            } else {
-                // loadAssignedQuestions never encountered a nil value from the database and therefore
-                //  the reason for the array being out of questions is a lack of connectivity, not a lack of questions left to review
-                // Notify user of connectivity problem and reroute the user back to the mainVC.
-            }
+            // setting this to false prevents a segue when the coverView is being displayed due to text editing
+            tapCoverViewToSegue = false
+            coverView.alpha = 0.85
             
-            // There are no more questions left to review.
-            // We have to make sure that they didn't just go on airplane mode or lose reception. 
-            // We have to ensure the database is legitimately out of questions.
-            // Tell the user that, unlock all of their containers, and reroute them back to the main menu.
-            
-            // Maybe we have a flag that tells us whether the last time to refresh the assignedQuestions array was successful or not
-            // If it wasn't, we should try one more time before unlocking the containers.
-            // If it WAS successful, just don't unlock containers at all but tell them unable to reach server. 
-            
+            // make sure the coverView wasn't still displayed from a previous showing of this view:
+            hide(coverView: coverView, mainView: mainView)
+
    
             // 6. If a user deletes a locked container, the containerID should also be removed from the locked containers list
             
@@ -118,9 +106,6 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             //
             // START HERE:
             //
-            // Build functionality to display coverView with a label that lets user know they are out of reviews.
-            // Then unlock all of thier containers etc as mentioned above. ^^^
-            // Then make it so they can tap the coverView to be sent back to the mainMenu.
             // 
             // After that is done, rebuild the Ask and Compare TableView cells.
             // A big thing they need is a display bar for target demo (or maybe all reviews).
@@ -129,66 +114,68 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             // It would also be nice to give the locked cells a slightly lighter background.
             // Compare images - maybe I should decrease Alpha of the losing image
             //
+            // I kind of like the idea of the data bars being as tall and wide as the whole cell.
+            // We could put greyed out backgrounds for the labels so that we can still read them.
+            //
             ////////////////////////////////////
+ 
+        
+            // first check and see if it's not an ask
+            if assignedQuestions[0].type == .compare {
+                segueToReviewCompareViewController()
+            }
+        
+            strongOriginalSize = strongImageView.frame.size.height
+        
+            commentsTextView.translatesAutoresizingMaskIntoConstraints = false
+        
+            ask = assignedQuestions[0] as? Ask
+            // The above line causes configureView to be called.
+        
+        
+        
+            // This makes the text view have rounded corners.
+            commentsTextView.clipsToBounds = true
+            commentsTextView.layer.cornerRadius = 10.0
+            commentsTextView.delegate = self
+            setTextViewYPosition()
+        
+            // Hides keyboard when user taps outside of text view
+            self.hideKeyboardWhenTappedAround()
+        
+            // This will move the caption text box out of the way when the keyboard pops up:
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        
+            // This will move the caption text box back down when the keyboard goes away:
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+            // Do any additional setup after loading the view, typically from a nib.
+            scrollView.delegate = self
+
+        
+            //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
+            //askView.addGestureRecognizer(swipeViewGesture)
+        
+        
+            // Gesture Recognizers for swiping left and right
+            let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeUp.direction = UISwipeGestureRecognizerDirection.up
+            self.view.addGestureRecognizer(swipeUp)
+        
+            let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeDown.direction = UISwipeGestureRecognizerDirection.down
+            self.view.addGestureRecognizer(swipeDown)
+        
+            let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeRight.direction = UISwipeGestureRecognizerDirection.right
+            self.view.addGestureRecognizer(swipeRight)
+        
+            let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
+            swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+            self.view.addGestureRecognizer(swipeLeft)
             
-       
-        }
-        
-        
-        // first check and see if it's not an ask
-        if assignedQuestions[0].type == .compare {
-            segueToReviewCompareViewController()
-        }
-        
-        strongOriginalSize = strongImageView.frame.size.height
-        
-        commentsTextView.translatesAutoresizingMaskIntoConstraints = false
-        
-        ask = assignedQuestions[0] as? Ask
-        // The above line causes configureView to be called.
-        
-        
-        
-        // This makes the text view have rounded corners.
-        commentsTextView.clipsToBounds = true
-        commentsTextView.layer.cornerRadius = 10.0
-        commentsTextView.delegate = self
-        setTextViewYPosition()
-        
-        // Hides keyboard when user taps outside of text view
-        self.hideKeyboardWhenTappedAround()
-        
-        // This will move the caption text box out of the way when the keyboard pops up:
-        NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        
-        // This will move the caption text box back down when the keyboard goes away:
-        NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
-        
-        // Do any additional setup after loading the view, typically from a nib.
-        scrollView.delegate = self
 
-        
-        //let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
-        //askView.addGestureRecognizer(swipeViewGesture)
-        
-        
-        // Gesture Recognizers for swiping left and right
-        let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeUp.direction = UISwipeGestureRecognizerDirection.up
-        self.view.addGestureRecognizer(swipeUp)
-        
-        let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeDown.direction = UISwipeGestureRecognizerDirection.down
-        self.view.addGestureRecognizer(swipeDown)
-        
-        let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
-        self.view.addGestureRecognizer(swipeRight)
-        
-        let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
-        self.view.addGestureRecognizer(swipeLeft)
-
+        }
     }
     
     // KEYBOARD METHODS:
@@ -264,6 +251,9 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         if let thisAsk = ask {
 
             let createdReview: AskReview = AskReview(selection: selection, strong: strong, comments: commentsTextView.text, containerID: thisAsk.containerID)
+            
+            // Pretty sure this whole comment block no longer applies:
+            
             // normally we would then send this review up to the server.
             // Instead, for the sake of testing, we will add it to the user's reviews
             // I'm thinking I will need to create a dictionary of the containers and containerID's so that we can look up the container and attach the new review to its reviewCollection.
@@ -310,16 +300,28 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     func loadNextQuestion() {
         assignedQuestions.removeFirst()
         loadAssignedQuestions()
-        if assignedQuestions[0].type == .compare {
-            // need code to segue to CompareReviewVC without stacking it
-            print("segue to ReviewCompareViewController")
-            segueToReviewCompareViewController()
-            return
+        
+        if assignedQuestions.count < 1 {
+            
+            informUserNoAvailableQuestions()
+            
+        } else {
+            if assignedQuestions[0].type == .compare {
+                // need code to segue to CompareReviewVC without stacking it
+                print("segue to ReviewCompareViewController")
+                segueToReviewCompareViewController()
+                return
+            }
+            ask = assignedQuestions[0] as? Ask
+            // MARK: Also need code to pull a new review from the database
+            //  and maintain the proper length of assignedReviews
         }
-        ask = assignedQuestions[0] as? Ask
-        // MARK: Also need code to pull a new review from the database 
-        //  and maintain the proper length of assignedReviews
     }
+    
+    func informUserNoAvailableQuestions(){
+        informUserNoQuestions(coverView: coverView, coverViewLabel: coverViewLabel, mainView: mainView, viewController: self)
+    }
+    
     
     func userSwiped(gesture: UIGestureRecognizer) {
         
@@ -501,10 +503,21 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     @IBAction func menuButtonTapped(_ sender: Any) {
         // This may need to be adjusted depending on how we segue between asks and compares
-        self.navigationController?.popViewController(animated: true)
+        returnToMainMenu()
     }
     
-
+    func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
+        print("user tapped coverView")
+        if tapCoverViewToSegue == true {
+            returnToMainMenu()
+        } else {
+            commentsTextView.resignFirstResponder()
+        }
+    }
+    
+    func returnToMainMenu() {
+        self.navigationController?.popViewController(animated: true)
+    }
     // I need a way to switch between the two Review Controllers without
     //  stacking up multiple instances of them on top of each other.
 

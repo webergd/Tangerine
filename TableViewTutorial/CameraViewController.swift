@@ -1453,7 +1453,9 @@ else that means we're in case 3 or 4
                 
                 let actionNo = UIAlertAction(title: "Enter Title", style: .default) {
                     UIAlertAction in
-                        // if user elects to go back to editing the image, we need to keep the assumption that they still might create an ask so that we don't take away the createCompare button if they navigate back to the avCamera and reload the view without creating anything
+                    self.titleTextField.becomeFirstResponder()
+                
+                    // if user elects to go back to editing the image, we need to keep the assumption that they still might create an ask so that we don't take away the createCompare button if they navigate back to the avCamera and reload the view without creating anything
                         //currentCompare.isAsk = true
                         //whatToCreate = .ask
                 }

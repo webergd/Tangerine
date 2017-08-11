@@ -1531,10 +1531,23 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <view hidden="YES" alpha="0.84999999999999998" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="2Re-7s-yxk" userLabel="CoverView">
+                            <view hidden="YES" alpha="0.84999999999999998" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2Re-7s-yxk" userLabel="CoverView">
                                 <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <label hidden="YES" opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No questions to review at this time. Tap to return to main menu." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="dYF-7y-3Cv">
+                                        <rect key="frame" x="0.0" y="250.5" width="375" height="167"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                </subviews>
                                 <color key="backgroundColor" white="0.33333333333333331" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstItem="dYF-7y-3Cv" firstAttribute="centerY" secondItem="2Re-7s-yxk" secondAttribute="centerY" id="DZE-qy-pr3"/>
+                                    <constraint firstItem="dYF-7y-3Cv" firstAttribute="height" secondItem="2Re-7s-yxk" secondAttribute="height" multiplier="0.25" id="SIB-QR-2jf"/>
+                                    <constraint firstItem="dYF-7y-3Cv" firstAttribute="centerX" secondItem="2Re-7s-yxk" secondAttribute="centerX" id="UC0-0n-v0o"/>
+                                    <constraint firstItem="dYF-7y-3Cv" firstAttribute="width" secondItem="2Re-7s-yxk" secondAttribute="width" id="jgc-vN-lUL"/>
+                                </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="F8w-An-iUy" userLabel="Helper View">
                                 <rect key="frame" x="0.0" y="20" width="375" height="375"/>
@@ -1700,10 +1713,14 @@
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="KJF-dS-LFB" firstAttribute="width" secondItem="wuV-oT-Mm0" secondAttribute="width" multiplier="0.8" id="0FJ-nO-1W5"/>
+                            <constraint firstItem="2Re-7s-yxk" firstAttribute="centerX" secondItem="wuV-oT-Mm0" secondAttribute="centerX" id="0wX-mY-viF"/>
                             <constraint firstItem="yLa-bL-uny" firstAttribute="top" secondItem="F8w-An-iUy" secondAttribute="bottom" constant="1" id="6hP-wj-X58"/>
                             <constraint firstItem="PxB-EI-oS0" firstAttribute="leading" secondItem="wuV-oT-Mm0" secondAttribute="leading" id="6pe-B6-URX"/>
                             <constraint firstItem="KJF-dS-LFB" firstAttribute="top" secondItem="am5-h0-Sh6" secondAttribute="bottom" constant="400" id="7VS-3N-dkB"/>
                             <constraint firstItem="KJF-dS-LFB" firstAttribute="height" secondItem="wuV-oT-Mm0" secondAttribute="height" multiplier="0.2" id="9cg-hr-Qdk"/>
+                            <constraint firstItem="2Re-7s-yxk" firstAttribute="centerY" secondItem="wuV-oT-Mm0" secondAttribute="centerY" id="EPU-Dk-JOT"/>
+                            <constraint firstItem="2Re-7s-yxk" firstAttribute="height" secondItem="wuV-oT-Mm0" secondAttribute="height" id="IOB-Gb-u42"/>
+                            <constraint firstItem="2Re-7s-yxk" firstAttribute="width" secondItem="wuV-oT-Mm0" secondAttribute="width" id="J03-0e-keI"/>
                             <constraint firstItem="PxB-EI-oS0" firstAttribute="height" secondItem="wuV-oT-Mm0" secondAttribute="height" multiplier="0.065" id="KuU-oz-SGL"/>
                             <constraint firstAttribute="trailingMargin" secondItem="F8w-An-iUy" secondAttribute="trailing" constant="-16" id="QlQ-QK-H2c"/>
                             <constraint firstItem="Xcx-CI-caC" firstAttribute="top" secondItem="am5-h0-Sh6" secondAttribute="bottom" id="Z9Z-CF-pxY"/>
@@ -1721,6 +1738,7 @@
                         <outlet property="askCaptionTopConstraint" destination="Pm0-pC-X0e" id="WB2-Es-BKU"/>
                         <outlet property="commentsTextView" destination="KJF-dS-LFB" id="aH1-Ah-eua"/>
                         <outlet property="coverView" destination="2Re-7s-yxk" id="Kce-38-Ci2"/>
+                        <outlet property="coverViewLabel" destination="dYF-7y-3Cv" id="whd-CI-UVR"/>
                         <outlet property="helperView" destination="F8w-An-iUy" id="8BW-Nl-Rhc"/>
                         <outlet property="imageView" destination="jYc-xq-vM1" id="xNl-n9-7lP"/>
                         <outlet property="lockedContainersLabel" destination="VLf-KO-3Z6" id="bJT-Lw-A6Y"/>
@@ -3377,8 +3395,8 @@
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="No questions to review at this time. Tap to return to main menu." textAlignment="center" lineBreakMode="tailTruncation" numberOfLines="0" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="iW1-EW-QG8">
                                         <rect key="frame" x="0.0" y="250.5" width="375" height="167"/>
-                                        <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                        <nil key="textColor"/>
+                                        <fontDescription key="fontDescription" type="boldSystem" pointSize="21"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                                         <nil key="highlightedColor"/>
                                     </label>
                                 </subviews>
@@ -3694,6 +3712,7 @@
                         <outlet property="commentsTextView" destination="yCD-9y-o5z" id="flj-RO-Huy"/>
                         <outlet property="commentsTextViewTopConstraint" destination="4Xq-Qy-0OB" id="y1u-QY-nd5"/>
                         <outlet property="coverView" destination="1SH-2h-1SN" id="k0N-ba-FIw"/>
+                        <outlet property="coverViewLabel" destination="iW1-EW-QG8" id="nn1-fy-j6a"/>
                         <outlet property="lockedContainersLabel" destination="ym0-8w-VPc" id="C29-f9-V3B"/>
                         <outlet property="mainView" destination="Qj3-Vw-MLH" id="Rgz-on-cVJ"/>
                         <outlet property="obligatoryReviewsRemainingLabel" destination="cRM-99-PM0" id="fAY-gT-iaM"/>
