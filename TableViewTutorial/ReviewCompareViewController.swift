@@ -144,12 +144,12 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             segueToReviewAskViewController()
             }
         
-            makeCircle(view: topLeftBackgroundView)
-            makeCircle(view: topCenterBackgroundView)
-            makeCircle(view: topRightBackgroundView)
-            makeCircle(view: bottomRightBackgroundView)
-            makeCircle(view: bottomCenterBackgroundView)
-            makeCircle(view: bottomLeftBackgroundView)
+            makeCircle(view: topLeftBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: topCenterBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: topRightBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: bottomRightBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: bottomCenterBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: bottomLeftBackgroundView, alpha: backgroundCirclesAlphaValue)
 
             // we may or may not need this for ReviewCompareVC
             strongOriginalSize = strongImageView.frame.size.height
@@ -442,15 +442,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
     } //end of userSwiped
     
-    // This should be moved to datamodels
-    
-    // Makes the view that's passed in into a circle
-    func makeCircle(view: UIView){
-        view.layer.cornerRadius = view.frame.size.height / 2
-        view.layer.masksToBounds = true
-        view.alpha = backgroundCirclesAlphaValue // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
-        
-    }
+
 
     func showStrongImage() {
         ////

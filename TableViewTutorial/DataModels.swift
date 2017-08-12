@@ -289,6 +289,14 @@ func ageIfBorn(on birthday: Date) -> Int {
     return age
 }
 
+// Makes the view that's passed in into a circle
+func makeCircle(view: UIView, alpha: CGFloat){
+    view.layer.cornerRadius = view.frame.size.height / 2
+    view.layer.masksToBounds = true
+    view.alpha = alpha // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
+    
+}
+
 func display(coverView: UIView, mainView: UIView) {
     // this would look better if we animated a fade in of the coverView (and a fade out lower down)
     print("displaying coverView")
@@ -574,6 +582,20 @@ public func indexOfUser(in array: [User], userID: String)-> Int {
     fatalError()
 }
 
+
+public func indexOf(containerID: ContainerIdentification, in array: [ContainerIdentification])-> Int {
+    // find containerID's index in the array:
+    var index: Int = 0
+    for cID in array {
+        // we don't need to search the userID because they are all the same
+        if cID.timePosted == containerID.timePosted {
+            return index
+        }
+        index += 1
+    }
+    print("containerID wasn't found in the array, returning -1")
+    return -1
+}
 
 
 
@@ -1680,7 +1702,15 @@ public class User {
         // if it's not greater than zero, that means it should be at zero, meaning we don't have to do anything because there shouldn't be any locked containers
     }
     
+    func reviewsRequiredToUnlock(containerID: ContainerIdentification) -> Int {
+        // tells how many reviews user has to do before getting access to a specific container
+        if indexOf(containerID: containerID, in: lockedContainers) == -1 {
+            return 0 //in this case, the container is not in the list and is therefore already unlocked. We return 0 to indicate that. 
+        }
+        return (obligatoryReviewsPerContainer * indexOf(containerID: containerID, in: lockedContainers)) + obligatoryReviewsToUnlockNextContainer
+    }
     
+    // We will get rid of this soon:
     // we don't need container number. We just need username and timePosted
     func lowestAvailableContainerIDNumber() -> Int {
         var IDNumbers: [Int] = []

@@ -107,7 +107,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             // START HERE:
             //
             // 
-            // After that is done, rebuild the Ask and Compare TableView cells.
+            // Rebuild the Ask and Compare TableView cells.
             // A big thing they need is a display bar for target demo (or maybe all reviews).
             // They also need a label that tells the user how many reviews they have to do to unlock the container.
             // It would be nice to give them a black background.

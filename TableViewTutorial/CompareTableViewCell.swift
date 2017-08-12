@@ -17,10 +17,13 @@ class CompareTableViewCell: UITableViewCell {
     @IBOutlet weak var image1: UIImageView!
     @IBOutlet weak var image2: UIImageView!
     @IBOutlet weak var title1Label: UILabel!
+    @IBOutlet weak var percentImage1Label: UILabel!
     @IBOutlet weak var title2Label: UILabel!
-    @IBOutlet weak var scoreLabel: UILabel!
+    @IBOutlet weak var percentImage2Label: UILabel!
     @IBOutlet weak var timeRemainingLabel: UILabel!
-    @IBOutlet weak var arrowImage: UIImageView!
+    @IBOutlet weak var reviewsRequiredToUnlockLabel: UILabel!
+    @IBOutlet weak var numVotesLabel: UILabel!
+    
     
     // these are the squares that show up behind the winning pic. 1 for left, 2 for right.
     @IBOutlet weak var winnerOutline1: UIView!

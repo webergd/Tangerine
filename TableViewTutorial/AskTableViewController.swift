@@ -151,9 +151,18 @@ class AskTableViewController: UITableViewController {
                     cell.ratingLabel.text = "?"
                 }
             }
-
+            
+            cell.reviewsRequiredToUnlockLabel.isHidden = true //defaults to hidden
+            
+            let reviewsNeeded: Int = localMyUser.reviewsRequiredToUnlock(containerID: container.containerID)
+            if reviewsNeeded > 0 {
+                cell.reviewsRequiredToUnlockLabel.isHidden = false
+                cell.reviewsRequiredToUnlockLabel.text = "📋\(reviewsNeeded)"
+            }
+            
             cell.photoImageView.image = ask.askPhoto
-
+            
+            makeCircle(view: cell.photoImageView, alpha: 1.0)
             return cell
             
         // here we build a dual compare cell:
@@ -168,32 +177,44 @@ class AskTableViewController: UITableViewController {
             cell.title1Label.text = compare.compareTitle1
             cell.title2Label.text = compare.compareTitle2
             
-            //need a method to change score label to thousands if too big (eg 45,700 to 45.7K)
-            //this method can also be used on the number of reviews the user has given
+            cell.reviewsRequiredToUnlockLabel.isHidden = true //defaults to hidden
             
-            if reviewCollection.reviews.count > 0 {
-                // we don't have a numVotes label for compare cell yet but we need one
-                //cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes)"
-                if isLocked == true {
-                    cell.scoreLabel.text = "🗝"
-                } else {
-                    cell.scoreLabel.text = "\(targetDemoDataSet.percentTop)% to \(targetDemoDataSet.percentBottom)%"
-                }
-            } else {
-                //cell.numVotesLabel.text = "No Votes Yet"
-                if isLocked == true {
-                    cell.scoreLabel.text = "🗝"
-                } else {
-                    cell.scoreLabel.text = "? to ?"
-                }
+            let reviewsNeeded: Int = localMyUser.reviewsRequiredToUnlock(containerID: container.containerID)
+            if reviewsNeeded > 0 {
+                cell.reviewsRequiredToUnlockLabel.isHidden = false
+                cell.reviewsRequiredToUnlockLabel.text = "📋\(reviewsNeeded) "
             }
             
-            //cell.scoreLabel.text = "\(compare.compareVotes1) to \(compare.compareVotes2)"
+            
+            if reviewCollection.reviews.count > 0 {
+                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes"
+                if isLocked == true {
+                    cell.percentImage1Label.text = "🗝"
+                    cell.percentImage2Label.text = "🗝"
+                } else {
+                    cell.percentImage1Label.text = "\(targetDemoDataSet.percentTop)%"
+                    cell.percentImage2Label.text = "\(targetDemoDataSet.percentBottom)%"
+                    
+                }
+            } else {
+                cell.numVotesLabel.text = "No Votes Yet"
+                if isLocked == true {
+                    cell.percentImage1Label.text = "🗝"
+                    cell.percentImage2Label.text = "🗝"
+                } else {
+                    cell.percentImage1Label.text = "?"
+                    cell.percentImage2Label.text = "?"
+                }
+            }
+
+
             //calculations need to be done to get time REMAINING vice time posted:
             let timeRemaining = calcTimeRemaining(compare.containerID.timePosted)
             cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
             
+            // This is going away soon:
             //set up the arrow image to point the right way:
+            /*
             switch compare.winner {
                 case CompareWinner.photo1Won.rawValue:
                     cell.arrowImage.image = UIImage(named: "leftArrow")
@@ -210,6 +231,10 @@ class AskTableViewController: UITableViewController {
                 default: cell.arrowImage.image = UIImage(named: "defaultPhoto")
                 
             }
+            */
+            
+            makeCircle(view: cell.image1, alpha: 1.0)
+            makeCircle(view: cell.image2, alpha: 1.0)
             
             return cell
         } else {

@@ -17,6 +17,7 @@ class AskTableViewCell: UITableViewCell {
     @IBOutlet weak var timeRemainingLabel: UILabel!
     @IBOutlet weak var ratingLabel: UILabel!
     @IBOutlet weak var numVotesLabel: UILabel!
+    @IBOutlet weak var reviewsRequiredToUnlockLabel: UILabel!
 
 
     /*
