@@ -29,6 +29,16 @@ class CompareTableViewCell: UITableViewCell {
     @IBOutlet weak var winnerOutline1: UIView!
     @IBOutlet weak var winnerOutline2: UIView!
     
+    // Rating Bar Outlets
+    @IBOutlet weak var rating100Bar1: UIView!
+    @IBOutlet weak var ratingBar1: UIView!
+    @IBOutlet weak var ratingStrongBar1: UIView!
+
+    @IBOutlet weak var rating100Bar2: UIView!
+    @IBOutlet weak var ratingBar2: UIView!
+    @IBOutlet weak var ratingStrongBar2: UIView!
+    
+    
     
     
     override func awakeFromNib() {

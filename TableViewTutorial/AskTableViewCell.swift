@@ -19,7 +19,14 @@ class AskTableViewCell: UITableViewCell {
     @IBOutlet weak var numVotesLabel: UILabel!
     @IBOutlet weak var reviewsRequiredToUnlockLabel: UILabel!
 
+    @IBOutlet weak var rating100Bar: UIView!
+    @IBOutlet weak var ratingBar: UIView!
+    @IBOutlet weak var ratingStrongBar: UIView!
+    @IBOutlet weak var ratingBarTrailingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var ratingStrongBarTrailingConstraint: NSLayoutConstraint!
 
+    
+    
     /*
     func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         
