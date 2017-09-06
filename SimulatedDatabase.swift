@@ -858,11 +858,11 @@ public class SimulatedDatabase {
                 
                 container.reviewCollection.reviews.append(askReview2)
         
-                let askReview3 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo", containerID: container.containerID)
+                let askReview3 = AskReview(selection: .yes, strong: nil, reviewerInfo: usersArray[2].publicInfo, comments: "Goooooooo", containerID: container.containerID)
                 
                 container.reviewCollection.reviews.append(askReview3)
         
-                let askReview4 = AskReview(selection: .no, strong: .yes, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML", containerID: container.containerID)
+                let askReview4 = AskReview(selection: .yes, strong: nil, reviewerInfo: usersArray[3].publicInfo, comments: "Go team WML", containerID: container.containerID)
                 
                 container.reviewCollection.reviews.append(askReview4)
         
@@ -874,7 +874,7 @@ public class SimulatedDatabase {
                 
                 container.reviewCollection.reviews.append(askReview6)
         
-                let askReview7 = AskReview(selection: .no, strong: nil, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
+                let askReview7 = AskReview(selection: .yes, strong: .yes, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
                 
                 container.reviewCollection.reviews.append(askReview7)
         
@@ -918,7 +918,7 @@ public class SimulatedDatabase {
                 
                 container.reviewCollection.reviews.append(compareReview4)
         
-                let compareReview5 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice", containerID: container.containerID)
+                let compareReview5 = CompareReview(selection: .top, strongYes: false, strongNo: false, reviewerInfo: usersArray[4].publicInfo, comments: "I like beet juice", containerID: container.containerID)
                 
                 container.reviewCollection.reviews.append(compareReview5)
         

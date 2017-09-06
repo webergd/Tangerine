@@ -15,51 +15,73 @@ class AskTableViewCell: UITableViewCell {
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var photoImageView: UIImageView!
     @IBOutlet weak var timeRemainingLabel: UILabel!
-    @IBOutlet weak var ratingLabel: UILabel!
+    //@IBOutlet weak var ratingLabel: UILabel!
     @IBOutlet weak var numVotesLabel: UILabel!
     @IBOutlet weak var reviewsRequiredToUnlockLabel: UILabel!
+    @IBOutlet weak var lockLabel: UILabel!
+    
 
+    @IBOutlet weak var yesPercentage: UILabel!
+    @IBOutlet weak var strongYesPercentage: UILabel!
     @IBOutlet weak var rating100Bar: UIView!
     @IBOutlet weak var ratingBar: UIView!
     @IBOutlet weak var ratingStrongBar: UIView!
     @IBOutlet weak var ratingBarTrailingConstraint: NSLayoutConstraint!
     @IBOutlet weak var ratingStrongBarTrailingConstraint: NSLayoutConstraint!
-
+    @IBOutlet weak var yesPercentageLeadingConstraint: NSLayoutConstraint!
+    @IBOutlet weak var strongYesPercentageTrailingConstraint: NSLayoutConstraint!
     
-    
-    /*
-    func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    func displayCellData(dataSet: ConsolidatedAskDataSet){
+        displayData(dataSet: dataSet,
+                    totalReviewsLabel: numVotesLabel,
+                    yesPercentageLabel: yesPercentage,
+                    strongYesPercentageLabel: strongYesPercentage,
+                    hundredBarView: rating100Bar,
+                    yesTrailingConstraint: ratingBarTrailingConstraint,
+                    yesLabelLeadingConstraint: yesPercentageLeadingConstraint,
+                    strongYesTrailingConstraint: ratingStrongBarTrailingConstraint,
+                    strongYesLabelTrailingConstraint: strongYesPercentageTrailingConstraint)
+    }
+    /* // This was moved to DataModels.swift
+    func displayData(dataSet: ConsolidatedAskDataSet,
+                     totalReviewsLabel: UILabel,
+                     yesPercentageLabel: UILabel,
+                     strongYesPercentageLabel: UILabel,
+                     hundredBarView: UIView,
+                     yesTrailingConstraint: NSLayoutConstraint,
+                    yesLabelLeadingConstraint: NSLayoutConstraint,
+                    strongYesTrailingConstraint: NSLayoutConstraint,
+                    strongYesLabelTrailingConstraint: NSLayoutConstraint){
         
-        print("preparedForSegue called in AskTableViewCell")
+        totalReviewsLabel.text = String(dataSet.numReviews)
+        yesPercentageLabel.text = String(dataSet.percentYes) + "%"
+        strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
         
+        print("strong yes percentage: \(dataSet.percentStrongYes)")
         
-        /*  HAving this shit in here is 
-            experimental. I don't think I'm supposed to utilize 
-            prepareForSegue from the 'Cell' class
-        // Get the new view controller using segue.destinationViewController.
-        if segue.identifier == "showAsk" {
-            
-            print("prepareForSegue")
-            
-            if let indexPath = self.tableView.indexPathForSelectedRow {
-                let passedQuestion = sortedContainers[indexPath.row]
-                if passedQuestion.rowType == RowType.isSingle.rawValue {
-                    let controller = segue.destinationViewController as! AskViewController
-                    // Pass the selected object to the new view controller:
-                    controller.ask = passedQuestion as! Ask
-                } else if passedQuestion.rowType == RowType.isDual.rawValue {
-                    let controller = segue.destinationViewController as! CompareViewController
-                    // Pass the selected object to the new view controller:
-                    controller.compare = passedQuestion as! Compare
-                }
-                
-            }
-            
-        } */
+        let hundredBarWidth = hundredBarView.frame.size.width
+        
+        yesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentYes, hundredBarWidth: hundredBarWidth)
+        
+        strongYesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYes, hundredBarWidth: hundredBarWidth)
+        
+        strongYesLabelTrailingConstraint.constant = 0.5
+        strongYesPercentageLabel.textColor = UIColor.white
+        strongYesPercentageLabel.isHidden = false
+        
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarWidth,
+                                yesTrailingConstraint: yesTrailingConstraint,
+                                yesPercentageLabel: yesPercentageLabel,
+                                yesLabelLeadingConstraint: yesLabelLeadingConstraint,
+                                strongYesTrailingConstraint: strongYesTrailingConstraint,
+                                strongYesPercentageLabel: strongYesPercentageLabel,
+                                strongYesLabelTrailingConstraint: strongYesLabelTrailingConstraint)
+        
+    } // end of displayData(..)
+    */
     
     
     
-        } */
     
     override func awakeFromNib() {
         super.awakeFromNib()

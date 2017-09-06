@@ -225,17 +225,16 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
     }
     
+    /* // This was moved to DataModels.swift
     func displayData(dataSet: ConsolidatedAskDataSet,
                      totalReviewsLabel: UILabel,
                      yesPercentageLabel: UILabel,
                      strongYesPercentageLabel: UILabel,
                      hundredBarView: UIView,
                      yesTrailingConstraint: NSLayoutConstraint,
-                     //
-                     yesLabelLeadingConstraint: NSLayoutConstraint,//
+                     yesLabelLeadingConstraint: NSLayoutConstraint,
                      strongYesTrailingConstraint: NSLayoutConstraint,
-                     //
-                     strongYesLabelTrailingConstraint: NSLayoutConstraint){//
+                     strongYesLabelTrailingConstraint: NSLayoutConstraint){
         
         totalReviewsLabel.text = String(dataSet.numReviews)
         yesPercentageLabel.text = String(dataSet.percentYes) + "%"
@@ -262,7 +261,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
                                 strongYesLabelTrailingConstraint: strongYesLabelTrailingConstraint)
         
     } // end of displayData(..)
-    
+    */
 
  
  

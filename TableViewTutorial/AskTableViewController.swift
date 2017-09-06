@@ -93,9 +93,6 @@ class AskTableViewController: UITableViewController {
             }
             index += 1
         }
-        
- 
-
     }
 
     override func didReceiveMemoryWarning() {
@@ -119,6 +116,7 @@ class AskTableViewController: UITableViewController {
     //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
+        
         let container = sortedContainers[indexPath.row]
         let reviewCollection = container.reviewCollection
         let isLocked: Bool = container.isLocked()
@@ -133,31 +131,32 @@ class AskTableViewController: UITableViewController {
             cell.titleLabel.text = ask.askTitle
             //print("Cell title: \(cell.titleLabel.text)")
             
+            cell.displayCellData(dataSet: targetDemoDataSet)
+
+            // If it's zero, I need to know if the votes were from the target demo
+            
+            
             let timeRemaining = calcTimeRemaining(ask.containerID.timePosted)
             cell.timeRemainingLabel.text = "\(timeRemaining)"
             
             if reviewCollection.reviews.count > 0 {
-                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes"
-                if isLocked == true {
-                    cell.ratingLabel.text = "🗝"
-                } else {
-                    cell.ratingLabel.text = "\(targetDemoDataSet.percentYes)%"
+                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) vote"
+                if reviewCollection.reviews.count > 1 {
+                    cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes" // add an s if more than one vote
                 }
             } else {
                 cell.numVotesLabel.text = "No Votes Yet"
-                if isLocked == true {
-                    cell.ratingLabel.text = "🗝"
-                } else {
-                    cell.ratingLabel.text = "?"
-                }
             }
             
             cell.reviewsRequiredToUnlockLabel.isHidden = true //defaults to hidden
+            cell.lockLabel.isHidden = true
             
             let reviewsNeeded: Int = localMyUser.reviewsRequiredToUnlock(containerID: container.containerID)
             if reviewsNeeded > 0 {
+                cell.rating100Bar.isHidden = true
                 cell.reviewsRequiredToUnlockLabel.isHidden = false
-                cell.reviewsRequiredToUnlockLabel.text = "📋\(reviewsNeeded)"
+                cell.lockLabel.isHidden = false
+                cell.reviewsRequiredToUnlockLabel.text = "Please review \(reviewsNeeded) more users to unlock your results. 🍊"
             }
             
             cell.photoImageView.image = ask.askPhoto
@@ -177,6 +176,8 @@ class AskTableViewController: UITableViewController {
             cell.title1Label.text = compare.compareTitle1
             cell.title2Label.text = compare.compareTitle2
             
+            cell.displayCellData(dataSet: targetDemoDataSet)
+            
             cell.reviewsRequiredToUnlockLabel.isHidden = true //defaults to hidden
             
             let reviewsNeeded: Int = localMyUser.reviewsRequiredToUnlock(containerID: container.containerID)
@@ -184,6 +185,25 @@ class AskTableViewController: UITableViewController {
                 cell.reviewsRequiredToUnlockLabel.isHidden = false
                 cell.reviewsRequiredToUnlockLabel.text = "📋\(reviewsNeeded) "
             }
+            
+            ////////////////////////////////////////////////////////
+            //   START HERE:
+            //
+            //  Build slider functionality.
+            //
+            //  I'm thinking I should keep the data display bars also and just not display numbers in them.
+            //  Move the display bars down to be between the images.
+            //  Then I need a triangle that will sit at the amount more than the other to show the winner.
+            //  I will probably also want to display a tangerine on the side of the winning photo.
+            //  Let's display the percentage of the votes that the winning image captured, above the sliding triangle.
+            //
+            //  Later on, it may be worth it in compare breakdown vc to dim the losing data display bar to emphasize the winner
+            //
+            //  Lastly, there is an issue with the numVotes in the ATVC for compares, where it's seeing the # as an optional and displaying that.
+            //
+            /////////////////////////////////////////////////////////
+            
+            
             
             
             if reviewCollection.reviews.count > 0 {
@@ -315,8 +335,6 @@ class AskTableViewController: UITableViewController {
             if passedContainer.isLocked() == true {
                 print("selected container is locked")
                 return
-                
-                // we need a way to actually cock block the segue, not just the data being passed
             }
  
             

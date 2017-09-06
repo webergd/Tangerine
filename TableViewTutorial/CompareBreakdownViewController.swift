@@ -208,8 +208,6 @@ class CompareBreakdownViewController: UIViewController {
                 
                 displayData(dataSet: targetDemoDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
-                            winningImageView: thisWinningImageView,
-                            winningTitleLabel: thisWinningTitleLabel,
                             votePercentageTopLabel: thisVotePercentageTopLabel,
                             votePercentageBottomLabel: thisVotePercentageBottomLabel,
                             strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
@@ -224,6 +222,9 @@ class CompareBreakdownViewController: UIViewController {
                             strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
+                
+                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: targetDemoDataSet)
+                
             }
             
             // Configure FRIENDS data display:
@@ -256,8 +257,6 @@ class CompareBreakdownViewController: UIViewController {
                 // Although it is technically just a method call
                 displayData(dataSet: friendsDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
-                            winningImageView: thisWinningImageView,
-                            winningTitleLabel: thisWinningTitleLabel,
                             votePercentageTopLabel: thisVotePercentageTopLabel,
                             votePercentageBottomLabel: thisVotePercentageBottomLabel,
                             strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
@@ -272,6 +271,8 @@ class CompareBreakdownViewController: UIViewController {
                             strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
+                
+                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: friendsDataSet)
             }
             
             // Configure ALL REVIEWS data display:
@@ -302,8 +303,6 @@ class CompareBreakdownViewController: UIViewController {
                 
                 displayData(dataSet: allReviewsDataSet,
                             numReviewsLabel: thisNumReviewsLabel,
-                            winningImageView: thisWinningImageView,
-                            winningTitleLabel: thisWinningTitleLabel,
                             votePercentageTopLabel: thisVotePercentageTopLabel,
                             votePercentageBottomLabel: thisVotePercentageBottomLabel,
                             strongVotePercentageTopLabel: thisStrongVotePercentageTopLabel,
@@ -318,7 +317,12 @@ class CompareBreakdownViewController: UIViewController {
                             strongTopLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint,
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
+                
+                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: allReviewsDataSet)
+            
             }
+            
+            
             
             
             
@@ -328,7 +332,22 @@ class CompareBreakdownViewController: UIViewController {
     
     }
     
+    func displayWinningImage(in winningImageView: UIImageView, with winningTitleLabel: UILabel, using dataSet: ConsolidatedCompareDataSet){
+        // This only comes into play when using the method for CompareBreakdownVC
+        switch dataSet.winner {
+        case .photo1Won:
+            winningImageView.image = compareImage1
+            winningTitleLabel.text = compareTitle2
+        case .photo2Won:
+            winningImageView.image = compareImage2
+            winningTitleLabel.text = compareTitle2
+        case .itsATie:
+            winningImageView.image = #imageLiteral(resourceName: "shrug")
+            winningTitleLabel.text = "TIE"
+        }
+    }
     
+    /*
     func displayData(dataSet: ConsolidatedCompareDataSet,
                      numReviewsLabel: UILabel,
                      winningImageView: UIImageView,
@@ -418,7 +437,7 @@ class CompareBreakdownViewController: UIViewController {
 
         
         
-    } // end of displayData method
+    } // end of displayData method */
 
     
     

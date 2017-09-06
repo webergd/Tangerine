@@ -462,6 +462,131 @@ public func flipBarLabelsAsRequired(hundredBarWidth: CGFloat, yesTrailingConstra
     
 } // end of public func flipBarLabelsAsRequired(..)
 
+
+
+public func displayData(dataSet: ConsolidatedAskDataSet,
+                 totalReviewsLabel: UILabel,
+                 yesPercentageLabel: UILabel,
+                 strongYesPercentageLabel: UILabel,
+                 hundredBarView: UIView,
+                 yesTrailingConstraint: NSLayoutConstraint,
+                 yesLabelLeadingConstraint: NSLayoutConstraint,
+                 strongYesTrailingConstraint: NSLayoutConstraint,
+                 strongYesLabelTrailingConstraint: NSLayoutConstraint){
+    
+    totalReviewsLabel.text = String(dataSet.numReviews)
+    
+    
+    if dataSet.numReviews < 1 {
+        yesPercentageLabel.text = "No reviews from the specified group."
+        yesPercentageLabel.font = yesPercentageLabel.font.withSize(10.0)
+    } else {
+        yesPercentageLabel.font = yesPercentageLabel.font.withSize(17.0)
+        yesPercentageLabel.text = String(dataSet.percentYes) + "%"
+    }
+    
+    strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
+    
+    print("strong yes percentage: \(dataSet.percentStrongYes)")
+    
+    let hundredBarWidth = hundredBarView.frame.size.width
+    
+    yesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentYes, hundredBarWidth: hundredBarWidth)
+    
+    strongYesTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYes, hundredBarWidth: hundredBarWidth)
+    
+    strongYesLabelTrailingConstraint.constant = 0.5
+    strongYesPercentageLabel.textColor = UIColor.white
+    strongYesPercentageLabel.isHidden = false
+    
+    flipBarLabelsAsRequired(hundredBarWidth: hundredBarWidth,
+                            yesTrailingConstraint: yesTrailingConstraint,
+                            yesPercentageLabel: yesPercentageLabel,
+                            yesLabelLeadingConstraint: yesLabelLeadingConstraint,
+                            strongYesTrailingConstraint: strongYesTrailingConstraint,
+                            strongYesPercentageLabel: strongYesPercentageLabel,
+                            strongYesLabelTrailingConstraint: strongYesLabelTrailingConstraint)
+    
+} // end of displayData(Ask)
+
+public func displayData(dataSet: ConsolidatedCompareDataSet,
+                 numReviewsLabel: UILabel,
+                 votePercentageTopLabel: UILabel,
+                 votePercentageBottomLabel: UILabel,
+                 strongVotePercentageTopLabel: UILabel?,
+                 strongVotePercentageBottomLabel: UILabel?,
+                 hundredBarTopView: UIView,
+                 hundredBarBottomView: UIView,
+                 topBarTrailingConstraint: NSLayoutConstraint,
+                 voteTopLabelLeadingConstraint: NSLayoutConstraint?,
+                 bottomBarTrailingConstraint: NSLayoutConstraint,
+                 voteBottomLabelLeadingConstraint: NSLayoutConstraint?,
+                 topStrongBarTrailingConstraint: NSLayoutConstraint,
+                 strongTopLabelTrailingConstraint: NSLayoutConstraint?,
+                 bottomStrongBarTrailingConstraint: NSLayoutConstraint,
+                 strongBottomLabelTrailingConstraint: NSLayoutConstraint?){
+    
+    
+    
+    numReviewsLabel.text = "\(dataSet.numReviews) reviews"
+    
+
+    votePercentageTopLabel.text = String(dataSet.percentTop) + "%"
+    votePercentageBottomLabel.text = String(dataSet.percentBottom) + "%"
+    
+
+    let hundredBarTopWidth = hundredBarTopView.frame.size.width
+    let hundredBarBottomWidth = hundredBarBottomView.frame.size.width
+    
+    // Both 100 bars should presumably be the same size. I used their separate values though in case something funky happens with te constraints at runtime.
+    topBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentTop, hundredBarWidth: hundredBarTopWidth)
+    bottomBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentBottom, hundredBarWidth: hundredBarBottomWidth)
+    
+    topStrongBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYesTop, hundredBarWidth: hundredBarTopWidth)
+    bottomStrongBarTrailingConstraint.constant = calcTrailingConstraint(percentYes: dataSet.percentStrongYesBottom, hundredBarWidth: hundredBarBottomWidth)
+    
+    // Here we unwrap all the optionals having to do with labels.
+    // They are optional arguments because CompareTableViewCell doesn't use them.
+    if let thisStrongTopLabel = strongVotePercentageTopLabel,
+        let thisStrongBottomLabel = strongVotePercentageBottomLabel,
+        let thisVoteBottomLabelLeadingConstraint = voteBottomLabelLeadingConstraint,
+        let thisVoteTopLabelLeadingConstraint = voteTopLabelLeadingConstraint,
+        let thisStrongTopLabelTrailingConstraint = strongTopLabelTrailingConstraint,
+        let thisStrongBottomLabelTrailingConstraint = strongBottomLabelTrailingConstraint {
+        
+        thisStrongTopLabel.text = String(dataSet.percentStrongYesTop) + "%"
+        thisStrongBottomLabel.text = String(dataSet.percentStrongYesBottom) + "%"
+        // Note: strongNo storage capability exists but has not been (and may never be) implemented
+   
+    
+        //  (1) switch sides if there isn't enough room to display the number
+        //  (2) become hidden if strong is too close to regular such that
+        //       the labels displayed would become cluttered.
+        
+        // adjust top bar labels if necessary:
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarTopWidth,
+                                yesTrailingConstraint: topBarTrailingConstraint,
+                                yesPercentageLabel: votePercentageTopLabel,
+                                yesLabelLeadingConstraint: thisVoteTopLabelLeadingConstraint,
+                                strongYesTrailingConstraint: topStrongBarTrailingConstraint,
+                                strongYesPercentageLabel: thisStrongTopLabel,
+                                strongYesLabelTrailingConstraint: thisStrongTopLabelTrailingConstraint)
+    
+        // adjust bottom bar labels if necessary:
+        flipBarLabelsAsRequired(hundredBarWidth: hundredBarBottomWidth,
+                                yesTrailingConstraint: bottomBarTrailingConstraint,
+                                yesPercentageLabel: votePercentageBottomLabel,
+                                yesLabelLeadingConstraint: thisVoteBottomLabelLeadingConstraint,
+                                strongYesTrailingConstraint: bottomStrongBarTrailingConstraint,
+                                strongYesPercentageLabel: thisStrongBottomLabel,
+                                strongYesLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
+    }
+    
+    
+} // end of displayData(Compare)
+
+
+
 // convert the enum value to a text value that's useful in labels:
 public func selectionToText(selection: yesOrNo) -> String {
     switch selection {
