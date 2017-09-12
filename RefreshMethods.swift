@@ -82,13 +82,22 @@ public func refreshFriends() {
 public func refreshUserProfile() {
     // need fuctionality to check what the newest info is.
     // I don't want to wipe out changes made locally if that's what the user wanted.
+    // MARK: Fix this.
+    // This simple code only works as of now because there is only one lcoation we can access the database from
+    
+    sd.usersArray[sd.myUserIndex()] =  localMyUser // all this does is update the changes we have made
+    
+    // We will need a way to pull user info from the database also.
+    // There will probably need to be a timestamp on when the profile was last updated.
+    // Then, whichever profile has the latest timestamp wins and overrides the earlier one.
+    
 }
 
 public func refreshAssignedQuestions() {
     //
     //
     //
-    //      NEED CODE
+    //     MARK: NEED CODE
     //
     //
     //

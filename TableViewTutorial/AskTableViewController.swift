@@ -23,7 +23,7 @@ class AskTableViewController: UITableViewController {
     // In the actual implementation, the variable 'containers' is going to need to be pulled from the server
     // In this implementation I am just loading it with dummy reviews
     
-    var containers: [Container] = localContainerCollection // this is an array that will hold Asks and Compares
+    //var containers: [Container] = localContainerCollection // this is an array that will hold Asks and Compares
     var sortedContainers = [Container]()
 
     override func viewDidLoad() {
@@ -37,9 +37,9 @@ class AskTableViewController: UITableViewController {
         // this appends the dummy values to this VC's containers property
         refreshContainers()
         refreshUserProfile()
-        containers = localContainerCollection
+        //containers = localContainerCollection
         // the fact that this sorts the containers array by timestamp is the reason the dummy values are always at the top (they are the oldest)
-        sortedContainers = containers.sorted { $0.question.containerID.timePosted.timeIntervalSince1970 < $1.question.containerID.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        sortedContainers = localContainerCollection.sorted { $0.question.containerID.timePosted.timeIntervalSince1970 < $1.question.containerID.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
         
         //allows the row height to resize to fit the autolayout constraints
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -94,6 +94,12 @@ class AskTableViewController: UITableViewController {
             index += 1
         }
     }
+    
+
+    
+    
+    
+    
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -110,6 +116,36 @@ class AskTableViewController: UITableViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
         return sortedContainers.count
+    }
+    
+    
+    // this method handles row deletion
+    override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        
+        if editingStyle == .delete {
+            
+            let containerIDToDelete: ContainerIdentification = sortedContainers[indexPath.row].containerID
+            
+            // remove the item from the data model
+            sortedContainers.remove(at: indexPath.row)
+            
+            // delete the table view row
+            tableView.deleteRows(at: [indexPath], with: .fade)
+
+            localMyUser.remove(containerID: containerIDToDelete)
+            
+            refreshUserProfile()
+            
+            //updates the rows to reflect the new number of reviews required to unlock them, if applicable:
+            self.tableView.reloadData()
+            
+            //viewDidLoad()
+            //viewDidAppear(false)
+            
+            
+        } //else if editingStyle == .insert {
+            // Not used in our example, but if you were adding a new row, this is where you would do it.
+        //}
     }
 
 
@@ -156,7 +192,7 @@ class AskTableViewController: UITableViewController {
                 cell.rating100Bar.isHidden = true
                 cell.reviewsRequiredToUnlockLabel.isHidden = false
                 cell.lockLabel.isHidden = false
-                cell.reviewsRequiredToUnlockLabel.text = "Please review \(reviewsNeeded) more users to unlock your results. 🍊"
+                cell.reviewsRequiredToUnlockLabel.text = "Please review \(reviewsNeeded) more users to unlock your results."
             }
             
             cell.photoImageView.image = ask.askPhoto
@@ -181,53 +217,50 @@ class AskTableViewController: UITableViewController {
             cell.reviewsRequiredToUnlockLabel.isHidden = true //defaults to hidden
             
             let reviewsNeeded: Int = localMyUser.reviewsRequiredToUnlock(containerID: container.containerID)
-            if reviewsNeeded > 0 {
-                cell.reviewsRequiredToUnlockLabel.isHidden = false
-                cell.reviewsRequiredToUnlockLabel.text = "📋\(reviewsNeeded) "
-            }
+
             
             ////////////////////////////////////////////////////////
             //   START HERE:
             //
-            //  Build slider functionality.
-            //
-            //  I'm thinking I should keep the data display bars also and just not display numbers in them.
-            //  Move the display bars down to be between the images.
-            //  Then I need a triangle that will sit at the amount more than the other to show the winner.
             //  I will probably also want to display a tangerine on the side of the winning photo.
-            //  Let's display the percentage of the votes that the winning image captured, above the sliding triangle.
-            //
             //  Later on, it may be worth it in compare breakdown vc to dim the losing data display bar to emphasize the winner
             //
-            //  Lastly, there is an issue with the numVotes in the ATVC for compares, where it's seeing the # as an optional and displaying that.
+            //  Create a status bar (or image/label) that shows up in almost all VC's that tells number of obligatory reviews remaining
+            //   and maybe some pertinant other stuff
             //
-            /////////////////////////////////////////////////////////
-            
-            
-            
-            
+            //
+            //////////////////////////////////////////////////////////
+
             if reviewCollection.reviews.count > 0 {
-                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes"
-                if isLocked == true {
-                    cell.percentImage1Label.text = "🗝"
-                    cell.percentImage2Label.text = "🗝"
-                } else {
-                    cell.percentImage1Label.text = "\(targetDemoDataSet.percentTop)%"
-                    cell.percentImage2Label.text = "\(targetDemoDataSet.percentBottom)%"
-                    
-                }
-            } else {
-                cell.numVotesLabel.text = "No Votes Yet"
-                if isLocked == true {
-                    cell.percentImage1Label.text = "🗝"
-                    cell.percentImage2Label.text = "🗝"
-                } else {
-                    cell.percentImage1Label.text = "?"
-                    cell.percentImage2Label.text = "?"
+                cell.numVotesLabel.text = "\(reviewCollection.reviews.count) vote"
+                if reviewCollection.reviews.count > 1 {
+                    cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes" // add an s if more than one vote
                 }
             }
+            
+            //cell.numVotesLabel.text = "\(reviewCollection.reviews.count) votes"
+            cell.percentImage1Label.text = "\(targetDemoDataSet.percentTop)%"
+            cell.percentImage2Label.text = "\(targetDemoDataSet.percentBottom)%"
+            if reviewCollection.reviews.count < 0 || targetDemoDataSet.numReviews < 1 {
+                cell.percentImage1Label.text = "?"
+                cell.percentImage2Label.text = "?"
+                }
+            cell.lockCell(isLocked, reviewsNeeded: reviewsNeeded)
 
-
+            if targetDemoDataSet.numReviews < 1 {
+                cell.triangleMarkerLabel.text = "No votes from the specified group."
+                cell.triangleMarkerLabel.font = cell.triangleMarkerLabel.font.withSize(11.0)
+                cell.triangleMarkerCenterConstraint.constant = 0
+                cell.ratingBar1.isHidden = true
+                cell.ratingBar2.isHidden = true
+                cell.triangleMarkerImageView.alpha = 0.2
+            } else {
+                cell.triangleMarkerLabel.font = cell.triangleMarkerLabel.font.withSize(12.0)
+                cell.ratingBar1.isHidden = false
+                cell.ratingBar2.isHidden = false
+                cell.triangleMarkerImageView.alpha = 1.0
+            }
+            
             //calculations need to be done to get time REMAINING vice time posted:
             let timeRemaining = calcTimeRemaining(compare.containerID.timePosted)
             cell.timeRemainingLabel.text = "Time Posted: \(timeRemaining)"
@@ -253,6 +286,8 @@ class AskTableViewController: UITableViewController {
             }
             */
             
+            cell.triangleMarkerLabel.isHidden = true
+            
             makeCircle(view: cell.image1, alpha: 1.0)
             makeCircle(view: cell.image2, alpha: 1.0)
             
@@ -262,6 +297,7 @@ class AskTableViewController: UITableViewController {
             let cell: UITableViewCell? = nil
             return cell!
         }
+
     }
     
     // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.

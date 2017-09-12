@@ -703,7 +703,7 @@ public class SimulatedDatabase {
         
         myUser.friendNames = ["guido","beast","melissa", "zeenat", "morgan","ian","countryBear"]
         // These settings will be toggled by the user, eventually
-        myUser.targetDemo.minAge = 25
+        myUser.targetDemo.minAge = 19
         myUser.targetDemo.maxAge = 38
         myUser.targetDemo.straightWomenPreferred = true
         myUser.targetDemo.straightMenPreferred = false
@@ -926,7 +926,7 @@ public class SimulatedDatabase {
                 
                 container.reviewCollection.reviews.append(compareReview6)
         
-                let compareReview7 = CompareReview(selection: .top, strongYes: true, strongNo: false, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
+                let compareReview7 = CompareReview(selection: .bottom, strongYes: true, strongNo: false, reviewerInfo: usersArray[6].publicInfo, comments: "Wanna act something out silently?", containerID: container.containerID)
                 
                 container.reviewCollection.reviews.append(compareReview7)
             }

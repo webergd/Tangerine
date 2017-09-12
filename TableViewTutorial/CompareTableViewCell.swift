@@ -27,6 +27,7 @@ class CompareTableViewCell: UITableViewCell {
     // Outlets for positioning triangle marker:
     @IBOutlet weak var triangleMarkerLabel: UILabel!
     @IBOutlet weak var triangleMarkerCenterConstraint: NSLayoutConstraint!
+    @IBOutlet weak var triangleMarkerImageView: UIImageView!
     @IBOutlet weak var centerDividerView: UIView!
     
     // Deleted:
@@ -84,9 +85,34 @@ class CompareTableViewCell: UITableViewCell {
         // Set the triangle's label.text with the absolute value of the difference between the vote quantities
         triangleMarkerLabel.text = "\(Int(voteDifference.magnitude))%"
         
+        let largeFontSize: CGFloat = 25.0
+        let smallFontSize: CGFloat = 17.0
         
+        percentImage1Label.font = percentImage1Label.font.withSize(smallFontSize)
+        percentImage2Label.font = percentImage1Label.font.withSize(smallFontSize)
         
+        switch dataSet.percentTop {
+        case let x where x > dataSet.percentBottom: percentImage1Label.font = percentImage1Label.font.withSize(largeFontSize)
+        case let x where x < dataSet.percentBottom: percentImage2Label.font = percentImage1Label.font.withSize(largeFontSize)
+        default: print("tie")
+        }
 
+
+
+    }
+    
+    func lockCell(_ hide: Bool, reviewsNeeded: Int) {
+        rating100Bar1.isHidden = hide
+        rating100Bar2.isHidden = hide
+        triangleMarkerLabel.isHidden = hide
+        triangleMarkerImageView.isHidden = hide
+        centerDividerView.isHidden = hide
+        reviewsRequiredToUnlockLabel.isHidden = !hide
+        if hide == true {
+            percentImage1Label.text = "🗝"
+            percentImage2Label.text = "🗝"
+            reviewsRequiredToUnlockLabel.text = "Please review \(reviewsNeeded) more users to unlock your results."
+        }
     }
     
     override func awakeFromNib() {

@@ -253,6 +253,24 @@ func iterateEnum<T: Hashable>(_: T.Type) -> AnyIterator<T> {
 }
 
 
+// There is a method very similar to this in the simulated database.
+// find the index of a container within the containersArray by searching for the container's containerID:
+func index(of containerID: ContainerIdentification, containersArray: [Container]) -> Int {
+    var index: Int = 0
+    for container in containersArray {
+        if container.containerID.userID == containerID.userID {
+            if container.containerID.timePosted == containerID.timePosted {
+                return index
+            }
+        }
+        index += 1
+    }
+    print("Index of container not found. Container not present in the array.")
+    return -1
+}
+
+
+
 
 // MARK: TIME REMAINING
 
@@ -528,7 +546,7 @@ public func displayData(dataSet: ConsolidatedCompareDataSet,
     
     
     
-    numReviewsLabel.text = "\(dataSet.numReviews) reviews"
+    numReviewsLabel.text = "\(dataSet.numReviews) votes"
     
 
     votePercentageTopLabel.text = String(dataSet.percentTop) + "%"
@@ -1011,7 +1029,7 @@ public class ReviewCollection {
             let straightWomen: Bool = requestedDemo.straightWomenPreferred
             let straightMen: Bool = requestedDemo.straightMenPreferred
             let gayWomen: Bool = requestedDemo.gayWomenPreferred
-            let gayMen: Bool = requestedDemo.gayWomenPreferred
+            let gayMen: Bool = requestedDemo.gayMenPreferred
         
         //  Friends Only filter not yet implemented //
         // What I forsee for this is to outsource a function that checks to see if a review is from a friend
@@ -1065,6 +1083,7 @@ public class ReviewCollection {
             case .gayMan:
                 if gayMen == false {continue reviewLoop}
                 countGM += 1
+                
             }
             
 
@@ -1131,7 +1150,7 @@ public class ReviewCollection {
         let straightWomen: Bool = requestedDemo.straightWomenPreferred
         let straightMen: Bool = requestedDemo.straightMenPreferred
         let gayWomen: Bool = requestedDemo.gayWomenPreferred
-        let gayMen: Bool = requestedDemo.gayWomenPreferred
+        let gayMen: Bool = requestedDemo.gayMenPreferred
         
         
         
@@ -1164,8 +1183,7 @@ public class ReviewCollection {
                 print("too old or young. skipping to next review")
                 continue reviewLoop // sends us back to the top of the loop
             }
-            
-            
+
             // This switch statement checks which orientation demo the reviewer was, and if we aren't
             //  trying to pull from that demo, we go back to the beginning of the for loop.
             // If we are trying to pull from that demo, we increment that demo's count and move on.
@@ -1259,7 +1277,13 @@ public struct ConsolidatedAskDataSet: isConsolidatedDataSet {
 
 public struct ConsolidatedCompareDataSet: isConsolidatedDataSet {
     let percentTop: Int
-    var percentBottom: Int { return 100 - percentTop }
+    var percentBottom: Int {
+        if numReviews < 1 {
+            return 0
+        } else {
+            return 100 - percentTop
+        }
+    }
     let percentStrongYesTop: Int
     let percentStrongYesBottom: Int
     let percentStrongNoTop: Int
@@ -1806,6 +1830,28 @@ public class User {
             obligatoryReviewsToUnlockNextContainer = 0
         }
         refreshUserProfile()
+    }
+    
+    func remove(containerID: ContainerIdentification) {
+        
+        let containerIndex: Int = index(of: containerID, containersArray: localContainerCollection)
+        
+        if localContainerCollection[containerIndex].isLocked() {
+            // Decrement the reviews required by 3.
+            for _ in 1...3 {
+                localMyUser.removeOneObligatoryReview()
+            }
+        }
+        
+        // I need to: also delete the container from localContainers
+        localContainerCollection.remove(at: containerIndex)
+        
+        // Add containerID to undeletedContainers
+        undeletedContainers.append(containerID)
+        // Refresh containers with the simulated database
+        refreshContainers()
+        
+        // I will also want a method that asks whether they bought/wore the item. This should only activate if the containers was already unlocked.
     }
     
     func addLockedContainer(containerID: ContainerIdentification) {
