@@ -122,7 +122,10 @@ class CompareReviewDetailsViewController: UIViewController, UINavigationControll
     
     func userSwiped() {
         print("user swiped**********")
-        self.navigationController?.popViewController(animated: true)
+        
+        dismissLeft(thisVC: self)
+        //dismiss(animated: true, completion: nil)
+        //self.navigationController?.popViewController(animated: true)
         
     }
     

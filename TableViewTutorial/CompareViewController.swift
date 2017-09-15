@@ -51,6 +51,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         }
     }
 
+    @IBAction func unwindToCompareVC(segue: UIStoryboardSegue) {}
    
     func configureView() -> Void {
         print("configuring compare view")
@@ -223,13 +224,23 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
                 let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareBreakdownViewController") as! CompareBreakdownViewController
                 // pushes askBreakdownViewController onto the nav stack
                 nextVC.container = self.container
-                self.navigationController?.pushViewController(nextVC, animated: true)
+                
+                nextVC.modalPresentationStyle = .overCurrentContext
+                
+                performSegue(withIdentifier: "showCompareBreakdownViewController", sender: self)
+                
+                //self.navigationController?.show(nextVC, sender: nil)
+                
+                //self.navigationController?.present(nextVC, animated: true, completion: nil)
+                //self.navigationController?.pushViewController(nextVC, animated: true)
+
             }
             
             
         }
         
     }
+
  
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         print("prepare for segue called in CompareViewController")

@@ -197,7 +197,11 @@ class CompareReviewsTableViewController: UITableViewController {
     
     func userSwiped() {
         print("user swiped**********")
-        self.navigationController?.popViewController(animated: true)
+        //self.performSegue(withIdentifier: "unwindToCompareBreakdownVC", sender: self)
+        
+        dismissLeft(thisVC: self)
+        //dismiss(animated: true, completion: nil)
+        //self.navigationController?.popViewController(animated: true)
         
     }
     

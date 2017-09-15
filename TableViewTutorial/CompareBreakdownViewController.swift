@@ -105,9 +105,15 @@ class CompareBreakdownViewController: UIViewController {
         return true
     }
     
+    @IBAction func unwindToCompareBreakdownVC(segue: UIStoryboardSegue) {}
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.isOpaque = false
+        view.backgroundColor = .clear
+        
+        
         self.configureView()
         sortType = .allUsers // this should always be the default
         let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
@@ -462,7 +468,11 @@ class CompareBreakdownViewController: UIViewController {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
                 // go back to previous view by swiping right
-                self.navigationController?.popViewController(animated: true)
+                dismissLeft(thisVC: self)
+                
+                //dismiss(animated: true, completion: nil)
+                //self.performSegue(withIdentifier: "unwindToCompareVC", sender: self)
+                //self.navigationController?.popViewController(animated: true)
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
                 sortType = .allUsers // on left swipe show all reviews (may want to change this to targetDemo instead)
                 segueToNextViewController()
@@ -490,7 +500,10 @@ class CompareBreakdownViewController: UIViewController {
     }
     
     func segueToNextViewController() {
+        print("segue to next VC called inside of CompareBreakdownVC")
         // sets the graphical view controller with the storyboard ID askReviewsTableViewController to nextVC
+        // This nextVC doesn't do anything
+        
         let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareReviewsTableViewController") as! CompareReviewsTableViewController
         
         // sends this VC's container over to the next one
@@ -498,12 +511,69 @@ class CompareBreakdownViewController: UIViewController {
         nextVC.sortType = self.sortType
         nextVC.container = self.container
         print("sortType being sent to next VC is: \(self.sortType)")
+        
+
+        
         //print("The container that was passed has a row type of: \(nextVC.container?.question.rowType)")
+        
+        /////////////////////////////////
+        //
+        //    START HERE:
+        //
+        // I wired up an unwind segue from the reviews table view but
+        //  for some reason I can't segue to the reviews table view
+        //  no matter what I do. 
+        // The print statement tells me that this method is being called appropriately
+        //  but for some reason the system won't execute this segue command at the end
+        //  correctly in order to present the follow on table view.
+        // It's as if it's stuck in this view controller and can't go forward, only back
+        // I need to study more about modal segues because that's what I'm using here now
+        //
+        // Once that is figured out, I need to duplicate that functionality from the 
+        //  reviews table to the individual review details VC. 
+        //
+        // After that, I need to change the compare breakdown vc background to some 
+        //  kind of black with 0.5 alpha or something so that it dims the 
+        //  compare vc in the background.
+        // In addition, I'd like to make the animation slide in from the right 
+        //  rather than the deafult which seems to be up from the bottom.
+        // This give a more natural flow to the swiping navigation.
+        //
+        ///////////////////////////////////
+        
+        //let myModalVC = self
+        //let anotherNavigationController = UINavigationController();
+        //anotherNavigationController.setViewControllers([myModalVC], animated: true);
+        //present(anotherNavigationController, animated: true, completion: nil);
+        
+        //dismiss(animated: true, completion: nil)
+        
+        
+        performSegue(withIdentifier: "showCompareReviewsTableViewController", sender: self)
+        
+        // Not sure about this line:
+        //nextVC.modalPresentationStyle = .fullScreen
+        
+        // this is the new segue, presented modally
+        //self.present(nextVC, animated: true, completion: nil)
+
+        // this is what we did before, push is the same as show and gives us less control:
         // pushes askBreakdownViewController onto the nav stack
-        self.navigationController?.pushViewController(nextVC, animated: true)
+        //self.navigationController?.pushViewController(nextVC, animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        let controller = segue.destination as! CompareReviewsTableViewController
+        controller.sortType = self.sortType
+        controller.container = self.container
     }
     
     
-    
-    
 }
+
+
+
+
+
+
+
