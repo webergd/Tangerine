@@ -16,14 +16,19 @@ class CompareBreakdownViewController: UIViewController {
     // This outlet is here to enable swipe funtionality:
     @IBOutlet weak var compareBreakdownView: UIView!
 
+    @IBOutlet weak var titleOneLabel: UILabel!
+    @IBOutlet weak var titleTwoLabel: UILabel!
+    
     
     // Target Demographic Outlets:
     @IBOutlet weak var targetDemoLabel: UILabel!
-    @IBOutlet weak var targetDemoView: UIView!
+    @IBOutlet weak var targetDemoView1: UIView!
+    @IBOutlet weak var targetDemoView2: UIView!
+
     
     @IBOutlet weak var targetDemoNumReviewsLabel: UILabel!
-    @IBOutlet weak var targetDemoWinningImageView: UIImageView!
-    @IBOutlet weak var targetDemoWinningTitleLabel: UILabel!
+    //@IBOutlet weak var targetDemoWinningImageView: UIImageView!
+    //@IBOutlet weak var targetDemoWinningTitleLabel: UILabel!
     @IBOutlet weak var targetDemoVotePercentageTop: UILabel!
     @IBOutlet weak var targetDemoVotePercentageBottom: UILabel!
     @IBOutlet weak var targetDemoStrongVotePercentageTop: UILabel!
@@ -36,17 +41,19 @@ class CompareBreakdownViewController: UIViewController {
     @IBOutlet weak var targetDemoBottomStrongBarTrailingConstraint: NSLayoutConstraint! //controls length of bottom blue bar
     @IBOutlet weak var targetDemoVoteTopLabelLeadingConstraint: NSLayoutConstraint! //controls position of normal votes top number
     @IBOutlet weak var targetDemoVoteBottomLabelLeadingConstraint: NSLayoutConstraint! //controls position of normal votes bottom number
+    
     @IBOutlet weak var targetDemoStrongTopLabelTrailingConstraint: NSLayoutConstraint! //controls position of strong votes top number
     @IBOutlet weak var targetDemoStrongBottomLabelTrailingConstraint: NSLayoutConstraint! //controls position of strong votes top number
     
 
     // Friends Outlets
     @IBOutlet weak var friendsLabel: UILabel! // remove this
-    @IBOutlet weak var friendsView: UIView!
+    @IBOutlet weak var friendsView1: UIView!
+    @IBOutlet weak var friendsView2: UIView!
     
     @IBOutlet weak var friendsNumReviewsLabel: UILabel!
-    @IBOutlet weak var friendsWinningImageView: UIImageView!
-    @IBOutlet weak var friendsWinningTitleLabel: UILabel!
+    //@IBOutlet weak var friendsWinningImageView: UIImageView!
+    //@IBOutlet weak var friendsWinningTitleLabel: UILabel!
     @IBOutlet weak var friendsVotePercentageTop: UILabel!
     @IBOutlet weak var friendsVotePercentageBottom: UILabel!
     @IBOutlet weak var friendsStrongVotePercentageTop: UILabel!
@@ -67,11 +74,12 @@ class CompareBreakdownViewController: UIViewController {
     
     // All Reviews Outlets
     @IBOutlet weak var allReviewsLabel: UILabel! //remove this
-    @IBOutlet weak var allReviewsView: UIView!
+    @IBOutlet weak var allReviewsView1: UIView!
+    @IBOutlet weak var allReviewsView2: UIView!
     
     @IBOutlet weak var allReviewsNumReviewsLabel: UILabel!
-    @IBOutlet weak var allReviewsWinningImageView: UIImageView!
-    @IBOutlet weak var allReviewsWinningTitleLabel: UILabel!
+    //@IBOutlet weak var allReviewsWinningImageView: UIImageView!
+    //@IBOutlet weak var allReviewsWinningTitleLabel: UILabel!
     @IBOutlet weak var allReviewsVotePercentageTop: UILabel!
     @IBOutlet weak var allReviewsVotePercentageBottom: UILabel!
     @IBOutlet weak var allReviewsStrongVotePercentageTop: UILabel!
@@ -93,25 +101,30 @@ class CompareBreakdownViewController: UIViewController {
     
     var sortType: userGroup = .allUsers // this will be adjusted prior to segue if user taps specific area
     
+    /*
     // these are all initialized with actual values in configureView()
     var compareImage1: UIImage? = nil
     var compareImage2: UIImage? = nil
     var compareTitle1: String = ""
     var compareTitle2: String = ""
-
+    */
     
     
     override var prefersStatusBarHidden: Bool {
         return true
     }
     
-    @IBAction func unwindToCompareBreakdownVC(segue: UIStoryboardSegue) {}
+    // This was for when we were using a push/show segue
+    //@IBAction func unwindToCompareBreakdownVC(segue: UIStoryboardSegue) {}
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.isOpaque = false
         view.backgroundColor = .clear
+        
+        //bring the individual panels forward so the user can click to filter review results
+        view.bringSubview(toFront: targetDemoView1)
         
         
         self.configureView()
@@ -129,18 +142,26 @@ class CompareBreakdownViewController: UIViewController {
         swipeLeft.direction = UISwipeGestureRecognizerDirection.left
         self.view.addGestureRecognizer(swipeLeft)
         
+        // These will need to be modified for double the functionality
+        
         // Gesture recognizers for tapping sortType labels to filter reviews
-        let tdTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedTargetDemographicLabel))
-        targetDemoView.addGestureRecognizer(tdTap)
-
+        let td1Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedTargetDemographic1Label))
+        targetDemoView1.addGestureRecognizer(td1Tap)
         
+        let friends1Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedFriends1Label))
+        friendsView1.addGestureRecognizer(friends1Tap)
         
-        let friendsTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedFriendsLabel))
-        friendsView.addGestureRecognizer(friendsTap)
+        let ar1Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedAllReviews1Label))
+        allReviewsView1.addGestureRecognizer(ar1Tap)
         
-        let arTap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedAllReviewsLabel))
-        allReviewsView.addGestureRecognizer(arTap)
+        let td2Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedTargetDemographic2Label))
+        targetDemoView1.addGestureRecognizer(td2Tap)
         
+        let friends2Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedFriends2Label))
+        friendsView1.addGestureRecognizer(friends2Tap)
+        
+        let ar2Tap = UITapGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userTappedAllReviews2Label))
+        allReviewsView1.addGestureRecognizer(ar2Tap)
 
         
     }
@@ -162,11 +183,12 @@ class CompareBreakdownViewController: UIViewController {
         
         // unwraps the compare that the tableView sent over:
         if let thisCompare = self.container?.question as! Compare? {
-
-            compareImage1 = thisCompare.comparePhoto1
-            compareImage2 = thisCompare.comparePhoto2
-            compareTitle1 = thisCompare.compareTitle1
-            compareTitle2 = thisCompare.compareTitle2
+            
+            if let titleLabel1 = titleOneLabel,
+                let titleLabel2 = titleTwoLabel {
+                titleLabel1.text = thisCompare.compareTitle1
+                titleLabel2.text = thisCompare.compareTitle2
+            }
             
             // unwraps the timeRemaining from the IBOutlet
             if let thisTimeRemaining = self.compareTimeRemainingLabel {
@@ -195,8 +217,6 @@ class CompareBreakdownViewController: UIViewController {
  
             
             if let thisNumReviewsLabel = targetDemoNumReviewsLabel,
-                let thisWinningImageView = targetDemoWinningImageView,
-                let thisWinningTitleLabel = targetDemoWinningTitleLabel,
                 let thisVotePercentageTopLabel = targetDemoVotePercentageTop,
                 let thisVotePercentageBottomLabel = targetDemoVotePercentageBottom,
                 let thisStrongVotePercentageTopLabel = targetDemoStrongVotePercentageTop,
@@ -229,7 +249,7 @@ class CompareBreakdownViewController: UIViewController {
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
                 
-                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: targetDemoDataSet)
+                //displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: targetDemoDataSet)
                 
             }
             
@@ -241,8 +261,6 @@ class CompareBreakdownViewController: UIViewController {
             
             
             if let thisNumReviewsLabel = friendsNumReviewsLabel,
-                let thisWinningImageView = friendsWinningImageView,
-                let thisWinningTitleLabel = friendsWinningTitleLabel,
                 let thisVotePercentageTopLabel = friendsVotePercentageTop,
                 let thisVotePercentageBottomLabel = friendsVotePercentageBottom,
                 let thisStrongVotePercentageTopLabel = friendsStrongVotePercentageTop,
@@ -278,7 +296,7 @@ class CompareBreakdownViewController: UIViewController {
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
                 
-                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: friendsDataSet)
+                //displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: friendsDataSet)
             }
             
             // Configure ALL REVIEWS data display:
@@ -290,8 +308,6 @@ class CompareBreakdownViewController: UIViewController {
             
             
             if let thisNumReviewsLabel = allReviewsNumReviewsLabel,
-                let thisWinningImageView = allReviewsWinningImageView,
-                let thisWinningTitleLabel = allReviewsWinningTitleLabel,
                 let thisVotePercentageTopLabel = allReviewsVotePercentageTop,
                 let thisVotePercentageBottomLabel = allReviewsVotePercentageBottom,
                 let thisStrongVotePercentageTopLabel = allReviewsStrongVotePercentageTop,
@@ -324,32 +340,36 @@ class CompareBreakdownViewController: UIViewController {
                             bottomStrongBarTrailingConstraint: thisBottomStrongBarTrailingConstraint,
                             strongBottomLabelTrailingConstraint: thisStrongBottomLabelTrailingConstraint)
                 
-                displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: allReviewsDataSet)
+                //displayWinningImage(in: thisWinningImageView, with: thisWinningTitleLabel, using: allReviewsDataSet)
             
             }
             
-            
-            
+            if let tdLabel = targetDemoNumReviewsLabel,
+                let fLabel = friendsNumReviewsLabel,
+                let arLabel = allReviewsNumReviewsLabel,
+                let tdText = targetDemoNumReviewsLabel.text,
+                let fText = friendsNumReviewsLabel.text,
+                let arText = allReviewsNumReviewsLabel.text {
+                
+                tdLabel.text = "Target Demo: " + tdText
+                fLabel.text = "Friends: " + fText
+                arLabel.text = "All Reviewers: " + arText
+            }
             
             
         } else {
             print("Looks like ask is nil")
         }
     
-    }
+    } // End of configureView()
     
     func displayWinningImage(in winningImageView: UIImageView, with winningTitleLabel: UILabel, using dataSet: ConsolidatedCompareDataSet){
         // This only comes into play when using the method for CompareBreakdownVC
         switch dataSet.winner {
-        case .photo1Won:
-            winningImageView.image = compareImage1
-            winningTitleLabel.text = compareTitle2
-        case .photo2Won:
-            winningImageView.image = compareImage2
-            winningTitleLabel.text = compareTitle2
-        case .itsATie:
-            winningImageView.image = #imageLiteral(resourceName: "shrug")
-            winningTitleLabel.text = "TIE"
+        case .photo1Won: print()
+            // I should add a tangerine emoji to the title of the winner
+        case .photo2Won: print()
+        case .itsATie: print()
         }
     }
     
@@ -481,19 +501,37 @@ class CompareBreakdownViewController: UIViewController {
         }
     } // end of userSwiped
     
-    func userTappedTargetDemographicLabel(sender: UITapGestureRecognizer) {
+    func userTappedTargetDemographic1Label(sender: UITapGestureRecognizer) {
         print("td label tapped")
         self.sortType = .targetDemo
         segueToNextViewController()
     }
     
-    func userTappedFriendsLabel(sender: UITapGestureRecognizer) {
+    func userTappedFriends1Label(sender: UITapGestureRecognizer) {
         print("friends label tapped")
         self.sortType = .friends
         segueToNextViewController()
     }
     
-    func userTappedAllReviewsLabel(sender: UITapGestureRecognizer) {
+    func userTappedAllReviews1Label(sender: UITapGestureRecognizer) {
+        print("all users label tapped")
+        self.sortType = .allUsers
+        segueToNextViewController()
+    }
+    
+    func userTappedTargetDemographic2Label(sender: UITapGestureRecognizer) {
+        print("td label tapped")
+        self.sortType = .targetDemo
+        segueToNextViewController()
+    }
+    
+    func userTappedFriends2Label(sender: UITapGestureRecognizer) {
+        print("friends label tapped")
+        self.sortType = .friends
+        segueToNextViewController()
+    }
+    
+    func userTappedAllReviews2Label(sender: UITapGestureRecognizer) {
         print("all users label tapped")
         self.sortType = .allUsers
         segueToNextViewController()
@@ -516,30 +554,7 @@ class CompareBreakdownViewController: UIViewController {
         
         //print("The container that was passed has a row type of: \(nextVC.container?.question.rowType)")
         
-        /////////////////////////////////
-        //
-        //    START HERE:
-        //
-        // I wired up an unwind segue from the reviews table view but
-        //  for some reason I can't segue to the reviews table view
-        //  no matter what I do. 
-        // The print statement tells me that this method is being called appropriately
-        //  but for some reason the system won't execute this segue command at the end
-        //  correctly in order to present the follow on table view.
-        // It's as if it's stuck in this view controller and can't go forward, only back
-        // I need to study more about modal segues because that's what I'm using here now
-        //
-        // Once that is figured out, I need to duplicate that functionality from the 
-        //  reviews table to the individual review details VC. 
-        //
-        // After that, I need to change the compare breakdown vc background to some 
-        //  kind of black with 0.5 alpha or something so that it dims the 
-        //  compare vc in the background.
-        // In addition, I'd like to make the animation slide in from the right 
-        //  rather than the deafult which seems to be up from the bottom.
-        // This give a more natural flow to the swiping navigation.
-        //
-        ///////////////////////////////////
+
         
         //let myModalVC = self
         //let anotherNavigationController = UINavigationController();

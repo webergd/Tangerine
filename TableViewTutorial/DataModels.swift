@@ -544,7 +544,7 @@ public func displayData(dataSet: ConsolidatedCompareDataSet,
                  bottomStrongBarTrailingConstraint: NSLayoutConstraint,
                  strongBottomLabelTrailingConstraint: NSLayoutConstraint?){
     
-    
+
     
     numReviewsLabel.text = "\(dataSet.numReviews) votes"
     
