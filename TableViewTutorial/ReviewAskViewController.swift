@@ -25,11 +25,31 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     
     @IBOutlet weak var selectionImageView: UIImageView!
     @IBOutlet weak var strongImageView: UIImageView!
+    //@IBOutlet weak var strongImageView: UIImageView! // this was the old one in the upper right. Once it's all working, delete the imageView in IB
     @IBOutlet weak var textViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var commentsTextView: UITextView!
     
+    // Background views. These are outlets so they can be cropped into circles.
+    @IBOutlet weak var topLeftBackgroundView: UIView!
+    @IBOutlet weak var topCenterBackgroundView: UIView!
+    @IBOutlet weak var topRightBackgroundView: UIView!
+    @IBOutlet weak var bottomRightBackgroundView: UIView!
+    @IBOutlet weak var bottomLeftBackgroundView: UIView!
+    
+    @IBOutlet weak var centralDisplayLabel: UILabel!
+    
     @IBOutlet weak var lockedContainersLabel: UILabel!
     @IBOutlet weak var obligatoryReviewsRemainingLabel: UILabel!
+
+    
+    
+ // Need to get rid of the strongImageView and substitute that functionality with the new one I dropped in. The imageView inside Top Center
+    
+// Re attach the menu return and the report functionality to the new buttons I added in which are no longer in a toolBar
+// Reattach the labels for reviews remaining and locked containers
+// Make the holder views into circles
+//Something is fucked up with the image not displaying - fix this
+    // one clue into this is that the caption text field is displaying for some reason.
     
     override var prefersStatusBarHidden: Bool {
         return true
@@ -45,12 +65,15 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     var strongFlag: Bool = false
     
     let enterCommentConstant: String = "Enter optional comments here."
+    let backgroundCirclesAlphaValue: CGFloat = 0.75
     var strongOriginalSize: CGFloat = 70.0 // this is a placeholder value, updated in viewDidLoad()
     
     func configureView() {
         print("configuring ReviewAsk view")
         strongFlag = false
         strongImageView.isHidden = true
+        topCenterBackgroundView.isHidden = true
+
         
         // unwraps the Ask that the tableView sent over: ..what tableView? Is this an old comment from a different VC?
         if let thisAsk = ask {
@@ -68,7 +91,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 thisCaptionTopConstraint.constant = thisImageView.frame.height * thisAsk.askCaption.yLocation
 
                 thisLockedContainersLabel.text = "🗝" + String(describing: localMyUser.lockedContainers.count)
-                thisObligatoryReviewsRemainingLabel.text = "📋" + String(describing: obligatoryReviewsRemaining)
+                thisObligatoryReviewsRemainingLabel.text = String(describing: obligatoryReviewsRemaining) + "📋"
 
             }
 
@@ -83,6 +106,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         
         // This allows user to tap coverView to segue to main menu (if we run out of quetions):
         let tapCoverViewGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userTappedCoverView(_:) ))
@@ -125,6 +149,16 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 segueToReviewCompareViewController()
             }
         
+            makeCircle(view: topLeftBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: topCenterBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: topRightBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: bottomRightBackgroundView, alpha: backgroundCirclesAlphaValue)
+            makeCircle(view: bottomLeftBackgroundView, alpha: backgroundCirclesAlphaValue)
+            
+            //topCenterBackgroundView.backgroundColor = UIColor.black.withAlphaComponent(0.01)
+            
+            //setBackgroundColor:[[UIColor clearColor] colorWithAlphaComponent:0.5
+            
             strongOriginalSize = strongImageView.frame.size.height
         
             commentsTextView.translatesAutoresizingMaskIntoConstraints = false
@@ -329,8 +363,19 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             var currentSelection: yesOrNo
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
                 // show the strong arm and set a strong flag to true
+                switch strongFlag {
+                case true: return
+                case false:
+                    strongFlag = true
+                    showStrongImage()
+                }
+                
+                /*
                 strongFlag = true
+                print("Strong Flag set to: \(strongFlag)")
                 showStrongImage()
+                print("Strong Image alpha = \(strongImageView.alpha)")
+                */
                 return // this avoids reloading the form or a segue since it was just an up-swipe
             } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.down {
                 strongFlag = false
@@ -348,7 +393,73 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         }
 
     } //end of userSwiped
+    
+    
+    
+    func showStrongImage() {
+        ////
+        // Here we will manipulate the strong center background image instead of the imageView
+        ////
+        
+        // We may just want to fade it in instead of changing the size
+        self.topCenterBackgroundView.isHidden = false
+        self.strongImageView.isHidden = false
+        self.centralDisplayLabel.isHidden = true
 
+        
+        //self.strongImageView.isHidden = false
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+            self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
+            self.strongImageView.frame.size.width = self.strongOriginalSize * 2.0
+            self.topCenterBackgroundView.alpha = 1.0
+            // I could also try to animate a change in the alpha instead to let it fade in
+            // I'm pretty sure that will work.
+        }, completion: {
+            finished in
+            
+        })
+        self.strongImageView.frame.size.height = self.strongOriginalSize
+        self.strongImageView.frame.size.width = self.strongOriginalSize
+    } // end of showStrongImage
+    
+    
+    func hideStrongImage() {
+        self.centralDisplayLabel.isHidden = false
+        
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+            self.strongImageView.frame.size.height = self.strongOriginalSize * 0.0001
+            self.strongImageView.frame.size.width = self.strongOriginalSize * 0.0001
+            self.topCenterBackgroundView.alpha = 0.0
+            //self.strongImageView.isHidden = true
+            // I could also try to animate a change in the alpha instead to let it fade in
+            // I'm pretty sure that will work.
+        }, completion: {
+            finished in
+            //self.strongImageView.isHidden = true
+            self.topCenterBackgroundView.isHidden = true
+        })
+        
+        
+        
+    } // end of hideStrongImage()
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    /*
     func showStrongImage() {
         self.strongImageView.isHidden = false
         UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
@@ -380,7 +491,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
         
     } // end of hideStrongImage()
-    
+    */
     func showSwipeImage(selection: yesOrNo) {
         // It would be great to animate this or make it fade in and out
         
@@ -462,6 +573,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     }
     
 
+
     @IBAction func reportButtonTapped(_ sender: Any) {
     
         //pop up a menu and find out what kind of report the user wants
@@ -500,7 +612,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         })
     }
     
-    
+  
     @IBAction func menuButtonTapped(_ sender: Any) {
         // This may need to be adjusted depending on how we segue between asks and compares
         returnToMainMenu()

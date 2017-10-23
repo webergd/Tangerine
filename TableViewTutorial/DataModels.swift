@@ -311,7 +311,10 @@ func ageIfBorn(on birthday: Date) -> Int {
 func makeCircle(view: UIView, alpha: CGFloat){
     view.layer.cornerRadius = view.frame.size.height / 2
     view.layer.masksToBounds = true
-    view.alpha = alpha // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
+    
+    view.backgroundColor = UIColor.black.withAlphaComponent(alpha)
+    
+    //view.alpha = alpha // this isn't technically required to make it into a circle but it's more efficient to have this command here rather than doing it in interface builder
     
 }
 

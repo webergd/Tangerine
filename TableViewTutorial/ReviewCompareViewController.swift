@@ -34,6 +34,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     @IBOutlet weak var bottomSelectionImageView: UIImageView!
     
     
+    
     // commentsTextView outlets
     @IBOutlet weak var commentsTextViewTopConstraint: NSLayoutConstraint!
     @IBOutlet weak var commentsTextView: UITextView!
@@ -78,7 +79,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     
     func configureView() {
         print("configuring ReviewCompare view")
-
+        strongImageView.isHidden = true
+        topCenterBackgroundView.isHidden = true
+        strongFlag = false
         // unwraps the Ask that the tableView sent over:
         if let thisCompare = compare {
             
@@ -123,6 +126,9 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         let tapCoverViewGesture = UITapGestureRecognizer(target: self, action: #selector(ReviewCompareViewController.userTappedCoverView(_:) ))
         coverView.addGestureRecognizer(tapCoverViewGesture)
         
+        // I need to add something here that clears out the text from the cover view
+        // Then inside of the loadAssignedQuestions method, I should re-insert the text.
+        // Decide whether to put this stuff ^^ here or down in the else
         loadAssignedQuestions()
         
         if assignedQuestions.count < 1 {
@@ -451,12 +457,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
         // We may just want to fade it in instead of changing the size
         self.topCenterBackgroundView.isHidden = false
+        self.strongImageView.isHidden = false
         
         //self.strongImageView.isHidden = false
         UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
             self.strongImageView.frame.size.width = self.strongOriginalSize * 2.0
-            self.topCenterBackgroundView.alpha = self.backgroundCirclesAlphaValue
+            self.topCenterBackgroundView.alpha = 1.0
             // I could also try to animate a change in the alpha instead to let it fade in
             // I'm pretty sure that will work.
         }, completion: {
