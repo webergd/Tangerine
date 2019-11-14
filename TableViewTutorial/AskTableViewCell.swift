@@ -31,7 +31,24 @@ class AskTableViewCell: UITableViewCell {
     @IBOutlet weak var yesPercentageLeadingConstraint: NSLayoutConstraint!
     @IBOutlet weak var strongYesPercentageTrailingConstraint: NSLayoutConstraint!
     
+    @IBOutlet weak var ratingValueLabel: UILabel!
+    @IBOutlet weak var ratingImage0: UIImageView!
+    @IBOutlet weak var ratingImage1: UIImageView!
+    @IBOutlet weak var ratingImage2: UIImageView!
+    @IBOutlet weak var ratingImage3: UIImageView!
+    @IBOutlet weak var ratingImage4: UIImageView!
+    
+    
     func displayCellData(dataSet: ConsolidatedAskDataSet){
+        
+        let targetDemoDataDisplayTool: DataDisplayTool = DataDisplayTool(icon0: ratingImage0, icon1: ratingImage1, icon2: ratingImage2, icon3: ratingImage3, icon4: ratingImage4)
+        displayData(dataSet: dataSet,
+                    totalReviewsLabel: numVotesLabel,
+                    displayTool: targetDemoDataDisplayTool,
+                    displayBottom: false, // because it's an Ask and there is no bottom
+                    ratingValueLabel: ratingValueLabel)
+        
+        /*
         displayData(dataSet: dataSet,
                     totalReviewsLabel: numVotesLabel,
                     yesPercentageLabel: yesPercentage,
@@ -41,6 +58,7 @@ class AskTableViewCell: UITableViewCell {
                     yesLabelLeadingConstraint: yesPercentageLeadingConstraint,
                     strongYesTrailingConstraint: ratingStrongBarTrailingConstraint,
                     strongYesLabelTrailingConstraint: strongYesPercentageTrailingConstraint)
+        */
     }
     /* // This was moved to DataModels.swift
     func displayData(dataSet: ConsolidatedAskDataSet,

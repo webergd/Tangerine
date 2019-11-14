@@ -484,28 +484,39 @@ public func flipBarLabelsAsRequired(hundredBarWidth: CGFloat, yesTrailingConstra
 } // end of public func flipBarLabelsAsRequired(..)
 
 
+/* The old header. Can be deleted once new rating display functionality is fully working */
+public func displayData(dataSet: ConsolidatedAskDataSet,
+                        totalReviewsLabel: UILabel,
+                        yesPercentageLabel: UILabel,
+                        strongYesPercentageLabel: UILabel,
+                        hundredBarView: UIView,
+                        yesTrailingConstraint: NSLayoutConstraint,
+                        yesLabelLeadingConstraint: NSLayoutConstraint,
+                        strongYesTrailingConstraint: NSLayoutConstraint,
+                        strongYesLabelTrailingConstraint: NSLayoutConstraint) {
+    
+}
+///// ^^^^ This will all go away soon
 
 public func displayData(dataSet: ConsolidatedAskDataSet,
                  totalReviewsLabel: UILabel,
-                 yesPercentageLabel: UILabel,
-                 strongYesPercentageLabel: UILabel,
-                 hundredBarView: UIView,
-                 yesTrailingConstraint: NSLayoutConstraint,
-                 yesLabelLeadingConstraint: NSLayoutConstraint,
-                 strongYesTrailingConstraint: NSLayoutConstraint,
-                 strongYesLabelTrailingConstraint: NSLayoutConstraint){
+                 displayTool: DataDisplayTool,
+                 displayBottom: Bool,
+                 ratingValueLabel: UILabel){
     
     totalReviewsLabel.text = String(dataSet.numReviews)
     
+    displayTool.displayIcons(dataSet: dataSet, forBottom: displayBottom)
     
     if dataSet.numReviews < 1 {
-        yesPercentageLabel.text = "No reviews from the specified group."
-        yesPercentageLabel.font = yesPercentageLabel.font.withSize(10.0)
+        ratingValueLabel.text = "No reviews from the specified group."
+        ratingValueLabel.font = ratingValueLabel.font.withSize(10.0)
     } else {
-        yesPercentageLabel.font = yesPercentageLabel.font.withSize(17.0)
-        yesPercentageLabel.text = String(dataSet.percentYes) + "%"
+        ratingValueLabel.font = ratingValueLabel.font.withSize(17.0)
+        ratingValueLabel.text = String(dataSet.rating)
     }
     
+    /*
     strongYesPercentageLabel.text = String(dataSet.percentStrongYes) + "%"
     
     print("strong yes percentage: \(dataSet.percentStrongYes)")
@@ -527,7 +538,7 @@ public func displayData(dataSet: ConsolidatedAskDataSet,
                             strongYesTrailingConstraint: strongYesTrailingConstraint,
                             strongYesPercentageLabel: strongYesPercentageLabel,
                             strongYesLabelTrailingConstraint: strongYesLabelTrailingConstraint)
-    
+     */
 } // end of displayData(Ask)
 
 public func displayData(dataSet: ConsolidatedCompareDataSet,
@@ -1231,8 +1242,8 @@ public class ReviewCollection {
             return ConsolidatedCompareDataSet(percentTop: Int(100 * countTop / countReviews),
                                           percentStrongYesTop: Int(100 * countStrongYesTop / countReviews),
                                           percentStrongYesBottom: Int(100 * countStrongYesBottom / countReviews),
-                                          percentStrongNoTop: Int(100 * countStrongNoTop / countReviews),
-                                          percentStrongNoBottom: Int(100 * countStrongNoBottom / countReviews),
+                                          //percentStrongNoTop: Int(100 * countStrongNoTop / countReviews),
+                                          //percentStrongNoBottom: Int(100 * countStrongNoBottom / countReviews),
                                           averageAge: (Double(countAge / countReviews)),
                                           percentSW: Int(100 * countSW / countReviews),
                                           percentSM: Int(100 * countSM / countReviews),
@@ -1243,8 +1254,8 @@ public class ReviewCollection {
             return ConsolidatedCompareDataSet(percentTop: 0,
                                               percentStrongYesTop: 0,
                                               percentStrongYesBottom: 0,
-                                              percentStrongNoTop: 0,
-                                              percentStrongNoBottom: 0,
+                                              //percentStrongNoTop: 0,
+                                              //percentStrongNoBottom: 0,
                                               averageAge: 0,// consider returning -1 or some indicator for label to display NA
                                               percentSW: 0,
                                               percentSM: 0,
@@ -1258,9 +1269,18 @@ public class ReviewCollection {
 
 public protocol isConsolidatedDataSet {
     // this exists only so that I can have one pullConsolidatedData method
+    var rating: Double {get}
 }
 
 
+//////////////////////////////// Probably should be moved up to the top at some point /////
+// MARK: Rating Constant Values
+let strongYesConstant = 5
+let yesConstant = 4
+let noConstant = 1
+let strongNoConstant = 0
+// These are used in ConsolidatedAskDataSet and ConsolidatedCompareDataSet to calculate a 1-5 rating for the Question
+////////////////////////////////
 
 public struct ConsolidatedAskDataSet: isConsolidatedDataSet {
     let percentYes: Int
@@ -1273,12 +1293,28 @@ public struct ConsolidatedAskDataSet: isConsolidatedDataSet {
     let percentGW: Int
     let percentGM: Int
     let numReviews: Int
+    
+    public var rating: Double {
+        let rawRating = (percentStrongYes * strongYesConstant) +
+                    ((percentYes - percentStrongYes) * yesConstant) +
+                    ((percentNo - percentStrongNo) * noConstant) +
+                    (percentStrongNo * strongNoConstant)
+        let ratingToReturn = Double(rawRating) / 100 // rawRating is out of 500, rating to return is out of 5
+        return ratingToReturn.roundToPlaces(1) // returns the double with only one decimal place
+    }
 }
 
 
 
 
 public struct ConsolidatedCompareDataSet: isConsolidatedDataSet {
+    // Keeps these values consistent with the ones defined above
+    // We use these for computing the top image's rating, the bottom image is just 5 minus the top
+    let strongYesTopConstant = strongYesConstant
+    let yesTopConstant = yesConstant
+    let yesBottomConstant = noConstant
+    let strongYesBottomConstant = strongNoConstant // a strong yes for the bottom is essentially a strong no for the top
+    
     let percentTop: Int
     var percentBottom: Int {
         if numReviews < 1 {
@@ -1289,8 +1325,8 @@ public struct ConsolidatedCompareDataSet: isConsolidatedDataSet {
     }
     let percentStrongYesTop: Int
     let percentStrongYesBottom: Int
-    let percentStrongNoTop: Int
-    let percentStrongNoBottom: Int
+    //let percentStrongNoTop: Int
+    //let percentStrongNoBottom: Int
     let averageAge: Double
     let percentSW: Int
     let percentSM: Int
@@ -1303,6 +1339,16 @@ public struct ConsolidatedCompareDataSet: isConsolidatedDataSet {
         case 0...49: return .photo2Won
         default: return .itsATie // the only other case could be 50% so this is why it's a tie.
         }
+    }
+    
+    
+    public var rating: Double {
+        let rawRating = (percentStrongYesTop * strongYesTopConstant) +
+            (percentTop * yesTopConstant) +
+            (percentBottom * yesBottomConstant) +
+            (percentStrongYesBottom * strongYesBottomConstant)
+        let ratingToReturn = Double(rawRating) / 100 // rawRating is out of 500, rating to return is out of 5
+        return ratingToReturn.roundToPlaces(1) // returns the double with only one decimal place
     }
 }
 
@@ -1358,9 +1404,67 @@ public func pullConsolidatedData(from container: Container, filteredBy filterTyp
     return targetDemoDataSet
 }
 
+public struct DataDisplayTool {
+    // To use this tool, cut and paste the graphical hearts in their container to the place you want to use it,
+    //  then link up the heart images as outlets.
+    // Create a dataDisplayTool object in the ViewController source code using the 5 heart images.
+    // To display the right number of hearts, call the displayIcons() method for the particular dataDisplayTool object,
+    //  passing the appropriate data set and set the forBottom flag to true only if these 5 hearts will be displaying
+    //  data for the second (bottom) image of a compare.
+    
+    
+    let goodImage: UIImage = #imageLiteral(resourceName: "Heart Yellow")
+    let halfImage: UIImage = #imageLiteral(resourceName: "Heart Half Yellow")
+    let badImage: UIImage = #imageLiteral(resourceName: "Heart Black 2")
+    
+    let icon0: UIImageView
+    let icon1: UIImageView
+    let icon2: UIImageView
+    let icon3: UIImageView
+    let icon4: UIImageView
+
+    // rating is a Double from 0.0 to 5.0
+    func displayIcons(dataSet: isConsolidatedDataSet, forBottom bottom: Bool){
+        
+        let imageViews: [UIImageView] = [icon0, icon1, icon2, icon3, icon4]
+        
+        // calculate percentage rating based on aggregated yes and strong yes data:
+        var ratingValue: Double = dataSet.rating // this returns the score for the top (for compare Compares) or only image (as in an Ask)
+        
+        print("Preparing to output hearts for a rating value of \(ratingValue)")
+        
+        if bottom { // if we're displaying the bottom image's results, use the inverse
+            ratingValue = 5.0 - ratingValue
+        }
+        
+        var imageIndexValue: Double = 0.0
+        for imageView in imageViews {
+            // ex: for position 2 (the 3rd heart), if the rating is 2.5, the imageIndexValue of 2 will be subtracted leaving 0.5
+            //  meaning that 0.5 is less than 0.9 and will therefore display the bad image aka black (empty) heart.
+            print("rating value is: \(ratingValue)")
+            print("imageIndexValue is: \(imageIndexValue)")
+            
+            print("ratingValue - imageIndexValue = \(ratingValue - imageIndexValue)")
+            if (ratingValue - imageIndexValue) > 0.9 {
+                imageView.image = goodImage
+                print("selected yellow heart")
+            } else if (ratingValue - imageIndexValue) > 0.4 {
+                imageView.image = halfImage
+                print("selected half heart")
+            } else {
+                imageView.image = badImage
+                print("selected black heart")
+            }
+            imageIndexValue += 1
+        }
+    }
+
+    
+}
+
+
 // an "Ask" is an object containing a single image to be rated
 // (and its associated values)
-
 open class Ask: Question {
     
     var askTitle: String

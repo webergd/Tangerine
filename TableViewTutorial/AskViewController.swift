@@ -145,6 +145,20 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
             
             if let thisTotalReviewsLabel = targetDemoTotalReviewsLabel, let thisYesPercentageLabel = targetDemoYesPercentage, let this100Bar = targetDemo100Bar, let thisStrongYesPercentageLabel = targetDemoStrongYesPercentage, let thisYesTrailingConstraint = targetDemoBarTrailingConstraint, let thisYesLabelLeadingConstraint = targetDemoYesLabelLeadingConstraint, let thisStrongYesTrailingConstraint = targetDemoStrongBarTrailingConstraint, let thisStrongYesLabelTrailingConstraint = targetDemoStrongLabelTrailingConstraint   {
                 
+                ///////////////////////////////////
+                //     START HERE:
+                //
+                // Since we changed the displayData method, these errors should probably all just be
+                //  commented out at first. We can change them later once we get the first heart tool
+                //  working inside AskTableViewCell.
+                // Once that works right. Let's fix the one in CompareTableViewCell and then work our way out from there.
+                //
+                ////////////////////////////////////
+                
+                
+                
+                
+                
                 displayData(dataSet: targetDemoDataSet,
                             totalReviewsLabel: thisTotalReviewsLabel,
                             yesPercentageLabel: thisYesPercentageLabel,
