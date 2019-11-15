@@ -195,7 +195,7 @@ class CompareReviewsTableViewController: UITableViewController {
     
     // MARK: NEEDS TO BE UNCOMMENTED AND WORKED ON:
     
-    func userSwiped() {
+    @objc func userSwiped() {
         print("user swiped**********")
         //self.performSegue(withIdentifier: "unwindToCompareBreakdownVC", sender: self)
         

@@ -235,19 +235,19 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         print("at the beginning of reloadCamera, avImageView.image is: \(avImageView.image)")
         captureSession = AVCaptureSession()
         // we may want to change the AVCaptureSessionPreset____ to a different resolution to save space.
-        captureSession.sessionPreset = AVCaptureSessionPresetPhoto//AVCaptureSessionPresetPhoto
+        captureSession.sessionPreset = AVCaptureSession.Preset.photo//AVCaptureSessionPresetPhoto
         cameraOutput = AVCapturePhotoOutput()
         
         // default to back camera
-        var device = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeVideo)
+        var device = AVCaptureDevice.default(for: AVMediaType.video)
         print("camera loaded in standard mode (back camera)")
         // unless we have switched our enum to selfie, then use that
         if cameraPosition == .selfie {
             print("camera loaded in selfie mode")
-            device = AVCaptureDevice.defaultDevice(withDeviceType: .builtInWideAngleCamera, mediaType: AVMediaTypeVideo, position: .front)
+            device = AVCaptureDevice.default(AVCaptureDevice.DeviceType.builtInWideAngleCamera, for: AVMediaType.video, position: .front)
         }
         
-        if let input = try? AVCaptureDeviceInput(device: device) {
+        if let input = try? AVCaptureDeviceInput(device: device!) {
             if (captureSession.canAddInput(input)) {
                 captureSession.addInput(input)
                 if (captureSession.canAddOutput(cameraOutput)) {
@@ -266,7 +266,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
                     
                     // This causes the preview layer to take up the whole screen:
                     let previewLayerBounds: CGRect = self.view.layer.bounds
-                    previewLayer?.videoGravity = AVLayerVideoGravityResizeAspectFill
+                    previewLayer?.videoGravity = AVLayerVideoGravity.resizeAspectFill
                     previewLayer?.bounds = previewLayerBounds
                     previewLayer?.position = CGPoint(x: previewLayerBounds.midX, y: previewLayerBounds.midY)
                     
@@ -378,7 +378,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     }
     
     //Maybe a better simpler version of the capture method?:
-    func capture(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhotoSampleBuffer photoSampleBuffer: CMSampleBuffer?, previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
+    func photoOutput(_ captureOutput: AVCapturePhotoOutput, didFinishProcessingPhoto photoSampleBuffer: CMSampleBuffer?, previewPhoto previewPhotoSampleBuffer: CMSampleBuffer?, resolvedSettings: AVCaptureResolvedPhotoSettings, bracketSettings: AVCaptureBracketedStillImageSettings?, error: Error?) {
         
         print("inside capture")
         if let error = error {
@@ -603,7 +603,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         */
     }
     
-    func returnToMenu() {
+    @objc func returnToMenu() {
         print("returnToMenu() called")
         if let navController = self.navigationController {
             navController.popViewController(animated: true)

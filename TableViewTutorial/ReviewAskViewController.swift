@@ -215,7 +215,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     // KEYBOARD METHODS:
 
     // There is a decent amount of this in viewDidLoad() also
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         // this would look better if we animated a fade in of the coverView (and a fade out lower down)
         coverView.isHidden = false
         mainView.bringSubview(toFront: coverView)
@@ -244,7 +244,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         }
     }
     
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         //this makes the text box movement animated so it looks smoother:
         UIView.animate(withDuration: 1.0, animations: {
             //moves the textView back to its original location:
@@ -357,7 +357,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     }
     
     
-    func userSwiped(gesture: UIGestureRecognizer) {
+    @objc func userSwiped(gesture: UIGestureRecognizer) {
         
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             var currentSelection: yesOrNo
@@ -618,7 +618,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         returnToMainMenu()
     }
     
-    func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
         print("user tapped coverView")
         if tapCoverViewToSegue == true {
             returnToMainMenu()

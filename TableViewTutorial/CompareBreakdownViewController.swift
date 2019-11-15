@@ -473,7 +473,7 @@ class CompareBreakdownViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func userSwiped(gesture: UIGestureRecognizer) {
+    @objc func userSwiped(gesture: UIGestureRecognizer) {
         //print("user swiped**********")
         //self.navigationController?.popViewController(animated: true)
         
@@ -501,37 +501,37 @@ class CompareBreakdownViewController: UIViewController {
         }
     } // end of userSwiped
     
-    func userTappedTargetDemographic1Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedTargetDemographic1Label(sender: UITapGestureRecognizer) {
         print("td label tapped")
         self.sortType = .targetDemo
         segueToNextViewController()
     }
     
-    func userTappedFriends1Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedFriends1Label(sender: UITapGestureRecognizer) {
         print("friends label tapped")
         self.sortType = .friends
         segueToNextViewController()
     }
     
-    func userTappedAllReviews1Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedAllReviews1Label(sender: UITapGestureRecognizer) {
         print("all users label tapped")
         self.sortType = .allUsers
         segueToNextViewController()
     }
     
-    func userTappedTargetDemographic2Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedTargetDemographic2Label(sender: UITapGestureRecognizer) {
         print("td label tapped")
         self.sortType = .targetDemo
         segueToNextViewController()
     }
     
-    func userTappedFriends2Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedFriends2Label(sender: UITapGestureRecognizer) {
         print("friends label tapped")
         self.sortType = .friends
         segueToNextViewController()
     }
     
-    func userTappedAllReviews2Label(sender: UITapGestureRecognizer) {
+    @objc func userTappedAllReviews2Label(sender: UITapGestureRecognizer) {
         print("all users label tapped")
         self.sortType = .allUsers
         segueToNextViewController()

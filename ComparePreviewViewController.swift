@@ -104,11 +104,11 @@ class ComparePreviewViewController: UIViewController, UINavigationControllerDele
   
     }
 
-    func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
         returnForEditing(editTopImage: true)
     }
     
-    func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
         returnForEditing(editTopImage: false)
     }
   

@@ -86,7 +86,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         if let thisCompare = compare {
             
             // Load the top image:
-            load(imageView: topImageView,
+            loadImageView(imageView: topImageView,
                  with: thisCompare.comparePhoto1,
                  within: topView,
                  caption: thisCompare.compareCaption1,
@@ -94,7 +94,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
                  captionTopConstraint: topCaptionTopConstraint)
             
             // Load the bottom image:
-            load(imageView: bottomImageView,
+            loadImageView(imageView: bottomImageView,
                  with: thisCompare.comparePhoto2,
                  within: bottomView,
                  caption: thisCompare.compareCaption2,
@@ -245,7 +245,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     }
 
     // There is a decent amount of this in viewDidLoad() also
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
         
         self.commentsTextView.textColor = UIColor.black
@@ -306,13 +306,13 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     }
     */
     
-    func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedTop(_ pressImageGesture: UITapGestureRecognizer){
         print("user tapped top")
         self.showSelectionImage(selection: .top)
         //createReview(selection: .top)
     }
     
-    func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedBottom(_ pressImageGesture: UITapGestureRecognizer){
         print("user tapped bottom")
         self.showSelectionImage(selection: .bottom)
         //createReview(selection: .bottom)
@@ -613,7 +613,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     }
     
     
-    func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
+    @objc func userTappedCoverView(_ pressImageGesture: UITapGestureRecognizer){
         print("user tapped coverView")
         if tapCoverViewToSegue == true {
             returnToMainMenu()

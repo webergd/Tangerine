@@ -328,7 +328,7 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func userSwiped(gesture: UIGestureRecognizer) {
+    @objc func userSwiped(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
                 // go back to previous view by swiping right
@@ -341,19 +341,19 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         
     } //end of userSwiped
     
-    func userTappedTargetDemographicLabel(sender: UITapGestureRecognizer) {
+    @objc func userTappedTargetDemographicLabel(sender: UITapGestureRecognizer) {
         print("td label tapped")
         self.sortType = .targetDemo
         segueToNextViewController()
     }
     
-    func userTappedFriendsLabel(sender: UITapGestureRecognizer) {
+    @objc func userTappedFriendsLabel(sender: UITapGestureRecognizer) {
         print("friends label tapped")
         self.sortType = .friends
         segueToNextViewController()
     }
     
-    func userTappedAllReviewsLabel(sender: UITapGestureRecognizer) {
+    @objc func userTappedAllReviewsLabel(sender: UITapGestureRecognizer) {
         print("all users label tapped")
         self.sortType = .allUsers
         segueToNextViewController()

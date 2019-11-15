@@ -241,7 +241,7 @@ class AskReviewsTableViewController: UITableViewController {
     
     // MARK: NEEDS TO BE UNCOMMENTED AND WORKED ON:
     
-    func userSwiped() {
+    @objc func userSwiped() {
         print("user swiped**********")
         self.navigationController?.popViewController(animated: true)
         

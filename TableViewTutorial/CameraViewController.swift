@@ -400,7 +400,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
     
     //Enables tap on image to show caption (2 of 2):
-    func userTappedImage(_ tapImageGesture: UITapGestureRecognizer){
+    @objc func userTappedImage(_ tapImageGesture: UITapGestureRecognizer){
         print("user tapped image")
         captionTextField.translatesAutoresizingMaskIntoConstraints = false
         tappedLoc = tapImageGesture.location(in: self.view)
@@ -432,7 +432,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
     
     //Enables user to drag caption around (2 of 2):
-    func userDragged(_ dragCaptionGesture: UIPanGestureRecognizer){
+    @objc func userDragged(_ dragCaptionGesture: UIPanGestureRecognizer){
         let draggedLoc: CGPoint = dragCaptionGesture.location(in: self.view)
         let captionLocationToSet = draggedLoc.y - self.topLayoutGuide.length - (0.5 * captionTextFieldHeight)
         self.captionTextFieldTopConstraint.constant = vetCaptionTopConstraint(captionLocationToSet)
@@ -464,7 +464,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     }
 
     // This is called in the viewDidLoad section in our NSNotificationCenter command
-    func keyboardWillShow(_ notification: Notification) {
+    @objc func keyboardWillShow(_ notification: Notification) {
         // Basically all this shit is for moving the caption out of the way of the keyboard while we're editing it:
         if self.captionTextField.isEditing == true { //aka if the title is editing, don't do any of this
             //get the height of the keyboard that will show and then shift the text field up by that amount
@@ -494,7 +494,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         }
     }
 
-    func keyboardWillHide(_ notification: Notification) {
+    @objc func keyboardWillHide(_ notification: Notification) {
         //get the height of the keyboard that will show and then shift the text field down by that amount
         
         if self.captionTextField.text == "" {
@@ -663,7 +663,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
     
     // This calls code in ImageMethods.swift, and manually blurs a location using a radius that depends on press time duration (in seconds).
     // Press less than 1.5 sec = small radius. Press more than 1.5 sec = large radius.
-    func userPressed(_ pressImageGesture: UILongPressGestureRecognizer){
+    @objc func userPressed(_ pressImageGesture: UILongPressGestureRecognizer){
         
         
         

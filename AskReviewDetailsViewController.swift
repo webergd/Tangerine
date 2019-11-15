@@ -120,7 +120,7 @@ class AskReviewDetailsViewController: UIViewController, UINavigationControllerDe
         // Dispose of any resources that can be recreated.
     }
     
-    func userSwiped() {
+    @objc func userSwiped() {
         print("user swiped**********")
         self.navigationController?.popViewController(animated: true)
         

@@ -99,7 +99,7 @@ class FriendDetailsViewController: UIViewController, UIScrollViewDelegate {
         // Dispose of any resources that can be recreated.
     }
     
-    func userSwiped(gesture: UIGestureRecognizer) {
+    @objc func userSwiped(gesture: UIGestureRecognizer) {
         //if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             // go back to previous view by swiping right
             self.navigationController?.popViewController(animated: true)

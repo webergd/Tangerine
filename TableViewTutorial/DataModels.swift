@@ -195,7 +195,7 @@ public extension UIViewController {
         view.addGestureRecognizer(tap)
     }
     
-    func dismissKeyboard() {
+    @objc func dismissKeyboard() {
         view.endEditing(true)
     }
 }
@@ -221,7 +221,7 @@ public func askForReportType(viewController: UIViewController, function: @escapi
     let alertController = UIAlertController(title: "PLEASE LIST REASON FOR REPORTING", message: nil, preferredStyle: .actionSheet)
     
     // this should iterate through all enum values and add them as possible selections in the alertView
-    for rT in iterateEnum(reportType) {
+    for rT in iterateEnum(reportType.self)/*this was just (reportType) without the .self - if we get an error, we will need to add arguments per the Swift4 conversion - it had 2 options and we chose the easy one - .self*/ {
         let action = UIAlertAction(title: rT.rawValue, style: .default) {
             UIAlertAction in
             valueToReturn = rT
@@ -392,7 +392,7 @@ public func calcCaptionTextFieldTopConstraint(imageViewFrameHeight: CGFloat, cap
 
 
 // This function sets up an image with its accompanying caption correctly
-public func load(imageView: UIImageView?, with image: UIImage?, within helperView: UIView?, caption: Caption, captionTextField: UITextField?, captionTopConstraint: NSLayoutConstraint?) {
+public func loadImageView(imageView: UIImageView?, with image: UIImage?, within helperView: UIView?, caption: Caption, captionTextField: UITextField?, captionTopConstraint: NSLayoutConstraint?) {
     if let thisImageView = imageView,
         let thisHelperView = helperView,
         let thisTopConstraint = captionTopConstraint,

@@ -215,7 +215,7 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         bottomScrollView.setZoomScale(1.0, animated: true)
     }
  
-    func userSwiped(gesture: UIGestureRecognizer) {
+    @objc func userSwiped(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
                 self.navigationController?.popViewController(animated: true)

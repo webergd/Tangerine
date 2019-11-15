@@ -55,7 +55,7 @@ public class BlurFace {
         
         //print("CIVector coordinates are x: \(centerX). y: \(centerY)")
         
-        let croppedImage = radialGradient?.outputImage?.cropping(to: ciImage.extent)
+        let croppedImage = radialGradient?.outputImage?.cropped(to: ciImage.extent)
         
         let circleImage = croppedImage
         if (maskImage == nil) {
