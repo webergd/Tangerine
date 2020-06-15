@@ -20,6 +20,39 @@
 		2A83A0F41EFC1B96009DAE8E /* AskReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F31EFC1B96009DAE8E /* AskReviewsTableViewCell.swift */; };
 		2A83A0F61EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F51EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift */; };
 		2A8961821F152F9700A26A95 /* ReviewCompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8961811F152F9700A26A95 /* ReviewCompareViewController.swift */; };
+		2A9241322497D2230032F52F /* AskReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F31EFC1B96009DAE8E /* AskReviewsTableViewCell.swift */; };
+		2A9241332497D2230032F52F /* CompareReviewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9BD1EFE20D10054A03A /* CompareReviewsTableViewController.swift */; };
+		2A9241342497D2230032F52F /* TestViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C01D44502C00B32C03 /* TestViewController.swift */; };
+		2A9241352497D2230032F52F /* FriendDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C71F00BDED0054A03A /* FriendDetailsViewController.swift */; };
+		2A9241362497D2230032F52F /* FriendsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C51EFF824A0054A03A /* FriendsTableViewCell.swift */; };
+		2A9241372497D2230032F52F /* FriendsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C31EFF81C30054A03A /* FriendsTableViewController.swift */; };
+		2A9241382497D2230032F52F /* CompareBreakdownViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AE338C21D48858D00B32C03 /* CompareBreakdownViewController.swift */; };
+		2A9241392497D2230032F52F /* DataModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CD1D42938A00AAB743 /* DataModels.swift */; };
+		2A92413A2497D2230032F52F /* AskTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC31D389FB1001F7388 /* AskTableViewController.swift */; };
+		2A92413B2497D2230032F52F /* AVCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */; };
+		2A92413C2497D2230032F52F /* MainController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDB91D36018E001F7388 /* MainController.swift */; };
+		2A92413D2497D2230032F52F /* CameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ADBFBE41D6AB5AC0011B6A7 /* CameraViewController.swift */; };
+		2A92413E2497D2230032F52F /* ReviewAskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A79B2091F03FBC100A1DF24 /* ReviewAskViewController.swift */; };
+		2A92413F2497D2230032F52F /* ImageMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACDFA031E2008A600471E3D /* ImageMethods.swift */; };
+		2A9241402497D2230032F52F /* AskReviewDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0F51EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift */; };
+		2A9241412497D2230032F52F /* RefreshMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A66A27B1F1FA9FE009A71E1 /* RefreshMethods.swift */; };
+		2A9241422497D2230032F52F /* CustomSegues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA211021F6C33C7000FE631 /* CustomSegues.swift */; };
+		2A9241432497D2230032F52F /* ReviewCompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A8961811F152F9700A26A95 /* ReviewCompareViewController.swift */; };
+		2A9241442497D2230032F52F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBD891D35E175001F7388 /* AppDelegate.swift */; };
+		2A9241452497D2230032F52F /* ComparePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */; };
+		2A9241462497D2230032F52F /* AskTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC11D3891B9001F7388 /* AskTableViewCell.swift */; };
+		2A9241472497D2230032F52F /* SwipeSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */; };
+		2A9241482497D2230032F52F /* CompareReviewDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9C11EFE2BAC0054A03A /* CompareReviewDetailsViewController.swift */; };
+		2A9241492497D2230032F52F /* CompareViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6CB1D4291DF00AAB743 /* CompareViewController.swift */; };
+		2A92414A2497D2230032F52F /* TestFileLinkedToNothing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A06C3691E024D08000F21AC /* TestFileLinkedToNothing.swift */; };
+		2A92414B2497D2230032F52F /* CompareTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AECD6C91D41DCA700AAB743 /* CompareTableViewCell.swift */; };
+		2A92414C2497D2230032F52F /* AskViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AEBBDBB1D36111F001F7388 /* AskViewController.swift */; };
+		2A92414D2497D2230032F52F /* AskReviewsTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A83A0EF1EFAE54F009DAE8E /* AskReviewsTableViewController.swift */; };
+		2A92414E2497D2230032F52F /* CompareReviewsTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2A68F9BF1EFE24670054A03A /* CompareReviewsTableViewCell.swift */; };
+		2A92414F2497D2230032F52F /* SimulatedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */; };
+		2A9241522497D2230032F52F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBDC51D3A04D2001F7388 /* Main.storyboard */; };
+		2A9241532497D2230032F52F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBD921D35E175001F7388 /* LaunchScreen.storyboard */; };
+		2A9241542497D2230032F52F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 2AEBBD901D35E175001F7388 /* Assets.xcassets */; };
 		2AA211031F6C33C7000FE631 /* CustomSegues.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AA211021F6C33C7000FE631 /* CustomSegues.swift */; };
 		2AB0EF7B1E707C5100ADAB68 /* SwipeSegue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */; };
 		2ACDFA041E2008A600471E3D /* ImageMethods.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2ACDFA031E2008A600471E3D /* ImageMethods.swift */; };
@@ -42,6 +75,7 @@
 		2AF4D5161E58D29C000B958C /* ComparePreviewViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */; };
 		2AF6FB711E3D135F008BC842 /* AVCameraViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */; };
 		2AFD1C841F1E68DD006DD919 /* SimulatedDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */; };
+		69F76BEFFE61FAD849AA297E /* Pods_Tangerine.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2BAD7297CA2D6738D9A49DF1 /* Pods_Tangerine.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +109,8 @@
 		2A83A0F31EFC1B96009DAE8E /* AskReviewsTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AskReviewsTableViewCell.swift; path = ../AskReviewsTableViewCell.swift; sourceTree = "<group>"; };
 		2A83A0F51EFCCF5E009DAE8E /* AskReviewDetailsViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = AskReviewDetailsViewController.swift; path = ../AskReviewDetailsViewController.swift; sourceTree = "<group>"; };
 		2A8961811F152F9700A26A95 /* ReviewCompareViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ReviewCompareViewController.swift; sourceTree = "<group>"; };
+		2A9241582497D2230032F52F /* Tangerine.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tangerine.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		2A9241592497D2250032F52F /* TableViewTutorial copy-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "TableViewTutorial copy-Info.plist"; path = "/Users/MacBookAir2011/Documents/1. Tangerine iOS Dev/1. Tangerine/TableViewTutorial copy-Info.plist"; sourceTree = "<absolute>"; };
 		2AA211021F6C33C7000FE631 /* CustomSegues.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = CustomSegues.swift; path = ../CustomSegues.swift; sourceTree = "<group>"; };
 		2AB0EF7A1E707C5100ADAB68 /* SwipeSegue.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwipeSegue.swift; sourceTree = "<group>"; };
 		2ACDFA031E2008A600471E3D /* ImageMethods.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageMethods.swift; sourceTree = "<group>"; };
@@ -85,7 +121,7 @@
 		2AEBBD891D35E175001F7388 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		2AEBBD901D35E175001F7388 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		2AEBBD931D35E175001F7388 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
-		2AEBBD951D35E175001F7388 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		2AEBBD951D35E175001F7388 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		2AEBBD9A1D35E175001F7388 /* TableViewTutorialTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = TableViewTutorialTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		2AEBBD9E1D35E175001F7388 /* TableViewTutorialTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewTutorialTests.swift; sourceTree = "<group>"; };
 		2AEBBDA01D35E175001F7388 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -103,9 +139,20 @@
 		2AF4D5151E58D29C000B958C /* ComparePreviewViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = ComparePreviewViewController.swift; path = ../ComparePreviewViewController.swift; sourceTree = "<group>"; };
 		2AF6FB701E3D135F008BC842 /* AVCameraViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCameraViewController.swift; sourceTree = "<group>"; };
 		2AFD1C831F1E68DD006DD919 /* SimulatedDatabase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = SimulatedDatabase.swift; path = ../SimulatedDatabase.swift; sourceTree = "<group>"; };
+		2BAD7297CA2D6738D9A49DF1 /* Pods_Tangerine.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Tangerine.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A76472D35DDA5BBDAD7A2B53 /* Pods-Tangerine.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangerine.release.xcconfig"; path = "Target Support Files/Pods-Tangerine/Pods-Tangerine.release.xcconfig"; sourceTree = "<group>"; };
+		E6C69232DAFAB4A01D77B34A /* Pods-Tangerine.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Tangerine.debug.xcconfig"; path = "Target Support Files/Pods-Tangerine/Pods-Tangerine.debug.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		2A9241502497D2230032F52F /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				69F76BEFFE61FAD849AA297E /* Pods_Tangerine.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2AEBBD831D35E175001F7388 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -137,6 +184,9 @@
 				2AEBBD9D1D35E175001F7388 /* TangerineTests */,
 				2AEBBDA81D35E175001F7388 /* TangerineUITests */,
 				2AEBBD871D35E175001F7388 /* Products */,
+				2A9241592497D2250032F52F /* TableViewTutorial copy-Info.plist */,
+				D0AACD668B80B88795F12B0C /* Pods */,
+				4073F70D8E27B1E14C8F5830 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -146,6 +196,7 @@
 				2AEBBD861D35E175001F7388 /* Tangerine.app */,
 				2AEBBD9A1D35E175001F7388 /* TableViewTutorialTests.xctest */,
 				2AEBBDA51D35E175001F7388 /* TableViewTutorialUITests.xctest */,
+				2A9241582497D2230032F52F /* Tangerine.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -209,9 +260,45 @@
 			path = TangerineUITests;
 			sourceTree = "<group>";
 		};
+		4073F70D8E27B1E14C8F5830 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				2BAD7297CA2D6738D9A49DF1 /* Pods_Tangerine.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D0AACD668B80B88795F12B0C /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				E6C69232DAFAB4A01D77B34A /* Pods-Tangerine.debug.xcconfig */,
+				A76472D35DDA5BBDAD7A2B53 /* Pods-Tangerine.release.xcconfig */,
+			);
+			path = Pods;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		2A9241302497D2230032F52F /* Tangerine */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 2A9241552497D2230032F52F /* Build configuration list for PBXNativeTarget "Tangerine" */;
+			buildPhases = (
+				017BE1EC771805E16F4043DD /* [CP] Check Pods Manifest.lock */,
+				2A9241312497D2230032F52F /* Sources */,
+				2A9241502497D2230032F52F /* Frameworks */,
+				2A9241512497D2230032F52F /* Resources */,
+				2F5E37BC9655A78E957285CE /* [CP] Embed Pods Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Tangerine;
+			productName = TableViewTutorial;
+			productReference = 2A9241582497D2230032F52F /* Tangerine.app */;
+			productType = "com.apple.product-type.application";
+		};
 		2AEBBD851D35E175001F7388 /* TableViewTutorial */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = 2AEBBDAE1D35E175001F7388 /* Build configuration list for PBXNativeTarget "TableViewTutorial" */;
@@ -275,6 +362,9 @@
 				LastUpgradeCheck = 0820;
 				ORGANIZATIONNAME = "Freedom Electric";
 				TargetAttributes = {
+					2A9241302497D2230032F52F = {
+						DevelopmentTeam = DTP3595845;
+					};
 					2AEBBD851D35E175001F7388 = {
 						CreatedOnToolsVersion = 7.3.1;
 						DevelopmentTeam = DTP3595845;
@@ -306,6 +396,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
+				2A9241302497D2230032F52F /* Tangerine */,
 				2AEBBD851D35E175001F7388 /* TableViewTutorial */,
 				2AEBBD991D35E175001F7388 /* TableViewTutorialTests */,
 				2AEBBDA41D35E175001F7388 /* TableViewTutorialUITests */,
@@ -314,6 +405,16 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		2A9241512497D2230032F52F /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A9241522497D2230032F52F /* Main.storyboard in Resources */,
+				2A9241532497D2230032F52F /* LaunchScreen.storyboard in Resources */,
+				2A9241542497D2230032F52F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2AEBBD841D35E175001F7388 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -340,7 +441,103 @@
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		017BE1EC771805E16F4043DD /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-Tangerine-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		2F5E37BC9655A78E957285CE /* [CP] Embed Pods Frameworks */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-Tangerine/Pods-Tangerine-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/BoringSSL-GRPC/openssl_grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/GTMSessionFetcher/GTMSessionFetcher.framework",
+				"${BUILT_PRODUCTS_DIR}/GoogleUtilities/GoogleUtilities.framework",
+				"${BUILT_PRODUCTS_DIR}/PromisesObjC/FBLPromises.framework",
+				"${BUILT_PRODUCTS_DIR}/abseil/absl.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-C++/grpcpp.framework",
+				"${BUILT_PRODUCTS_DIR}/gRPC-Core/grpc.framework",
+				"${BUILT_PRODUCTS_DIR}/leveldb-library/leveldb.framework",
+				"${BUILT_PRODUCTS_DIR}/nanopb/nanopb.framework",
+			);
+			name = "[CP] Embed Pods Frameworks";
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/openssl_grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GTMSessionFetcher.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/GoogleUtilities.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/FBLPromises.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/absl.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpcpp.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/grpc.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/leveldb.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/nanopb.framework",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Tangerine/Pods-Tangerine-frameworks.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		2A9241312497D2230032F52F /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				2A9241322497D2230032F52F /* AskReviewsTableViewCell.swift in Sources */,
+				2A9241332497D2230032F52F /* CompareReviewsTableViewController.swift in Sources */,
+				2A9241342497D2230032F52F /* TestViewController.swift in Sources */,
+				2A9241352497D2230032F52F /* FriendDetailsViewController.swift in Sources */,
+				2A9241362497D2230032F52F /* FriendsTableViewCell.swift in Sources */,
+				2A9241372497D2230032F52F /* FriendsTableViewController.swift in Sources */,
+				2A9241382497D2230032F52F /* CompareBreakdownViewController.swift in Sources */,
+				2A9241392497D2230032F52F /* DataModels.swift in Sources */,
+				2A92413A2497D2230032F52F /* AskTableViewController.swift in Sources */,
+				2A92413B2497D2230032F52F /* AVCameraViewController.swift in Sources */,
+				2A92413C2497D2230032F52F /* MainController.swift in Sources */,
+				2A92413D2497D2230032F52F /* CameraViewController.swift in Sources */,
+				2A92413E2497D2230032F52F /* ReviewAskViewController.swift in Sources */,
+				2A92413F2497D2230032F52F /* ImageMethods.swift in Sources */,
+				2A9241402497D2230032F52F /* AskReviewDetailsViewController.swift in Sources */,
+				2A9241412497D2230032F52F /* RefreshMethods.swift in Sources */,
+				2A9241422497D2230032F52F /* CustomSegues.swift in Sources */,
+				2A9241432497D2230032F52F /* ReviewCompareViewController.swift in Sources */,
+				2A9241442497D2230032F52F /* AppDelegate.swift in Sources */,
+				2A9241452497D2230032F52F /* ComparePreviewViewController.swift in Sources */,
+				2A9241462497D2230032F52F /* AskTableViewCell.swift in Sources */,
+				2A9241472497D2230032F52F /* SwipeSegue.swift in Sources */,
+				2A9241482497D2230032F52F /* CompareReviewDetailsViewController.swift in Sources */,
+				2A9241492497D2230032F52F /* CompareViewController.swift in Sources */,
+				2A92414A2497D2230032F52F /* TestFileLinkedToNothing.swift in Sources */,
+				2A92414B2497D2230032F52F /* CompareTableViewCell.swift in Sources */,
+				2A92414C2497D2230032F52F /* AskViewController.swift in Sources */,
+				2A92414D2497D2230032F52F /* AskReviewsTableViewController.swift in Sources */,
+				2A92414E2497D2230032F52F /* CompareReviewsTableViewCell.swift in Sources */,
+				2A92414F2497D2230032F52F /* SimulatedDatabase.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		2AEBBD821D35E175001F7388 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -421,6 +618,36 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		2A9241562497D2230032F52F /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = E6C69232DAFAB4A01D77B34A /* Pods-Tangerine.debug.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DTP3595845;
+				INFOPLIST_FILE = "Tangerine-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Tangerine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		2A9241572497D2230032F52F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = A76472D35DDA5BBDAD7A2B53 /* Pods-Tangerine.release.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				DEVELOPMENT_TEAM = DTP3595845;
+				INFOPLIST_FILE = "Tangerine-Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = Tangerine;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_SWIFT3_OBJC_INFERENCE = On;
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
 		2AEBBDAC1D35E175001F7388 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -516,7 +743,7 @@
 				DEVELOPMENT_TEAM = DTP3595845;
 				INFOPLIST_FILE = Tangerine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = tangerinedata.TableViewTutorial;
+				PRODUCT_BUNDLE_IDENTIFIER = Tangerine;
 				PRODUCT_NAME = Tangerine;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 5.0;
@@ -530,7 +757,7 @@
 				DEVELOPMENT_TEAM = DTP3595845;
 				INFOPLIST_FILE = Tangerine/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = tangerinedata.TableViewTutorial;
+				PRODUCT_BUNDLE_IDENTIFIER = Tangerine;
 				PRODUCT_NAME = Tangerine;
 				SWIFT_SWIFT3_OBJC_INFERENCE = On;
 				SWIFT_VERSION = 5.0;
@@ -594,6 +821,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		2A9241552497D2230032F52F /* Build configuration list for PBXNativeTarget "Tangerine" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				2A9241562497D2230032F52F /* Debug */,
+				2A9241572497D2230032F52F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		2AEBBD811D35E175001F7388 /* Build configuration list for PBXProject "Tangerine" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
