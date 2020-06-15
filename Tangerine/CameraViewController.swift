@@ -233,7 +233,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         //imageView.image = currentImage
         titleHasBeenTapped = false
         
-        otherImageThumbnail.imageView?.contentMode = UIViewContentMode.scaleAspectFit
+        otherImageThumbnail.imageView?.contentMode = UIView.ContentMode.scaleAspectFit
 
         
         self.enableBlurringButton.isHidden = false
@@ -263,10 +263,10 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
 
         
         // This will move the caption text box out of the way when the keyboard pops up:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
         // This will move the caption text box back down when the keyboard goes away:
-        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
         // This gets the height of the screen for spacing things out later
         // Used only for determining where to move the caption when the keyboard pops up
@@ -468,7 +468,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         // Basically all this shit is for moving the caption out of the way of the keyboard while we're editing it:
         if self.captionTextField.isEditing == true { //aka if the title is editing, don't do any of this
             //get the height of the keyboard that will show and then shift the text field up by that amount
-            if let userInfoDict = notification.userInfo, let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            if let userInfoDict = notification.userInfo, let keyboardFrameValue = userInfoDict [UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
 
                 let keyboardFrame = keyboardFrameValue.cgRectValue
             
@@ -667,7 +667,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
         
         
         
-        if (pressImageGesture.state == UIGestureRecognizerState.began) {
+        if (pressImageGesture.state == UIGestureRecognizer.State.began) {
             print("Long press detected.")
             
             // a cool thing to have here would be a bar that gets bigger on the screen the longer the user holds down
@@ -686,7 +686,7 @@ class CameraViewController: UIViewController, UIImagePickerControllerDelegate, U
             
             
             return
-        } else if (pressImageGesture.state == UIGestureRecognizerState.ended) {
+        } else if (pressImageGesture.state == UIGestureRecognizer.State.ended) {
             print("Long press ended.")
             blurringInProgressLabel.text = ":: blurring in progress ::"
             //blurringInProgressLabel.isHidden = true
@@ -1504,7 +1504,7 @@ else that means we're in case 3 or 4
         
         // No-op if the orientation is already correct
 
-        if (img.imageOrientation == UIImageOrientation.up) {
+        if (img.imageOrientation == UIImage.Orientation.up) {
             return img;
         }
 
@@ -1512,33 +1512,33 @@ else that means we're in case 3 or 4
         // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
         var transform:CGAffineTransform = CGAffineTransform.identity
       
-        if (img.imageOrientation == UIImageOrientation.down
-            || img.imageOrientation == UIImageOrientation.downMirrored) {
+        if (img.imageOrientation == UIImage.Orientation.down
+            || img.imageOrientation == UIImage.Orientation.downMirrored) {
             
             transform = transform.translatedBy(x: img.size.width, y: img.size.height)
             transform = transform.rotated(by: CGFloat(Double.pi)) //seems to be the number of radians we rotate the image
         }
         
-        if (img.imageOrientation == UIImageOrientation.left
-            || img.imageOrientation == UIImageOrientation.leftMirrored) {
+        if (img.imageOrientation == UIImage.Orientation.left
+            || img.imageOrientation == UIImage.Orientation.leftMirrored) {
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.rotated(by: CGFloat(Double.pi / 2))
         }
         
-        if (img.imageOrientation == UIImageOrientation.right
-            || img.imageOrientation == UIImageOrientation.rightMirrored) {
+        if (img.imageOrientation == UIImage.Orientation.right
+            || img.imageOrientation == UIImage.Orientation.rightMirrored) {
             transform = transform.translatedBy(x: 0, y: img.size.height);
             transform = transform.rotated(by: CGFloat(-Double.pi / 2));
         }
         
-        if (img.imageOrientation == UIImageOrientation.upMirrored
-            || img.imageOrientation == UIImageOrientation.downMirrored) {
+        if (img.imageOrientation == UIImage.Orientation.upMirrored
+            || img.imageOrientation == UIImage.Orientation.downMirrored) {
             transform = transform.translatedBy(x: img.size.width, y: 0)
             transform = transform.scaledBy(x: -1, y: 1)
         }
         
-        if (img.imageOrientation == UIImageOrientation.leftMirrored
-            || img.imageOrientation == UIImageOrientation.rightMirrored) {
+        if (img.imageOrientation == UIImage.Orientation.leftMirrored
+            || img.imageOrientation == UIImage.Orientation.rightMirrored) {
             transform = transform.translatedBy(x: img.size.height, y: 0);
             transform = transform.scaledBy(x: -1, y: 1);
         }
@@ -1553,10 +1553,10 @@ else that means we're in case 3 or 4
         ctx.concatenate(transform)
         
         
-        if (img.imageOrientation == UIImageOrientation.left
-            || img.imageOrientation == UIImageOrientation.leftMirrored
-            || img.imageOrientation == UIImageOrientation.right
-            || img.imageOrientation == UIImageOrientation.rightMirrored
+        if (img.imageOrientation == UIImage.Orientation.left
+            || img.imageOrientation == UIImage.Orientation.leftMirrored
+            || img.imageOrientation == UIImage.Orientation.right
+            || img.imageOrientation == UIImage.Orientation.rightMirrored
             ) {
             //I'm not sure why there is even an if statement since they perform the same operation in both cases...
             ctx.draw(img.cgImage!, in: CGRect(x:0,y:0,width:img.size.height,height:img.size.width))
@@ -1576,10 +1576,10 @@ else that means we're in case 3 or 4
     
     //this is for testing the image rotation. May be deleted.
     public func printImageOrientations (passedImage: UIImage) {
-        print("newAsk.image orientation is upright \(passedImage.imageOrientation == UIImageOrientation.up)")
-        print("newAsk.image orientation is left \(passedImage.imageOrientation == UIImageOrientation.left)")
-        print("newAsk.image orientation is right \(passedImage.imageOrientation == UIImageOrientation.right)")
-        print("newAsk.image orientation is down \(passedImage.imageOrientation == UIImageOrientation.down)")
+        print("newAsk.image orientation is upright \(passedImage.imageOrientation == UIImage.Orientation.up)")
+        print("newAsk.image orientation is left \(passedImage.imageOrientation == UIImage.Orientation.left)")
+        print("newAsk.image orientation is right \(passedImage.imageOrientation == UIImage.Orientation.right)")
+        print("newAsk.image orientation is down \(passedImage.imageOrientation == UIImage.Orientation.down)")
     }
     
     // This is set to a generic flesh tone. 
@@ -1612,7 +1612,7 @@ else that means we're in case 3 or 4
     // Also, I'm not really sure what UIGraphicsGetImageFromCurrentImageContext() is doing.
     func fixOrientation(img:UIImage) -> UIImage {
         
-        if (img.imageOrientation == UIImageOrientation.up) {
+        if (img.imageOrientation == UIImage.Orientation.up) {
             return img;
         }
         

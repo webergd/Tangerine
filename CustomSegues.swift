@@ -129,9 +129,9 @@ class SegueDismissToLeft: UIStoryboardSegue
 public func dismissLeft(thisVC: UIViewController) {
     let transition: CATransition = CATransition()
     transition.duration = 0.25
-    transition.timingFunction = CAMediaTimingFunction(name: kCAMediaTimingFunctionEaseInEaseOut)
-    transition.type = kCATransitionReveal
-    transition.subtype = kCATransitionFromLeft
+    transition.timingFunction = CAMediaTimingFunction(name: CAMediaTimingFunctionName.easeInEaseOut)
+    transition.type = CATransitionType.reveal
+    transition.subtype = CATransitionSubtype.fromLeft
     thisVC.view.window!.layer.add(transition, forKey: nil)
     thisVC.dismiss(animated: false, completion: nil)
 }

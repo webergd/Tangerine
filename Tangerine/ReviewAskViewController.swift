@@ -178,10 +178,10 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             self.hideKeyboardWhenTappedAround()
         
             // This will move the caption text box out of the way when the keyboard pops up:
-            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
             // This will move the caption text box back down when the keyboard goes away:
-            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewAskViewController.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
             // Do any additional setup after loading the view, typically from a nib.
             scrollView.delegate = self
@@ -193,19 +193,19 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
             // Gesture Recognizers for swiping left and right
             let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeUp.direction = UISwipeGestureRecognizerDirection.up
+            swipeUp.direction = UISwipeGestureRecognizer.Direction.up
             self.view.addGestureRecognizer(swipeUp)
         
             let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeDown.direction = UISwipeGestureRecognizerDirection.down
+            swipeDown.direction = UISwipeGestureRecognizer.Direction.down
             self.view.addGestureRecognizer(swipeDown)
         
             let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeRight.direction = UISwipeGestureRecognizerDirection.right
+            swipeRight.direction = UISwipeGestureRecognizer.Direction.right
             self.view.addGestureRecognizer(swipeRight)
         
             let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+            swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
             self.view.addGestureRecognizer(swipeLeft)
             
 
@@ -218,8 +218,8 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     @objc func keyboardWillShow(_ notification: Notification) {
         // this would look better if we animated a fade in of the coverView (and a fade out lower down)
         coverView.isHidden = false
-        mainView.bringSubview(toFront: coverView)
-        mainView.bringSubview(toFront: commentsTextView)
+        mainView.bringSubviewToFront(coverView)
+        mainView.bringSubviewToFront(commentsTextView)
         
         // Basically all this is for moving the textView out of the way of the keyboard while we're editing it:
         
@@ -231,7 +231,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
         //get the height of the keyboard that will show and then shift the text field up by that amount
         if let userInfoDict = notification.userInfo,
-            let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardFrameValue = userInfoDict [UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
                 
             let keyboardFrame = keyboardFrameValue.cgRectValue
                 
@@ -257,7 +257,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
             resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
  
         }
-        mainView.sendSubview(toBack: coverView)
+        mainView.sendSubviewToBack(coverView)
         coverView.isHidden = true
         self.view.layoutIfNeeded()
     }
@@ -361,7 +361,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
             var currentSelection: yesOrNo
-            if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.up {
                 // show the strong arm and set a strong flag to true
                 switch strongFlag {
                 case true: return
@@ -377,13 +377,13 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
                 print("Strong Image alpha = \(strongImageView.alpha)")
                 */
                 return // this avoids reloading the form or a segue since it was just an up-swipe
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.down {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.down {
                 strongFlag = false
                 hideStrongImage()
                 return // this avoids reloading the form or a segue since it was just an down-swipe
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.right {
                 currentSelection = .yes
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.left {
                 currentSelection = .no
             } else {
                 print("no selection made from the swipe")
@@ -408,7 +408,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
 
         
         //self.strongImageView.isHidden = false
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
             self.strongImageView.frame.size.width = self.strongOriginalSize * 2.0
             self.topCenterBackgroundView.alpha = 1.0
@@ -426,7 +426,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
     func hideStrongImage() {
         self.centralDisplayLabel.isHidden = false
         
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 0.0001
             self.strongImageView.frame.size.width = self.strongOriginalSize * 0.0001
             self.topCenterBackgroundView.alpha = 0.0
@@ -511,7 +511,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         
         // delays specified number of seconds before executing code in the brackets:
         UIView.animate(withDuration: 0.5, delay: 0.3,
-            options: UIViewAnimationOptions.allowAnimatedContent,
+            options: UIView.AnimationOptions.allowAnimatedContent,
             animations: {
                 self.selectionImageView.alpha = 0.0
             },
@@ -606,7 +606,7 @@ class ReviewAskViewController: UIViewController, UIScrollViewDelegate, UITextVie
         self.selectionImageView.alpha = 0.9
         self.selectionImageView.isHidden = false
         // delays specified number of seconds before executing code in the brackets:
-        UIView.animate(withDuration: 0.5, delay: 0.3, options: UIViewAnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
+        UIView.animate(withDuration: 0.5, delay: 0.3, options: UIView.AnimationOptions.allowAnimatedContent, animations: {self.selectionImageView.alpha = 0.0}, completion: { finished in
             self.selectionImageView.isHidden = true
             self.loadNextQuestion()
         })

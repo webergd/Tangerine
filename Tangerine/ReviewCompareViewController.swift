@@ -177,10 +177,10 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             //  we run out of questions.
         
             // This will move the caption text box out of the way when the keyboard pops up:
-            NotificationCenter.default.addObserver(self, selector: #selector(ReviewCompareViewController.keyboardWillShow(_:)), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(ReviewCompareViewController.keyboardWillShow(_:)), name: UIResponder.keyboardWillShowNotification, object: nil)
         
             // This will move the caption text box back down when the keyboard goes away:
-            NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+            NotificationCenter.default.addObserver(self, selector: #selector(CameraViewController.keyboardWillHide(_:)), name: UIResponder.keyboardWillHideNotification, object: nil)
         
 
             topScrollView.delegate = self
@@ -193,11 +193,11 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
             // Gesture Recognizers for swiping up and down
             let swipeUp = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeUp.direction = UISwipeGestureRecognizerDirection.up
+            swipeUp.direction = UISwipeGestureRecognizer.Direction.up
             self.view.addGestureRecognizer(swipeUp)
         
             let swipeDown = UISwipeGestureRecognizer(target: self, action: #selector(ReviewAskViewController.userSwiped))
-            swipeDown.direction = UISwipeGestureRecognizerDirection.down
+            swipeDown.direction = UISwipeGestureRecognizer.Direction.down
             self.view.addGestureRecognizer(swipeDown)
         
             // For tapping the images to select them:
@@ -240,7 +240,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         display(coverView: coverView, mainView: mainView)
         //coverView.isHidden = false
         //mainView.bringSubview(toFront: coverView)
-        mainView.bringSubview(toFront: commentsTextView)
+        mainView.bringSubviewToFront(commentsTextView)
 
     }
 
@@ -256,7 +256,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
         //get the height of the keyboard that will show and then shift the text field up by that amount
         if let userInfoDict = notification.userInfo,
-            let keyboardFrameValue = userInfoDict [UIKeyboardFrameEndUserInfoKey] as? NSValue {
+            let keyboardFrameValue = userInfoDict [UIResponder.keyboardFrameEndUserInfoKey] as? NSValue {
                 
             let keyboardFrame = keyboardFrameValue.cgRectValue
                 
@@ -282,7 +282,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
             resetTextView(textView: commentsTextView, blankText: enterCommentConstant)
  
         }
-        mainView.sendSubview(toBack: commentsTextView)
+        mainView.sendSubviewToBack(commentsTextView)
         //mainView.sendSubview(toBack: coverView)
         //coverView.isHidden = true
         hide(coverView: coverView, mainView: mainView)
@@ -418,7 +418,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     func userSwiped(gesture: UIGestureRecognizer) {
         //This will need to be ammended since we are no longer swiping left or right
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if swipeGesture.direction == UISwipeGestureRecognizerDirection.up {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.up {
                 // show the strong arm and set a strong flag to true
                 switch strongFlag {
                 case true: return
@@ -427,7 +427,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
                     showStrongImage()
                 }
                 return // this avoids reloading the form or a segue since it was just an up-swipe
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.down {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.down {
                 strongFlag = false
                 hideStrongImage()
                 return // this avoids reloading the form or a segue since it was just an down-swipe
@@ -460,7 +460,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         self.strongImageView.isHidden = false
         
         //self.strongImageView.isHidden = false
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 2.0
             self.strongImageView.frame.size.width = self.strongOriginalSize * 2.0
             self.topCenterBackgroundView.alpha = 1.0
@@ -476,7 +476,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
     
     
     func hideStrongImage() {
-        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+        UIView.animate(withDuration: 0.2, delay: 0.0, options: UIView.AnimationOptions.beginFromCurrentState, animations: {
             self.strongImageView.frame.size.height = self.strongOriginalSize * 0.0001
             self.strongImageView.frame.size.width = self.strongOriginalSize * 0.0001
             self.topCenterBackgroundView.alpha = 0.0
@@ -512,7 +512,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
         
         // delays specified number of seconds before executing code in the brackets:
         UIView.animate(withDuration: 0.5, delay: 0.3,
-                       options: UIViewAnimationOptions.allowAnimatedContent,
+                       options: UIView.AnimationOptions.allowAnimatedContent,
                        animations: {
                         self.topSelectionImageView.alpha = 0.0
                         self.bottomSelectionImageView.alpha = 0.0
@@ -586,7 +586,7 @@ class ReviewCompareViewController: UIViewController, UIScrollViewDelegate, UITex
    
         // delays specified number of seconds before executing code in the brackets:
         UIView.animate(withDuration: 0.5, delay: 0.3,
-                       options: UIViewAnimationOptions.allowAnimatedContent,
+                       options: UIView.AnimationOptions.allowAnimatedContent,
                        animations: {
                         self.topSelectionImageView.alpha = 0.0
                         self.bottomSelectionImageView.alpha = 0.0

@@ -124,7 +124,7 @@ class CompareBreakdownViewController: UIViewController {
         view.backgroundColor = .clear
         
         //bring the individual panels forward so the user can click to filter review results
-        view.bringSubview(toFront: targetDemoView1)
+        view.bringSubviewToFront(targetDemoView1)
         
         
         self.configureView()
@@ -135,11 +135,11 @@ class CompareBreakdownViewController: UIViewController {
         
         // Gesture Recognizers for swiping left and right
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(swipeRight)
         
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(CompareBreakdownViewController.userSwiped))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
         self.view.addGestureRecognizer(swipeLeft)
         
         // These will need to be modified for double the functionality
@@ -486,14 +486,14 @@ class CompareBreakdownViewController: UIViewController {
         ///////////////////////////////////////////////////
         
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.right {
                 // go back to previous view by swiping right
                 dismissLeft(thisVC: self)
                 
                 //dismiss(animated: true, completion: nil)
                 //self.performSegue(withIdentifier: "unwindToCompareVC", sender: self)
                 //self.navigationController?.popViewController(animated: true)
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.left {
                 sortType = .allUsers // on left swipe show all reviews (may want to change this to targetDemo instead)
                 segueToNextViewController()
             }

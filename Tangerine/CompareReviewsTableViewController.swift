@@ -1,30 +1,33 @@
 //
-//  FriendsReviewsTableViewController.swift
+//  CompareReviewsTableViewController.swift
 //  TableViewTutorial
 //
-//  Created by Wyatt Weber on 6/24/17.
+//  Created by Wyatt Weber on 6/23/17.
 //  Copyright © 2017 Freedom Electric. All rights reserved.
 //
 
 import UIKit
 
-class FriendsTableViewController: UITableViewController {
+class CompareReviewsTableViewController: UITableViewController {
 
     
-    @IBOutlet var friendsTableView: UITableView!
 
-    ///////////////////////////////////////////
-    // To populate this table of friends, we //
-    //  need an array of users who are our   //
-    //  friends. Eventually, there also needs//
-    //  to be a way that this array is       //
-    //  compared against the online database //
-    //  and updated as appropriate.          //
-    // For now, friends is a dummy array that//
-    //  lives in dataModels.swift            //
-    ///////////////////////////////////////////
+    @IBOutlet var compareReviewsTableView: UITableView!
+    
+    var currentReviews = [CompareReview]()
 
-
+    var sortType: userGroup? {
+        didSet {
+            // I'm not sure if I actually need to call a method in here- doesn't seem like it
+        }
+    }
+    
+    var container: Container? {
+        didSet {
+            // Update the view.
+            self.viewDidLoad()
+        }
+    }
     
 
 
@@ -45,16 +48,31 @@ class FriendsTableViewController: UITableViewController {
     */
 
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
+        if let thisContainer = self.container,
+            let thisSortType = self.sortType {
+            
+            print("storing the sorted array to currentReviews")
+            currentReviews = thisContainer.reviewCollection.filterReviews(by: thisSortType) as! [CompareReview]
+            
+        } else {
+            print("container was nil")
+        }
+        
+        
+        //load the sample data
+        //sortedContainers = containers.sorted { $0.question.timePosted.timeIntervalSince1970 < $1.question.timePosted.timeIntervalSince1970 } //this line is going to have to appear somewhere later than ViewDidLoad
+        
         //allows the row height to resize to fit the autolayout constraints
-        tableView.rowHeight = UITableViewAutomaticDimension
+        tableView.rowHeight = UITableView.automaticDimension
         //it won't necessarily follow this, it's just an estimate that's required for the above line to work:
         tableView.estimatedRowHeight = 150
         
-        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(FriendsTableViewController.userSwiped))
-        friendsTableView.addGestureRecognizer(swipeViewGesture)
+        let swipeViewGesture = UISwipeGestureRecognizer(target: self, action: #selector(CompareReviewsTableViewController.userSwiped))
+        compareReviewsTableView.addGestureRecognizer(swipeViewGesture)
 
         
         
@@ -69,14 +87,9 @@ class FriendsTableViewController: UITableViewController {
     // This happens when the main tableView is displayed again when navigating back to it from asks and compares
     override func viewDidAppear(_ animated: Bool) {
         
-        // I will only need this if I decide to add a timeCreated stamp to each review and then sort by it. As of now, the 
-        //  fact that the reviews should already be roughly in order since they are naturally appended to the ReviewCollection
-        //  chronologically as they are created should be good enough for my purposes.
-        //  This method is pasted from AskTableViewController. Nothing in it has been modified yet.
+        // I'm not sure if any of this code inside viewDidAppear() is necessary
+        // It seems like the cellForRow at index path stuff executes automatically
         
-        
-        // This refreshes the time remaining labels in the cells every time we come back to the main tableView:
-        /*
         var index = 0
         for _ in currentReviews {
             let indexPath = IndexPath(row: index, section: 0)
@@ -89,7 +102,6 @@ class FriendsTableViewController: UITableViewController {
       
             index += 1
         } 
-        */
         
     }
     
@@ -102,44 +114,45 @@ class FriendsTableViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        return friendsArray.count
+        return currentReviews.count
     }
     
     
     //I believe this is setting up the cell row in the table, that's why it returns one cell
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-
-        let cellIdentifier: String = "FriendsTableViewCell"
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! FriendsTableViewCell
-        let friend = friendsArray[indexPath.row]
         
-        cell.friendImageView.image = returnProfilePic(image: friend.publicInfo.profilePicture)
+        print("cellforRowAt indexPath called")
 
+        let cellIdentifier: String = "CompareReviewsTableViewCell"
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellIdentifier, for: indexPath) as! CompareReviewsTableViewCell
+        let review = currentReviews[indexPath.row]
         
-        cell.friendNameLabel.text = friend.publicInfo.displayName
-        cell.friendAgeLabel.text = String(friend.publicInfo.age)
-        cell.friendRatingLabel.text = reviewerRatingToTangerines(rating: friend.publicInfo.reviewerScore)
-        
-        // Don't color code friends by orientation. We should know thier orientation.
-        // And if we don't, then it's because they don't want us to know and that's thier private prerogative.
-        //cell.cellBackgroundView.backgroundColor = orientationSpecificColor(userOrientation: friend.publicInfo.orientation)
 
+        // MARK: Need an if statement so if user is not a friend, profile picture and name are hidden
+        cell.reviewerImageView.image = returnProfilePic(image: review.reviewerInfo.profilePicture)
+        cell.reviewerNameLabel.text = review.reviewerName
+        
+        cell.reviewerAgeLabel.text = String(review.reviewerAge)
+        
+        cell.strongExistsLabel.text = strongToText(strongYes: review.strongYes, strongNo: review.strongNo)
+        
+        if let thisContainer = container {
+            cell.selectionImageView.image = selectionImage(selection: review.selection, compare: thisContainer.question as! Compare)
+            cell.selectionTitleLabel.text = selectionTitle(selection: review.selection, compare: thisContainer.question as! Compare)
+        }
+        // sets the cell background color according to the reviewers orientation
+        cell.cellBackgroundView.backgroundColor = orientationSpecificColor(userOrientation: review.reviewerOrientation)
+        
+        switch review.comments {
+        case "": cell.commentExistsLabel.text = ""
+        default: cell.commentExistsLabel.text = "📋"
+        }
+            
         return cell
 
 
     }
-    
-    
-    // This was me fucking around with different ways to make it segue - it was actually just that rating label with some kind of latent naming issue.
-    //func tableView(tableView: UITableView, didSelectRowAtIndexPath indexPath: NSIndexPath) {
-    //print("didSelectRowAtIndexPath")
-    
-    //performSegueWithIdentifier ("showSingleAsk", sender: self)
-    //presentViewController(Single Ask View Controller, animated: true, completion: nil)
-    //self.navigationController?.pushViewController(singleAskViewController as! UIViewController, animated: true)
-    //}
-    
-    
+
     /*
      // Override to support conditional editing of the table view.
      override func tableView(tableView: UITableView, canEditRowAtIndexPath indexPath: NSIndexPath) -> Bool {
@@ -184,7 +197,11 @@ class FriendsTableViewController: UITableViewController {
     
     @objc func userSwiped() {
         print("user swiped**********")
-        self.navigationController?.popViewController(animated: true)
+        //self.performSegue(withIdentifier: "unwindToCompareBreakdownVC", sender: self)
+        
+        dismissLeft(thisVC: self)
+        //dismiss(animated: true, completion: nil)
+        //self.navigationController?.popViewController(animated: true)
         
     }
     
@@ -197,21 +214,23 @@ class FriendsTableViewController: UITableViewController {
 
         // Pass the specific review's info, along with the required info from the container's ask
 
-        //This needs to be switched over once the friend detail VC is built:
-
         if let indexPath = self.tableView.indexPathForSelectedRow {
             
-            let passedFriend = friendsArray[indexPath.row]
+            let passedReview = currentReviews[indexPath.row]
             
-            let controller = segue.destination as! FriendDetailsViewController
+            let controller = segue.destination as! CompareReviewDetailsViewController
             // Pass the selected review to the next view controller:
-            controller.friend = passedFriend
+            controller.review = passedReview
+            
+            // for some reason it made us unwrap the container prior to using it:
+            if let passedCompare = container?.question as! Compare? {
+                controller.compare = passedCompare
+            }
+            
 
         }
-         
-
         
-
+        
         //}
         
         
@@ -230,28 +249,4 @@ class FriendsTableViewController: UITableViewController {
     }
 
 } // end of the class for this VC
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 

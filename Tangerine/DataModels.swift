@@ -322,11 +322,11 @@ func display(coverView: UIView, mainView: UIView) {
     // this would look better if we animated a fade in of the coverView (and a fade out lower down)
     print("displaying coverView")
     coverView.isHidden = false
-    mainView.bringSubview(toFront: coverView)
+    mainView.bringSubviewToFront(coverView)
 }
 
 func hide(coverView: UIView, mainView: UIView) {
-    mainView.sendSubview(toBack: coverView)
+    mainView.sendSubviewToBack(coverView)
     coverView.isHidden = true
 }
 
@@ -337,7 +337,7 @@ public protocol isReviewVC {
 func informUserNoQuestions(coverView: UIView, coverViewLabel: UILabel, mainView: UIView, viewController: isReviewVC ) {
     //animate coverview darkening
     coverView.alpha = 0.1
-    UIView.animate(withDuration: 0.5, delay: 0.0, options: UIViewAnimationOptions.beginFromCurrentState, animations: {
+    UIView.animate(withDuration: 0.5, delay: 0.0, options: UIView.AnimationOptions.beginFromCurrentState, animations: {
         display(coverView: coverView, mainView: mainView)
         coverView.alpha = 1.0
     }, completion: {

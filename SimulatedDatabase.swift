@@ -429,7 +429,7 @@ public class SimulatedDatabase {
                 // It's a two-way friendship because the name appears on both lists, therefore the are friends.
                 friendsNames.append(username)
                 // This allows us to end up with only the names in the user2s list that don't also appear in the user1s lists:
-                if let indexInUser2s: Int = user2s.index(of: username) {
+                if let indexInUser2s: Int = user2s.firstIndex(of: username) {
                     user2s.remove(at: indexInUser2s)
                 }
             } else {

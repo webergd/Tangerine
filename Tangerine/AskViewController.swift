@@ -294,11 +294,11 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
         
         // Gesture Recognizers for swiping left and right
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(swipeRight)
         
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(AskViewController.userSwiped))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
         self.view.addGestureRecognizer(swipeLeft)
         
         // Gesture recognizers for tapping sortType labels to filter reviews
@@ -330,10 +330,10 @@ class AskViewController: UIViewController, UIScrollViewDelegate {
     
     @objc func userSwiped(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.right {
                 // go back to previous view by swiping right
                 self.navigationController?.popViewController(animated: true)
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.left {
                 sortType = .allUsers // on left swipe show all reviews (may want to change this to targetDemo instead)
                 segueToNextViewController()
             }

@@ -20,7 +20,7 @@ private var context = { CIContext(options: nil) }()
 public class BlurFace {
     private let ciDetector = CIDetector(ofType: CIDetectorTypeFace, context: nil ,options: [CIDetectorAccuracy : CIDetectorAccuracyHigh])
     private var ciImage: CIImage!
-    private var orientation: UIImageOrientation = .up
+    private var orientation: UIImage.Orientation = .up
     private lazy var features : [AnyObject]! = { self.ciDetector!.features(in: self.ciImage) }()
 
     

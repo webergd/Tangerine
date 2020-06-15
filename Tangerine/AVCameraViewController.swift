@@ -75,7 +75,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         print("justFinsihedPicking is \(justFinishedPicking) (inside AVCameraViewController.ViewDidLoad)")
         //Enabes user to swipe right to return to main menu
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(self.returnToMenu))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(swipeRight)
 
         //Switch that determines where we are at in the compare or ask creation process:
@@ -399,7 +399,7 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
             
             let dataProvider = CGDataProvider(data: dataImage as CFData)
             let cgImageRef: CGImage! = CGImage(jpegDataProviderSource: dataProvider!, decode: nil, shouldInterpolate: true, intent: .defaultIntent)
-            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImageOrientation.right)
+            let image = UIImage(cgImage: cgImageRef, scale: 1.0, orientation: UIImage.Orientation.right)
             
             
             self.capturedImage = sFunc_imageFixOrientation(img: image)
@@ -440,8 +440,8 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         
         // These 2 lines prevent the image from being distorted when displayed 
         //  (since the aspect ratio of the screen is not the same aspect ratio as the camera)
-        avImageView.autoresizingMask = UIViewAutoresizing.flexibleBottomMargin
-        avImageView.contentMode = UIViewContentMode.scaleAspectFit
+        avImageView.autoresizingMask = UIView.AutoresizingMask.flexibleBottomMargin
+        avImageView.contentMode = UIView.ContentMode.scaleAspectFit
         
         //hide the camera control buttons
         photoLibraryButton.isHidden = true
@@ -485,12 +485,15 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
     
     // MARK: - UIImagePickerControllerDelegate Methods
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         
         print("insideImagePickerController, avImageView.image before storing pickedImage to it is: \(avImageView.image)")
         
         
-        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+        if let pickedImage = info[convertFromUIImagePickerControllerInfoKey(UIImagePickerController.InfoKey.originalImage)] as? UIImage {
             
             print("insideImagePickerController, pickedImage is: \(pickedImage)")
             
@@ -556,21 +559,21 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
         avCameraFlash = .flashAuto
         //settings.flashMode = .auto
         //device.flashMode = .auto //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "auto-flash_white"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "auto-flash_white"), for: UIControl.State.normal)
         print("flash mode set to auto")
     }
     func turnFlashOn() {
         avCameraFlash = .flashOn
         //settings.flashMode = .on
         //device.flashMode = .on //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "flash_white"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "flash_white"), for: UIControl.State.normal)
         print("flash mode set to on")
     }
     func turnFlashOff() {
         avCameraFlash = .flashOff
         //settings.flashMode = .off
         //device.flashMode = .off //deprecated
-        flashButton.setImage(#imageLiteral(resourceName: "no-flash_white"), for: UIControlState.normal)
+        flashButton.setImage(#imageLiteral(resourceName: "no-flash_white"), for: UIControl.State.normal)
         print("flash mode set to off")
     }
     
@@ -726,3 +729,13 @@ class AVCameraViewController: UIViewController, UIImagePickerControllerDelegate,
 
 
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKey(_ input: UIImagePickerController.InfoKey) -> String {
+	return input.rawValue
+}

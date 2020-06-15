@@ -140,11 +140,11 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
         
         
         let swipeRight = UISwipeGestureRecognizer(target: self, action: #selector(CompareViewController.userSwiped))
-        swipeRight.direction = UISwipeGestureRecognizerDirection.right
+        swipeRight.direction = UISwipeGestureRecognizer.Direction.right
         self.view.addGestureRecognizer(swipeRight)
         
         let swipeLeft = UISwipeGestureRecognizer(target: self, action: #selector(CompareViewController.userSwiped))
-        swipeLeft.direction = UISwipeGestureRecognizerDirection.left
+        swipeLeft.direction = UISwipeGestureRecognizer.Direction.left
         self.view.addGestureRecognizer(swipeLeft)
 
     }
@@ -217,9 +217,9 @@ class CompareViewController: UIViewController, UIScrollViewDelegate {
  
     @objc func userSwiped(gesture: UIGestureRecognizer) {
         if let swipeGesture = gesture as? UISwipeGestureRecognizer {
-            if swipeGesture.direction == UISwipeGestureRecognizerDirection.right {
+            if swipeGesture.direction == UISwipeGestureRecognizer.Direction.right {
                 self.navigationController?.popViewController(animated: true)
-            } else if swipeGesture.direction == UISwipeGestureRecognizerDirection.left {
+            } else if swipeGesture.direction == UISwipeGestureRecognizer.Direction.left {
                 // sets the graphical view controller with the storyboard ID" comparePreviewViewController to nextVC
                 let nextVC = self.storyboard?.instantiateViewController(withIdentifier: "compareBreakdownViewController") as! CompareBreakdownViewController
                 // pushes askBreakdownViewController onto the nav stack

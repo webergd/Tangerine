@@ -6,43 +6,43 @@ func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
     
     
     // No-op if the orientation is already correct
-    if (img.imageOrientation == UIImageOrientation.up) {
+    if (img.imageOrientation == UIImage.Orientation.up) {
         return img;
     }
     // We need to calculate the proper transformation to make the image upright.
     // We do it in 2 steps: Rotate if Left/Right/Down, and then flip if Mirrored.
     var transform:CGAffineTransform = CGAffineTransform.identity
     
-    if (img.imageOrientation == UIImageOrientation.down
-        || img.imageOrientation == UIImageOrientation.downMirrored) {
+    if (img.imageOrientation == UIImage.Orientation.down
+        || img.imageOrientation == UIImage.Orientation.downMirrored) {
         
         transform = transform.translatedBy(x: img.size.width, y: img.size.height)
         transform = transform.rotated(by: CGFloat(Double.pi)) //seems to be the number of radians we rotate the image
     }
     
-    if (img.imageOrientation == UIImageOrientation.left
-        || img.imageOrientation == UIImageOrientation.leftMirrored) {
+    if (img.imageOrientation == UIImage.Orientation.left
+        || img.imageOrientation == UIImage.Orientation.leftMirrored) {
         
         transform = transform.translatedBy(x: img.size.width, y: 0)
         transform = transform.rotated(by: CGFloat(Double.pi / 2))
     }
     
-    if (img.imageOrientation == UIImageOrientation.right
-        || img.imageOrientation == UIImageOrientation.rightMirrored) {
+    if (img.imageOrientation == UIImage.Orientation.right
+        || img.imageOrientation == UIImage.Orientation.rightMirrored) {
         
         transform = transform.translatedBy(x: 0, y: img.size.height);
         transform = transform.rotated(by: CGFloat(-(Double.pi / 2)));
     }
     
-    if (img.imageOrientation == UIImageOrientation.upMirrored
-        || img.imageOrientation == UIImageOrientation.downMirrored) {
+    if (img.imageOrientation == UIImage.Orientation.upMirrored
+        || img.imageOrientation == UIImage.Orientation.downMirrored) {
         
         transform = transform.translatedBy(x: img.size.width, y: 0)
         transform = transform.scaledBy(x: -1, y: 1)
     }
     
-    if (img.imageOrientation == UIImageOrientation.leftMirrored
-        || img.imageOrientation == UIImageOrientation.rightMirrored) {
+    if (img.imageOrientation == UIImage.Orientation.leftMirrored
+        || img.imageOrientation == UIImage.Orientation.rightMirrored) {
         
         transform = transform.translatedBy(x: img.size.height, y: 0);
         transform = transform.scaledBy(x: -1, y: 1);
@@ -59,10 +59,10 @@ func sFunc_imageFixOrientation(img:UIImage) -> UIImage {
     ctx.concatenate(transform)
     
     
-    if (img.imageOrientation == UIImageOrientation.left
-        || img.imageOrientation == UIImageOrientation.leftMirrored
-        || img.imageOrientation == UIImageOrientation.right
-        || img.imageOrientation == UIImageOrientation.rightMirrored
+    if (img.imageOrientation == UIImage.Orientation.left
+        || img.imageOrientation == UIImage.Orientation.leftMirrored
+        || img.imageOrientation == UIImage.Orientation.right
+        || img.imageOrientation == UIImage.Orientation.rightMirrored
         ) {
         
         //I'm not sure why there is even an if statemet since they perform the same operation in both cases...
